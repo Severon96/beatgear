@@ -6,7 +6,7 @@ from pydantic_core import ValidationError
 
 from api.constants import cors_config
 from db import users_db
-from models.models import Users
+from models.models import User
 from util.util import parse_model
 
 api = Blueprint(__name__)
@@ -41,7 +41,7 @@ def get_user(user_id: str):
 def create_user():
     request = api.current_request
     try:
-        user: Users = parse_model(Users, request.json_body)
+        user: User = parse_model(User, request.json_body)
     except ValidationError as e:
         raise BadRequestError(str(e))
 

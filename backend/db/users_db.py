@@ -2,11 +2,11 @@ from uuid import UUID
 
 from chalice import NotFoundError
 
-from models.models import user
+from models.models import User
 from util.util import parse_model, get_db_connection, close_db_connection, parse_model_list
 
 
-def get_user(user_id: UUID) -> user:
+def get_user(user_id: UUID) -> User:
     connection, cursor = get_db_connection()
 
     cursor.execute("SELECT * FROM users WHERE id=%s;", [str(user_id)])
@@ -17,10 +17,10 @@ def get_user(user_id: UUID) -> user:
 
     close_db_connection(connection, cursor)
 
-    return parse_model(user, values)
+    return parse_model(User, values)
 
 
-def get_all_users() -> list[user]:
+def get_all_users() -> list[User]:
     connection, cursor = get_db_connection()
 
     cursor.execute("SELECT * FROM users;")
@@ -28,10 +28,10 @@ def get_all_users() -> list[user]:
 
     close_db_connection(connection, cursor)
 
-    return parse_model_list(user, values)
+    return parse_model_list(User, values)
 
 
-def create_user(user: user) -> user:
+def create_user(user: User) -> User:
     connection, cursor = get_db_connection()
 
     cursor.execute(
