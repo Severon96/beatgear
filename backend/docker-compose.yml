@@ -3,17 +3,12 @@ version: '3.8'
 services:
   db:
     image: postgres:latest
-    container_name: my_postgres_container
+    container_name: postgres_hardware_management
     environment:
-      POSTGRES_USER: your_user
-      POSTGRES_DB: your_db
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./sql/postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
     ports:
       - "5432:5432"
-
-volumes:
-  postgres_data:
-Å
