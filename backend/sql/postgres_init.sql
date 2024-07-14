@@ -19,12 +19,12 @@ CREATE TABLE IF NOT EXISTS hardware (
     serial VARCHAR(255) NOT NULL,
     image bytea,
     category hardware_category NOT NULL,
-    owner UUID REFERENCES hardware(id),
+    owner_id UUID REFERENCES hardware(id),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS booking(
+CREATE TABLE IF NOT EXISTS bookings(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     customer_id UUID REFERENCES users(id) NOT NULL,
     hardware_id UUID REFERENCES hardware(id) NOT NULL,
