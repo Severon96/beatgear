@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "app_name": "dashboard-backend",
+  "app_name": "backend",
   "environment_variables": {
     "DB_NAME": "dashboard"
   },

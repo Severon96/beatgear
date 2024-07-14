@@ -16,7 +16,7 @@ class HardwareCategory(Enum):
 
 class User(BaseModel):
     id: UUID
-    username: UUID
+    username: str
     first_name: str
     last_name: str
     created_at: datetime
