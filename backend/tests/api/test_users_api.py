@@ -1,16 +1,26 @@
-from unittest import TestCase
-
 from chalice.test import Client
+
 from app import app
-from tests.util.db_util import setup_user
+from tests.util.db_util import setup_user, create_user
+from tests.util.fixtures import chalice_environment
 
 
-class TestUsersApi(TestCase):
-    def test_get_all_users(self):
-        # when
-        user = setup_user()
+def test_get_all_users_without_users():
+    # then
+    with Client(app, stage_name='dev') as client:
+        result = client.http.get("/api/users")
 
-        with Client(app, stage_name='dev') as client:
-            result = client.http.get("/api/users")
+        # expect
+        assert len(result.json_body) == 0
 
-            print(result.json_body)
+
+def test_get_all_users_without_users_2(chalice_environment):
+    # when
+    #  create_user(setup_user())
+
+    # then
+    with Client(app, stage_name='dev') as client:
+        result = client.http.get("/api/users")
+
+        # expect
+        assert len(result.json_body) == 0
