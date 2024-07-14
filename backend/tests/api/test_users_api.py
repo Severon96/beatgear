@@ -10,7 +10,7 @@ class TestUsersApi(TestCase):
         # when
         user = setup_user()
 
-        with Client(app) as client:
+        with Client(app, stage_name='dev') as client:
             result = client.http.get("/api/users")
 
-            print(result)
+            print(result.json_body)

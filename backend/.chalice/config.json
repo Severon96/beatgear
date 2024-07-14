@@ -2,14 +2,14 @@
   "version": "2.0",
   "app_name": "backend",
   "environment_variables": {
-    "DB_NAME": "dashboard"
+    "DB_NAME": "hardware_management"
   },
   "stages": {
     "dev": {
       "environment_variables": {
         "DB_HOST": "localhost",
         "DB_PORT": "5432",
-        "DB_USER": "backend",
+        "DB_USER": "postgres",
         "DB_PASS": ""
       }
     }

@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Removed tests for now. Since the chalice test framework doesn't seem to work for now.">
-      <change afterPath="$PROJECT_DIR$/tests/api/test_users_api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/util/db_util.py" afterDir="false" />
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Basic setup for tests done, db connection not yet working.">
       <change beforePath="$PROJECT_DIR$/.chalice/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.chalice/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/api/test_users_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_users_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,18 +47,19 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Shell Script.Start Local.executor": "Debug",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/doctor/Developer/hardware-management/backend/api",
+    "last_opened_file_path": "/Users/doctor/Developer/hardware-management/backend/tests",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/api" />
       <recent name="$PROJECT_DIR$/db" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_users_api.TestUsersApi">
+  <component name="RunManager" selected="Python tests.Python tests in tests">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
@@ -143,7 +142,7 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/api" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -178,8 +177,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for test_users_api.TestUsersApi" />
         <item itemvalue="Python tests.Python tests in tests" />
+        <item itemvalue="Python tests.Python tests for test_users_api.TestUsersApi" />
         <item itemvalue="Python.app" />
         <item itemvalue="Python.test_users_api" />
         <item itemvalue="Docker.docker-compose.yml.db: Compose Deployment" />
@@ -274,7 +273,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720946416204</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Basic setup for tests done, db connection not yet working.">
+      <option name="closed" value="true" />
+      <created>1720969419875</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1720969419875</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -300,6 +307,7 @@
     <MESSAGE value="Added new database files for hardware and booking.&#10;Also added models" />
     <MESSAGE value="Added apis for bookings and hardwares" />
     <MESSAGE value="Removed tests for now. Since the chalice test framework doesn't seem to work for now." />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed tests for now. Since the chalice test framework doesn't seem to work for now." />
+    <MESSAGE value="Basic setup for tests done, db connection not yet working." />
+    <option name="LAST_COMMIT_MESSAGE" value="Basic setup for tests done, db connection not yet working." />
   </component>
 </project>
