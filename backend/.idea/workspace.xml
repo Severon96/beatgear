@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="New database tables for hardware and bookings">
-      <change afterPath="$PROJECT_DIR$/db/bookings_db.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/hardware_db.py" afterDir="false" />
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Added new database files for hardware and booking.&#10;Also added models">
+      <change afterPath="$PROJECT_DIR$/api/api_bookings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/api_hardware.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/postgres_init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/postgres_init.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,15 +41,15 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/doctor/Developer/hardware-management/backend/db",
+    "last_opened_file_path": "/Users/doctor/Developer/hardware-management/backend/api",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/api" />
       <recent name="$PROJECT_DIR$/db" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/api" />
     </key>
   </component>
   <component name="RunManager" selected="Docker.docker-compose.yml.db: Compose Deployment">
@@ -151,7 +149,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720945139240</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Added new database files for hardware and booking.&#10;Also added models">
+      <option name="closed" value="true" />
+      <created>1720945936706</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1720945936706</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -174,6 +180,7 @@
     <MESSAGE value="Merge remote-tracking branch 'origin/main'" />
     <MESSAGE value="Database setup" />
     <MESSAGE value="New database tables for hardware and bookings" />
-    <option name="LAST_COMMIT_MESSAGE" value="New database tables for hardware and bookings" />
+    <MESSAGE value="Added new database files for hardware and booking.&#10;Also added models" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added new database files for hardware and booking.&#10;Also added models" />
   </component>
 </project>
