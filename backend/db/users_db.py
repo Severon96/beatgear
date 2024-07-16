@@ -35,9 +35,8 @@ def create_user(user: User) -> User:
     connection, cursor = get_db_connection()
 
     cursor.execute(
-        "INSERT INTO users(id, title, room_id, start_time, end_time, recurring) VALUES (%s, %s, %s, %s, %s, %s)",
-        (str(user.id), user.title, str(user.room_id), user.start_time, user.end_time,
-         user.recurring))
+        "INSERT INTO users(id, username, first_name, last_name, created_at, updated_at) VALUES (%s, %s, %s, %s, %s, %s)",
+        (str(user.id), user.username, user.first_name, user.last_name, user.created_at, user.updated_at))
     connection.commit()
 
     close_db_connection(connection, cursor)
