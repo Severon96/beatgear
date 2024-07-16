@@ -28,4 +28,4 @@ def get_db_engine() -> Engine:
     user = os.environ.get("DB_USER") if os.environ.get("DB_USER") is not None else "postgres"
     password = os.environ.get("DB_PASS") if os.environ.get("DB_PASS") is not None else ""
 
-    return create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}")
+    return create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}", echo=True)

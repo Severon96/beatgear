@@ -15,10 +15,11 @@ def get_user(user_id: UUID) -> User:
     statement = select(User).where(User.id == user_id)
     rows = connection.execute(statement).scalars()
 
-    if rows.first() is None:
+    user = rows.first()
+    if user is None:
         raise NotFoundError(f"user not found for id {user_id}")
-
-    return rows.first()
+    print(user)
+    return user
 
 
 def get_all_users() -> list[User]:
