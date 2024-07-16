@@ -6,6 +6,7 @@ from _pytest.fixtures import fixture
 
 @fixture
 def chalice_environment():
+    print("Configuring chalice environment...")
     config_path = '.chalice/config.json'
 
     if not os.path.exists(config_path):
@@ -25,11 +26,11 @@ def chalice_environment():
         print("The key 'testing' is missing or invalid.")
         return
 
-    environment_variables = testing_stage.get('environmentVariables')
+    environment_variables = testing_stage.get('environment_variables')
     if not isinstance(environment_variables, dict):
-        print("Property 'environmentVariables' are missing or not valid.")
+        print("Property 'environment_variables' are missing or not valid.")
         return
-
+    print(f"environment: {environment_variables.items()}")
     for key, value in environment_variables.items():
-        os.environ[key] = value
+        os.environ.setdefault(key, value)
         print(f"Set {key}={value} in os.environ")

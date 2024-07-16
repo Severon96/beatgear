@@ -20,6 +20,15 @@
         "DB_USER": "postgres",
         "DB_PASS": ""
       }
+    },
+    "testing": {
+      "environment_variables": {
+        "DB_HOST": "localhost",
+        "DB_PORT": "5432",
+        "DB_NAME": "testing",
+        "DB_USER": "postgres",
+        "DB_PASS": ""
+      }
     }
   }
 }

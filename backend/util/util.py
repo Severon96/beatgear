@@ -29,6 +29,7 @@ def close_db_connection(db_connection: connection, db_cursor: cursor) -> None:
 
 
 def db_connect() -> connection:
+    print(f"Db Data: {os.environ.get("DB_HOST")} {os.environ.get("DB_PORT")} {os.environ.get("")} {os.environ.get("DB_NAME")} {os.environ.get("DB_USER")} {os.environ.get("DB_PASS")}")
     return psycopg2.connect(host=os.environ.get("DB_HOST"), port=os.environ.get("DB_PORT"), dbname=os.environ.get("DB_NAME"),
                             user=os.environ.get("DB_USER"), password=os.environ.get("DB_PASS"))
 

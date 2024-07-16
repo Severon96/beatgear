@@ -5,10 +5,11 @@ description = ""
 authors = ["Dominik Mack <dominik.mack@icloud.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 chalice = "^1.29.0"
 boto3 = "^1.28.73"
 pydantic = "^2.4.2"
+pytest-postgresql = "^6.0.0"
 
 [tool.poetry.dev-dependencies]
 

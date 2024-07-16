@@ -1,4 +1,5 @@
 CREATE DATABASE hardware_management;
+CREATE DATABASE testing;
 
 \c hardware_management;
 
