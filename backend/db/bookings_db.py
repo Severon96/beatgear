@@ -1,33 +1,33 @@
 import uuid
 from datetime import datetime
+from typing import Sequence, Type
 from uuid import UUID
 
 from chalice import NotFoundError, BadRequestError
 from sqlalchemy import select, insert
 
 from models.models import Booking
-from util.util import get_db_connection
+from util.util import get_db_connection, get_db_session
 
 
-def get_booking(booking_id: UUID) -> Booking:
-    connection = get_db_connection()
+def get_booking(booking_id: UUID) -> Type[Booking]:
+    session = get_db_session()
 
-    statement = select(Booking).where(Booking.id == booking_id)
-    rows = connection.execute(statement).scalars()
+    booking = session.get(Booking, booking_id)
 
-    if rows.first() is None:
-        raise NotFoundError(f"booking not found for id {booking_id}")
+    if booking is None:
+        raise NotFoundError(f"Booking with id {booking_id} not found")
 
-    return rows.first()
+    return booking
 
 
-def get_all_bookings() -> list[Booking]:
-    connection = get_db_connection()
+def get_all_bookings() -> Sequence[Booking]:
+    session = get_db_session()
 
-    statement = select(Booking)
-    rows = connection.execute(statement).scalars()
+    stmt = select(Booking)
+    rows = session.exec(stmt)
 
-    return [row for row in rows]
+    return rows.all()
 
 
 def create_booking(booking: Booking) -> Booking:
