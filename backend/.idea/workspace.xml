@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Tests running!">
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Added sqlalchemy, created models">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/bookings_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/bookings_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/util/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -308,7 +307,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721112698910</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added sqlalchemy, created models">
+      <option name="closed" value="true" />
+      <created>1721144849755</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1721144849755</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -348,6 +355,7 @@
     <MESSAGE value="Basic setup for tests done, db connection not yet working." />
     <MESSAGE value="Adjusted chalice config" />
     <MESSAGE value="Tests running!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Tests running!" />
+    <MESSAGE value="Added sqlalchemy, created models" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added sqlalchemy, created models" />
   </component>
 </project>

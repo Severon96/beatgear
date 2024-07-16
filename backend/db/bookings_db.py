@@ -1,23 +1,22 @@
 from uuid import UUID
 
 from chalice import NotFoundError
+from sqlalchemy import select
 
 from models.models import Booking
-from util.util import parse_model, get_db_connection, close_db_connection, parse_model_list
+from util.util import get_db_connection
 
 
 def get_booking(booking_id: UUID) -> Booking:
-    connection, cursor = get_db_connection()
+    connection = get_db_connection()
 
-    cursor.execute("SELECT * FROM bookings WHERE id=%s;", [str(booking_id)])
-    values = cursor.fetchone()
+    statement = select(Booking).where(Booking.name == booking_id)
+    rows = connection.execute(statement).scalars()
 
-    if values is None:
+    if rows.first() is None:
         raise NotFoundError(f"booking not found for id {booking_id}")
 
-    close_db_connection(connection, cursor)
-
-    return parse_model(Booking, values)
+    return rows.first()
 
 
 def get_all_bookings() -> list[Booking]:
