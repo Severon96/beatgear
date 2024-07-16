@@ -1,44 +1,53 @@
+import uuid
+from datetime import datetime
 from uuid import UUID
 
-from chalice import NotFoundError
+from chalice import NotFoundError, BadRequestError
+from sqlalchemy import select, insert
 
 from models.models import User
 from util.util import parse_model, get_db_connection, close_db_connection, parse_model_list
 
 
 def get_user(user_id: UUID) -> User:
-    connection, cursor = get_db_connection()
+    connection = get_db_connection()
 
-    cursor.execute("SELECT * FROM users WHERE id=%s;", [str(user_id)])
-    values = cursor.fetchone()
+    statement = select(User).where(User.id == user_id)
+    rows = connection.execute(statement).scalars()
 
-    if values is None:
+    if rows.first() is None:
         raise NotFoundError(f"user not found for id {user_id}")
 
-    close_db_connection(connection, cursor)
-
-    return parse_model(User, values)
+    return rows.first()
 
 
 def get_all_users() -> list[User]:
-    connection, cursor = get_db_connection()
+    connection = get_db_connection()
 
-    cursor.execute("SELECT * FROM users;")
-    values = cursor.fetchall()
+    statement = select(User)
+    rows = connection.execute(statement).scalars()
 
-    close_db_connection(connection, cursor)
-
-    return parse_model_list(User, values)
+    return [row for row in rows]
 
 
 def create_user(user: User) -> User:
-    connection, cursor = get_db_connection()
+    connection = get_db_connection()
 
-    cursor.execute(
-        "INSERT INTO users(id, username, first_name, last_name, created_at, updated_at) VALUES (%s, %s, %s, %s, %s, %s)",
-        (str(user.id), user.username, user.first_name, user.last_name, user.created_at, user.updated_at))
-    connection.commit()
+    statement = insert(User).values(
+        id=uuid.uuid4(),
+        username=user.username,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        created_at=datetime.now(),
+        updated_at=datetime.now()
+    ).returning(User.id)
+    statement.compile()
 
-    close_db_connection(connection, cursor)
+    rows = connection.execute(statement)
 
-    return user
+    inserted_row_id = rows.first()
+    print(inserted_row_id)
+    if inserted_row_id is None:
+        raise BadRequestError("Error inserting new user")
+
+    return None

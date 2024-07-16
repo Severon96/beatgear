@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Started converting to sqlalchemy">
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Started working on booking db access">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/bookings_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/bookings_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/hardware_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/hardware_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/users_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/users_db.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -322,7 +324,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721146440792</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Started working on booking db access">
+      <option name="closed" value="true" />
+      <created>1721148533823</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1721148533823</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -364,6 +374,7 @@
     <MESSAGE value="Tests running!" />
     <MESSAGE value="Added sqlalchemy, created models" />
     <MESSAGE value="Started converting to sqlalchemy" />
-    <option name="LAST_COMMIT_MESSAGE" value="Started converting to sqlalchemy" />
+    <MESSAGE value="Started working on booking db access" />
+    <option name="LAST_COMMIT_MESSAGE" value="Started working on booking db access" />
   </component>
 </project>

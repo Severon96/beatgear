@@ -12,7 +12,7 @@ from util.util import get_db_connection
 def get_booking(booking_id: UUID) -> Booking:
     connection = get_db_connection()
 
-    statement = select(Booking).where(Booking.name == booking_id)
+    statement = select(Booking).where(Booking.id == booking_id)
     rows = connection.execute(statement).scalars()
 
     if rows.first() is None:
