@@ -6,7 +6,7 @@ from chalice import NotFoundError, BadRequestError
 from sqlalchemy import select, insert
 
 from models.models import User
-from util.util import parse_model, get_db_connection, close_db_connection, parse_model_list
+from util.util import get_db_connection
 
 
 def get_user(user_id: UUID) -> User:
