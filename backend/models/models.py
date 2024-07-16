@@ -47,7 +47,7 @@ class Hardware(Base):
     serial: Mapped[str] = mapped_column(String(30))
     image: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
-    owner_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
+    owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
 
@@ -64,7 +64,7 @@ class Booking(Base):
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     name: Mapped[Optional[str]] = mapped_column(String(30))
-    customer_id: Mapped[UUID] = mapped_column(ForeignKey("user.id"))
+    customer_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
     hardware_id: Mapped[UUID] = mapped_column(ForeignKey("hardware.id"))
     booking_start: Mapped[datetime] = mapped_column(DATETIME)
     booking_end: Mapped[datetime] = mapped_column(DATETIME)
