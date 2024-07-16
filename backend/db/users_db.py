@@ -1,34 +1,34 @@
 import uuid
 from datetime import datetime
+from typing import Sequence, Type
 from uuid import UUID
 
 from chalice import NotFoundError, BadRequestError
-from sqlalchemy import select, insert
+from sqlalchemy import insert
+from sqlmodel import select
 
 from models.models import User
-from util.util import get_db_connection
+from util.util import get_db_connection, get_db_session
 
 
-def get_user(user_id: UUID) -> User:
-    connection = get_db_connection()
+def get_user(user_id: UUID) -> Type[User]:
+    session = get_db_session()
 
-    statement = select(User).where(User.id == user_id)
-    rows = connection.execute(statement).scalars()
+    user = session.get(User, user_id)
 
-    user = rows.first()
     if user is None:
-        raise NotFoundError(f"user not found for id {user_id}")
-    print(user)
+        raise NotFoundError(f"User with id {user_id} not found")
+
     return user
 
 
-def get_all_users() -> list[User]:
-    connection = get_db_connection()
+def get_all_users() -> Sequence[User]:
+    session = get_db_session()
 
-    statement = select(User)
-    rows = connection.execute(statement).scalars()
+    stmt = select(User)
+    rows = session.exec(stmt)
 
-    return [row for row in rows]
+    return rows.all()
 
 
 def create_user(user: User) -> User:

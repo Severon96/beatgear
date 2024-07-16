@@ -1,8 +1,11 @@
+import json
 import os
 from typing import TypeVar
+from uuid import UUID
 
 from pydantic import BaseModel
 from sqlalchemy import Engine, create_engine, Connection
+from sqlmodel import Session
 
 T = TypeVar('T', bound=BaseModel)
 
@@ -15,10 +18,24 @@ def parse_model(model: type[T], values: dict) -> T:
     return model.model_validate(values)
 
 
+class UUIDEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            # if the obj is uuid, we simply return the value of uuid
+            return obj.hex
+        return json.JSONEncoder.default(self, obj)
+
+
 def get_db_connection() -> Connection:
     engine = get_db_engine()
 
     return engine.connect()
+
+
+def get_db_session() -> Session:
+    engine = get_db_engine()
+
+    return Session(engine)
 
 
 def get_db_engine() -> Engine:

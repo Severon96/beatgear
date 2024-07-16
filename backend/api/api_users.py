@@ -15,7 +15,7 @@ api = Blueprint(__name__)
 @api.route("/users", methods=['GET'], cors=cors_config)
 def get_all_users():
     users = users_db.get_all_users()
-    body = [user.model_dump(mode='json') for user in users]
+    body = [user.model_dump(mode="json") for user in users]
 
     return Response(
         status_code=HTTPStatus.OK,
