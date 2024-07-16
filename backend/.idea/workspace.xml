@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Added sqlalchemy, created models">
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Started converting to sqlalchemy">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/bookings_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/bookings_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -315,7 +314,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721144849755</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Started converting to sqlalchemy">
+      <option name="closed" value="true" />
+      <created>1721146440792</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1721146440792</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -356,6 +363,7 @@
     <MESSAGE value="Adjusted chalice config" />
     <MESSAGE value="Tests running!" />
     <MESSAGE value="Added sqlalchemy, created models" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added sqlalchemy, created models" />
+    <MESSAGE value="Started converting to sqlalchemy" />
+    <option name="LAST_COMMIT_MESSAGE" value="Started converting to sqlalchemy" />
   </component>
 </project>
