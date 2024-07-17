@@ -32,23 +32,17 @@ def get_all_users() -> Sequence[User]:
 
 
 def create_user(user: User) -> User:
-    connection = get_db_connection()
+    now = datetime.now()
 
-    statement = insert(User).values(
-        id=uuid.uuid4(),
-        username=user.username,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        created_at=datetime.now(),
-        updated_at=datetime.now()
-    ).returning(User.id)
-    statement.compile()
+    user.id = uuid.uuid4()
+    user.created_at = now
+    user.updated_at = now
 
-    rows = connection.execute(statement)
+    user.model_validate(user)
 
-    inserted_row_id = rows.first()
-    print(inserted_row_id)
-    if inserted_row_id is None:
-        raise BadRequestError("Error inserting new user")
+    session = get_db_session()
 
-    return None
+    session.add(user)
+    session.commit()
+
+    return user

@@ -4,11 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Fix getter for user with sql model">
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Adjusted booking and hardware db to new changes">
+      <change beforePath="$PROJECT_DIR$/.idea/backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/backend.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/bookings_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/bookings_db.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/hardware_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/hardware_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/users_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/users_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/api/test_users_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_users_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/util/db_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/util/db_util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/util/fixtures.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/util/fixtures.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,9 +173,10 @@
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.11/bin/python" />
+      <option name="SDK_NAME" value="Poetry (backend) (2)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_keywords" value="&quot;&quot;" />
@@ -372,7 +380,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721172457849</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Adjusted booking and hardware db to new changes">
+      <option name="closed" value="true" />
+      <created>1721173087579</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1721173087579</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -420,6 +436,7 @@
     <MESSAGE value="Fixed models" />
     <MESSAGE value="Added SQLModel, adjusted models to it" />
     <MESSAGE value="Fix getter for user with sql model" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix getter for user with sql model" />
+    <MESSAGE value="Adjusted booking and hardware db to new changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adjusted booking and hardware db to new changes" />
   </component>
 </project>

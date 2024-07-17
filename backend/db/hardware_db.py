@@ -32,25 +32,17 @@ def get_all_hardware() -> Sequence[Hardware]:
 
 
 def create_hardware(hardware: Hardware) -> Hardware:
-    connection = get_db_connection()
+    now = datetime.now()
 
-    statement = insert(Hardware).values(
-        id=uuid.uuid4(),
-        name=hardware.name,
-        serial=hardware.serial,
-        image=hardware.image,
-        category=hardware.category,
-        owner_id=hardware.owner_id,
-        created_at=datetime.now(),
-        updated_at=datetime.now()
-    ).returning(Hardware.id)
-    statement.compile()
+    hardware.id = uuid.uuid4()
+    hardware.created_at = now
+    hardware.updated_at = now
 
-    rows = connection.execute(statement)
+    hardware.model_validate()
 
-    inserted_row_id = rows.first()
-    print(inserted_row_id)
-    if inserted_row_id is None:
-        raise BadRequestError("Error inserting new hardware")
+    session = get_db_session()
 
-    return None
+    session.add(hardware)
+    session.commit()
+
+    return hardware

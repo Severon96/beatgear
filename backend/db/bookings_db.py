@@ -31,25 +31,17 @@ def get_all_bookings() -> Sequence[Booking]:
 
 
 def create_booking(booking: Booking) -> Booking:
-    connection = get_db_connection()
+    now = datetime.now()
 
-    statement = insert(Booking).values(
-        id=uuid.uuid4(),
-        name=booking.name,
-        customer_id=booking.customer_id,
-        hardware_id=booking.hardware_id,
-        booking_start=booking.booking_start,
-        booking_end=booking.booking_end,
-        created_at=datetime.now(),
-        updated_at=datetime.now()
-    ).returning(Booking.id)
-    statement.compile()
+    booking.id = uuid.uuid4()
+    booking.created_at = now
+    booking.updated_at = now
 
-    rows = connection.execute(statement)
+    booking.model_validate()
 
-    inserted_row_id = rows.first()
-    print(inserted_row_id)
-    if inserted_row_id is None:
-        raise BadRequestError("Error inserting new booking")
+    session = get_db_session()
 
-    return None
+    session.add(booking)
+    session.commit()
+
+    return booking
