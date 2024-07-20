@@ -1,4 +1,3 @@
-import json
 import unittest
 import uuid
 from http import HTTPStatus
@@ -72,6 +71,14 @@ class TestUserApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.NOT_FOUND
 
+    def test_get_user_by_malformed_uuid(self):
+        # then
+        with Client(app) as client:
+            result = client.http.get(f"/api/users/test")
+
+            # expect
+            assert result.status_code == HTTPStatus.BAD_REQUEST
+
     def test_create_user(self):
         # when
         user = setup_user()
@@ -89,3 +96,19 @@ class TestUserApi(unittest.TestCase):
             body = result.json_body
             api_user = parse_model(User, body)
             assert api_user.username == user.username
+
+    def test_create_user_with_missing_username(self):
+        # when
+        user = setup_user()
+        user.username = None
+
+        # then
+        with Client(app) as client:
+            result = client.http.post(
+                "/api/users",
+                headers={'Content-Type':'application/json'},
+                body=user.json()
+            )
+
+            # expect
+            assert result.status_code == HTTPStatus.BAD_REQUEST

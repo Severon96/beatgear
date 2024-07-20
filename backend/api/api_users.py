@@ -8,7 +8,6 @@ from api.constants import cors_config
 from db import users_db
 from models.models import User
 from util import util
-from util.util import parse_model
 
 api = Blueprint(__name__)
 

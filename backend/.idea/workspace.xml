@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Started adding more tests per endpoint">
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Added more tests for users api">
+      <change beforePath="$PROJECT_DIR$/.idea/backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/backend.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/api_users.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/api_users.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/api/test_users_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_users_api.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +69,7 @@
       <recent name="$PROJECT_DIR$/db" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest in test_users_api.py">
+  <component name="RunManager" selected="Python tests.Python tests in tests">
     <configuration name="Start Local" type="ShConfigurationType">
       <option name="SCRIPT_TEXT" value="chalice local" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
@@ -98,7 +97,7 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.12/bin/python" />
-      <option name="SDK_NAME" value="Poetry (backend)" />
+      <option name="SDK_NAME" value="Poetry 3.12 1" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -189,10 +188,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests in tests" />
         <item itemvalue="Python tests.pytest in test_users_api.py" />
         <item itemvalue="Python tests.pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id" />
         <item itemvalue="Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2" />
-        <item itemvalue="Python tests.Python tests in tests" />
         <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
       </list>
     </recent_temporary>
@@ -405,7 +404,23 @@
       <option name="project" value="LOCAL" />
       <updated>1721492195377</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Added test for user creation">
+      <option name="closed" value="true" />
+      <created>1721494333901</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1721494333901</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Added more tests for users api">
+      <option name="closed" value="true" />
+      <created>1721494463380</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1721494463380</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -457,7 +472,9 @@
     <MESSAGE value="Started adjusting tests" />
     <MESSAGE value="Think I got the db mock working" />
     <MESSAGE value="Started adding more tests per endpoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="Started adding more tests per endpoint" />
+    <MESSAGE value="Added test for user creation" />
+    <MESSAGE value="Added more tests for users api" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added more tests for users api" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
