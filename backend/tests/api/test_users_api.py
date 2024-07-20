@@ -78,13 +78,14 @@ class TestUserApi(unittest.TestCase):
 
         # then
         with Client(app) as client:
-            user_json = user.json()
-            print('user json', user_json)
-            result = client.http.post("/api/users", body=json)
+            result = client.http.post(
+                "/api/users",
+                headers={'Content-Type':'application/json'},
+                body=user.json()
+            )
 
-            print("result body", util.body_to_dict(result.body))
             # expect
             assert result.status_code == HTTPStatus.CREATED
-
-            api_user = parse_model(User, util.body_to_dict(result.body))
+            body = result.json_body
+            api_user = parse_model(User, body)
             assert api_user.username == user.username
