@@ -3,16 +3,15 @@ from datetime import datetime
 from typing import Type, Sequence
 from uuid import UUID
 
-from chalice import NotFoundError, BadRequestError
-from sqlalchemy import select, insert
-from sqlmodel.sql._expression_select_cls import _T
+from chalice import NotFoundError
+from sqlalchemy import select
 
 from models.models import Hardware
-from util.util import get_db_connection, get_db_session
+from util import util
 
 
 def get_hardware(hardware_id: UUID) -> Type[Hardware]:
-    session = get_db_session()
+    session = util.get_db_session()
 
     hardware = session.get(Hardware, hardware_id)
 
@@ -23,7 +22,7 @@ def get_hardware(hardware_id: UUID) -> Type[Hardware]:
 
 
 def get_all_hardware() -> Sequence[Hardware]:
-    session = get_db_session()
+    session = util.get_db_session()
 
     stmt = select(Hardware)
     rows = session.exec(stmt)
@@ -40,7 +39,7 @@ def create_hardware(hardware: Hardware) -> Hardware:
 
     hardware.model_validate()
 
-    session = get_db_session()
+    session = util.get_db_session()
 
     session.add(hardware)
     session.commit()

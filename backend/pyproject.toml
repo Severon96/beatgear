@@ -13,6 +13,7 @@ pytest-postgresql = "^6.0.0"
 psycopg2-binary = "^2.9.9"
 sqlmodel = "^0.0.19"
 mockito = "^1.5.0"
+pytest-mock = "^3.14.0"
 
 [tool.poetry.dev-dependencies]
 

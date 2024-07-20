@@ -3,16 +3,15 @@ from datetime import datetime
 from typing import Sequence, Type
 from uuid import UUID
 
-from chalice import NotFoundError, BadRequestError
-from sqlalchemy import insert
+from chalice import NotFoundError
 from sqlmodel import select
 
 from models.models import User
-from util.util import get_db_connection, get_db_session
+from util import util
 
 
 def get_user(user_id: UUID) -> Type[User]:
-    session = get_db_session()
+    session = util.get_db_session()
 
     user = session.get(User, user_id)
 
@@ -23,7 +22,7 @@ def get_user(user_id: UUID) -> Type[User]:
 
 
 def get_all_users() -> Sequence[User]:
-    session = get_db_session()
+    session = util.get_db_session()
 
     stmt = select(User)
     rows = session.exec(stmt)
@@ -40,7 +39,7 @@ def create_user(user: User) -> User:
 
     user.model_validate(user)
 
-    session = get_db_session()
+    session = util.get_db_session()
 
     session.add(user)
     session.commit()

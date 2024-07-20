@@ -3,15 +3,15 @@ from datetime import datetime
 from typing import Sequence, Type
 from uuid import UUID
 
-from chalice import NotFoundError, BadRequestError
-from sqlalchemy import select, insert
+from chalice import NotFoundError
+from sqlalchemy import select
 
 from models.models import Booking
-from util.util import get_db_connection, get_db_session
+from util import util
 
 
 def get_booking(booking_id: UUID) -> Type[Booking]:
-    session = get_db_session()
+    session = util.get_db_session()
 
     booking = session.get(Booking, booking_id)
 
@@ -22,7 +22,7 @@ def get_booking(booking_id: UUID) -> Type[Booking]:
 
 
 def get_all_bookings() -> Sequence[Booking]:
-    session = get_db_session()
+    session = util.get_db_session()
 
     stmt = select(Booking)
     rows = session.exec(stmt)
@@ -39,7 +39,7 @@ def create_booking(booking: Booking) -> Booking:
 
     booking.model_validate()
 
-    session = get_db_session()
+    session = util.get_db_session()
 
     session.add(booking)
     session.commit()

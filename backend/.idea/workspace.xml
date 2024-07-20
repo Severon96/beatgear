@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Adjusted booking and hardware db to new changes">
-      <change beforePath="$PROJECT_DIR$/.idea/backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/backend.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Started adjusting tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/bookings_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/bookings_db.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/hardware_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/hardware_db.py" afterDir="false" />
@@ -14,8 +12,7 @@
       <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/api/test_users_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_users_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/util/db_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/util/db_util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/util/fixtures.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/util/fixtures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/util/fixtures.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +53,7 @@
     "Python tests.Python tests for test_users_api.TestUsersApi.test_get_all_users_without_users.executor": "Run",
     "Python tests.Python tests in tests.executor": "Run",
     "Python tests.pytest for test_users_api.test_get_all_users_without_users.executor": "Run",
+    "Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2.executor": "Run",
     "Python tests.pytest in test_users_api.py.executor": "Run",
     "Python.app.executor": "Run",
     "Python.test_users_api.executor": "Run",
@@ -120,21 +118,6 @@
       </deployment>
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_users_api.TestUsersApi" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="backend" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_users_api.TestUsersApi&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
     <configuration name="Python tests in tests" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
@@ -168,6 +151,24 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="pytest for tests.api.test_users_api.test_get_all_users_without_users_2" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.11/bin/python" />
+      <option name="SDK_NAME" value="Poetry (backend) (2)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.api.test_users_api.test_get_all_users_without_users_2&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="pytest in test_users_api.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
@@ -188,19 +189,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.test_users_api" />
+      <item itemvalue="Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2" />
       <item itemvalue="Python tests.pytest in test_users_api.py" />
       <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
-      <item itemvalue="Python tests.Python tests for test_users_api.TestUsersApi" />
       <item itemvalue="Python tests.Python tests in tests" />
       <item itemvalue="Shell Script.Start Local" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python tests.pytest in test_users_api.py" />
+        <item itemvalue="Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2" />
         <item itemvalue="Python tests.Python tests in tests" />
         <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
         <item itemvalue="Python.test_users_api" />
-        <item itemvalue="Python tests.Python tests for test_users_api.TestUsersApi" />
       </list>
     </recent_temporary>
   </component>
@@ -388,7 +389,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721173087579</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Started adjusting tests">
+      <option name="closed" value="true" />
+      <created>1721207896402</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1721207896402</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -437,6 +446,18 @@
     <MESSAGE value="Added SQLModel, adjusted models to it" />
     <MESSAGE value="Fix getter for user with sql model" />
     <MESSAGE value="Adjusted booking and hardware db to new changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Adjusted booking and hardware db to new changes" />
+    <MESSAGE value="Started adjusting tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Started adjusting tests" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/util/util.py</url>
+          <line>37</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
