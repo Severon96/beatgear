@@ -1,4 +1,7 @@
+import json
 import unittest
+import uuid
+from http import HTTPStatus
 from unittest.mock import patch
 
 from chalice.test import Client
@@ -6,14 +9,17 @@ from sqlalchemy import create_engine
 from sqlmodel import SQLModel, Session
 
 from app import app
+from models.models import User
+from tests.util import util
 from tests.util.db_util import create_user, setup_user
+from util.util import parse_model
 
 
 class TestUserApi(unittest.TestCase):
     def setUp(self):
         self.engine = create_engine("sqlite:///", echo=True)
         self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
-        self.mock = self.patch_db_session.start()
+        self.patch_db_session.start()
 
         SQLModel.metadata.create_all(self.engine)
 
@@ -28,9 +34,10 @@ class TestUserApi(unittest.TestCase):
             result = client.http.get("/api/users")
 
             # expect
+            assert result.status_code == HTTPStatus.OK
             assert len(result.json_body) == 0
 
-    def test_get_all_users_without_users_2(self):
+    def test_get_all_users_with_users(self):
         # when
         create_user(setup_user())
         create_user(setup_user())
@@ -40,5 +47,44 @@ class TestUserApi(unittest.TestCase):
             result = client.http.get("/api/users")
 
             # expect
+            assert result.status_code == HTTPStatus.OK
             assert len(result.json_body) == 2
-            self.mock.assert_called()
+
+    def test_get_user_by_id(self):
+        # when
+        user = create_user(setup_user())
+
+        # then
+        with Client(app) as client:
+            result = client.http.get(f"/api/users/{user.id}")
+
+            # expect
+            assert result.status_code == HTTPStatus.OK
+            assert result.body is not None
+            api_user = parse_model(User, util.body_to_dict(result.body))
+            assert api_user.id == user.id
+
+    def test_get_missing_user_by_id(self):
+        # then
+        with Client(app) as client:
+            result = client.http.get(f"/api/users/{uuid.uuid4()}")
+
+            # expect
+            assert result.status_code == HTTPStatus.NOT_FOUND
+
+    def test_create_user(self):
+        # when
+        user = setup_user()
+
+        # then
+        with Client(app) as client:
+            user_json = user.json()
+            print('user json', user_json)
+            result = client.http.post("/api/users", body=json)
+
+            print("result body", util.body_to_dict(result.body))
+            # expect
+            assert result.status_code == HTTPStatus.CREATED
+
+            api_user = parse_model(User, util.body_to_dict(result.body))
+            assert api_user.username == user.username
