@@ -58,7 +58,7 @@
     "last_opened_file_path": "/Users/doctor/Developer/hardware-management/backend/tests/util",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/tests/util" />
@@ -183,7 +183,8 @@
       <item itemvalue="Python tests.pytest in test_users_api.py" />
       <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
       <item itemvalue="Python tests.Python tests in tests" />
-      <item itemvalue="Shell Script.Start Local" />
+      <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
+      <item itemvalue="Python tests.pytest in test_users_api.py" />
     </list>
     <recent_temporary>
       <list>

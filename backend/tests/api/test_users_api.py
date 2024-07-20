@@ -87,7 +87,7 @@ class TestUserApi(unittest.TestCase):
         with Client(app) as client:
             result = client.http.post(
                 "/api/users",
-                headers={'Content-Type':'application/json'},
+                headers={'Content-Type': 'application/json'},
                 body=user.json()
             )
 
@@ -106,7 +106,58 @@ class TestUserApi(unittest.TestCase):
         with Client(app) as client:
             result = client.http.post(
                 "/api/users",
-                headers={'Content-Type':'application/json'},
+                headers={'Content-Type': 'application/json'},
+                body=user.json()
+            )
+
+            # expect
+            assert result.status_code == HTTPStatus.BAD_REQUEST
+
+    def test_update_user(self):
+        # when
+        user = create_user(setup_user())
+        user.username = "updated_username"
+
+        # then
+        with Client(app) as client:
+            result = client.http.patch(
+                f"/api/users/{user.id}",
+                headers={'Content-Type': 'application/json'},
+                body=user.json()
+            )
+
+            # expect
+            assert result.status_code == HTTPStatus.OK
+            body = result.json_body
+            api_user = parse_model(User, body)
+            assert api_user.username == user.username
+
+    def test_update_missing_user(self):
+        # when
+        user = setup_user()
+        user.username = "updated_username"
+
+        # then
+        with Client(app) as client:
+            result = client.http.patch(
+                f"/api/users/{uuid.uuid4()}",
+                headers={'Content-Type': 'application/json'},
+                body=user.json()
+            )
+
+            # expect
+            assert result.status_code == HTTPStatus.NOT_FOUND
+
+    def test_update_user_with_missing_username(self):
+        # when
+        user = create_user(setup_user())
+        user.username = None
+
+        # then
+        with Client(app) as client:
+            result = client.http.patch(
+                f"/api/users/{user.id}",
+                headers={'Content-Type': 'application/json'},
                 body=user.json()
             )
 

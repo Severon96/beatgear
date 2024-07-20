@@ -37,11 +37,35 @@ def create_user(user: User) -> User:
     user.created_at = now
     user.updated_at = now
 
+    validated_model = user.model_validate(user)
+
+    session = util.get_db_session()
+
+    session.add(validated_model)
+    session.commit()
+    session.refresh(validated_model)
+
+    return validated_model
+
+
+def update_user(user_id: UUID, user: User) -> Type[User] | None:
+    now = datetime.now()
+
     user.model_validate(user)
 
     session = util.get_db_session()
 
-    session.add(user)
-    session.commit()
+    db_user = session.get(User, user_id)
 
-    return user
+    if db_user is None:
+        raise NotFoundError(f"User with id {user_id} not found.")
+
+    db_user.updated_at = now
+
+    db_user.sqlmodel_update(user)
+
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+
+    return db_user
