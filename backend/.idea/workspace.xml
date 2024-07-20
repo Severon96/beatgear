@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Tests running!">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/users_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/db/users_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/postgres_init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/postgres_init.sql" afterDir="false" />
+    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Added test for user creation">
       <change beforePath="$PROJECT_DIR$/tests/api/test_users_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_users_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/util/db_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/util/db_util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +21,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="feature/sqlite-db-for-tests" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectColorInfo">{
@@ -45,13 +46,15 @@
     "Python tests.Python tests for test_users_api.TestUsersApi.test_get_all_users_without_users.executor": "Run",
     "Python tests.Python tests in tests.executor": "Run",
     "Python tests.pytest for test_users_api.test_get_all_users_without_users.executor": "Run",
+    "Python tests.pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id.executor": "Run",
+    "Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2.executor": "Run",
     "Python tests.pytest in test_users_api.py.executor": "Run",
     "Python.app.executor": "Run",
     "Python.test_users_api.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Shell Script.Start Local.executor": "Debug",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/setup-with-sqlmodel",
     "last_opened_file_path": "/Users/doctor/Developer/hardware-management/backend/tests/util",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
@@ -66,28 +69,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Python tests.pytest in test_users_api.py">
-    <configuration name="test_users_api" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="backend" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/api/test_users_api.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="Start Local" type="ShConfigurationType">
       <option name="SCRIPT_TEXT" value="chalice local" />
       <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
@@ -107,21 +88,6 @@
       <deployment type="docker-compose.yml">
         <settings />
       </deployment>
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for test_users_api.TestUsersApi" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="backend" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_users_api.TestUsersApi&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="Python tests in tests" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
@@ -157,14 +123,51 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.11/bin/python" />
+      <option name="SDK_NAME" value="Poetry (backend) (2)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.api.test_users_api.TestUserApi.test_get_user_by_id&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for tests.api.test_users_api.test_get_all_users_without_users_2" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.11/bin/python" />
+      <option name="SDK_NAME" value="Poetry (backend) (2)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.api.test_users_api.test_get_all_users_without_users_2&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="pytest in test_users_api.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.11/bin/python" />
+      <option name="SDK_NAME" value="Poetry (backend) (2)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_keywords" value="&quot;&quot;" />
@@ -175,20 +178,20 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.test_users_api" />
+      <item itemvalue="Python tests.pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id" />
+      <item itemvalue="Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2" />
       <item itemvalue="Python tests.pytest in test_users_api.py" />
       <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
-      <item itemvalue="Python tests.Python tests for test_users_api.TestUsersApi" />
       <item itemvalue="Python tests.Python tests in tests" />
       <item itemvalue="Shell Script.Start Local" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python tests.pytest in test_users_api.py" />
+        <item itemvalue="Python tests.pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id" />
+        <item itemvalue="Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2" />
         <item itemvalue="Python tests.Python tests in tests" />
         <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
-        <item itemvalue="Python.test_users_api" />
-        <item itemvalue="Python tests.Python tests for test_users_api.TestUsersApi" />
       </list>
     </recent_temporary>
   </component>
@@ -304,7 +307,111 @@
       <option name="project" value="LOCAL" />
       <updated>1721112698910</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added sqlalchemy, created models">
+      <option name="closed" value="true" />
+      <created>1721144849755</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1721144849755</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Started converting to sqlalchemy">
+      <option name="closed" value="true" />
+      <created>1721146440792</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1721146440792</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Started working on booking db access">
+      <option name="closed" value="true" />
+      <created>1721148533823</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1721148533823</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Adjusted remaining api accesses">
+      <option name="closed" value="true" />
+      <created>1721148945201</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1721148945201</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Fixed imports">
+      <option name="closed" value="true" />
+      <created>1721148955611</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1721148955611</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Fixed models">
+      <option name="closed" value="true" />
+      <created>1721150245320</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1721150245320</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Added SQLModel, adjusted models to it">
+      <option name="closed" value="true" />
+      <created>1721154178269</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1721154178269</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Fix getter for user with sql model">
+      <option name="closed" value="true" />
+      <created>1721172457849</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1721172457849</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Adjusted booking and hardware db to new changes">
+      <option name="closed" value="true" />
+      <created>1721173087579</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1721173087579</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Started adjusting tests">
+      <option name="closed" value="true" />
+      <created>1721207896402</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1721207896402</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Think I got the db mock working">
+      <option name="closed" value="true" />
+      <created>1721490636395</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1721490636395</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Started adding more tests per endpoint">
+      <option name="closed" value="true" />
+      <created>1721492195377</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1721492195377</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Added test for user creation">
+      <option name="closed" value="true" />
+      <created>1721494333901</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1721494333901</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -344,6 +451,30 @@
     <MESSAGE value="Basic setup for tests done, db connection not yet working." />
     <MESSAGE value="Adjusted chalice config" />
     <MESSAGE value="Tests running!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Tests running!" />
+    <MESSAGE value="Added sqlalchemy, created models" />
+    <MESSAGE value="Started converting to sqlalchemy" />
+    <MESSAGE value="Started working on booking db access" />
+    <MESSAGE value="Adjusted remaining api accesses" />
+    <MESSAGE value="Fixed imports" />
+    <MESSAGE value="Fixed models" />
+    <MESSAGE value="Added SQLModel, adjusted models to it" />
+    <MESSAGE value="Fix getter for user with sql model" />
+    <MESSAGE value="Adjusted booking and hardware db to new changes" />
+    <MESSAGE value="Started adjusting tests" />
+    <MESSAGE value="Think I got the db mock working" />
+    <MESSAGE value="Started adding more tests per endpoint" />
+    <MESSAGE value="Added test for user creation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added test for user creation" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/util/util.py</url>
+          <line>37</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

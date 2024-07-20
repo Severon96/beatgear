@@ -1,45 +1,47 @@
+import uuid
+from datetime import datetime
+from typing import Sequence, Type
 from uuid import UUID
 
 from chalice import NotFoundError
+from sqlalchemy import select
 
 from models.models import Booking
-from util.util import parse_model, get_db_connection, close_db_connection, parse_model_list
+from util import util
 
 
-def get_booking(booking_id: UUID) -> Booking:
-    connection, cursor = get_db_connection()
+def get_booking(booking_id: UUID) -> Type[Booking]:
+    session = util.get_db_session()
 
-    cursor.execute("SELECT * FROM bookings WHERE id=%s;", [str(booking_id)])
-    values = cursor.fetchone()
+    booking = session.get(Booking, booking_id)
 
-    if values is None:
-        raise NotFoundError(f"booking not found for id {booking_id}")
+    if booking is None:
+        raise NotFoundError(f"Booking with id {booking_id} not found")
 
-    close_db_connection(connection, cursor)
-
-    return parse_model(Booking, values)
+    return booking
 
 
-def get_all_bookings() -> list[Booking]:
-    connection, cursor = get_db_connection()
+def get_all_bookings() -> Sequence[Booking]:
+    session = util.get_db_session()
 
-    cursor.execute("SELECT * FROM bookings;")
-    values = cursor.fetchall()
+    stmt = select(Booking)
+    rows = session.exec(stmt)
 
-    close_db_connection(connection, cursor)
-
-    return parse_model_list(Booking, values)
+    return rows.all()
 
 
 def create_booking(booking: Booking) -> Booking:
-    connection, cursor = get_db_connection()
+    now = datetime.now()
 
-    cursor.execute(
-        "INSERT INTO bookings(id, title, room_id, start_time, end_time, recurring) VALUES (%s, %s, %s, %s, %s, %s)",
-        (str(booking.id), booking.title, str(booking.room_id), booking.start_time, booking.end_time,
-         booking.recurring))
-    connection.commit()
+    booking.id = uuid.uuid4()
+    booking.created_at = now
+    booking.updated_at = now
 
-    close_db_connection(connection, cursor)
+    booking.model_validate()
+
+    session = util.get_db_session()
+
+    session.add(booking)
+    session.commit()
 
     return booking

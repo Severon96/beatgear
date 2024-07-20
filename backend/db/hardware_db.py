@@ -1,45 +1,47 @@
+import uuid
+from datetime import datetime
+from typing import Type, Sequence
 from uuid import UUID
 
 from chalice import NotFoundError
+from sqlalchemy import select
 
 from models.models import Hardware
-from util.util import parse_model, get_db_connection, close_db_connection, parse_model_list
+from util import util
 
 
-def get_hardware(hardware_id: UUID) -> Hardware:
-    connection, cursor = get_db_connection()
+def get_hardware(hardware_id: UUID) -> Type[Hardware]:
+    session = util.get_db_session()
 
-    cursor.execute("SELECT * FROM hardware WHERE id=%s;", [str(hardware_id)])
-    values = cursor.fetchone()
+    hardware = session.get(Hardware, hardware_id)
 
-    if values is None:
-        raise NotFoundError(f"hardware not found for id {hardware_id}")
+    if hardware is None:
+        raise NotFoundError(f"Hardware with id {hardware_id} not found")
 
-    close_db_connection(connection, cursor)
-
-    return parse_model(Hardware, values)
+    return hardware
 
 
-def get_all_hardware() -> list[Hardware]:
-    connection, cursor = get_db_connection()
+def get_all_hardware() -> Sequence[Hardware]:
+    session = util.get_db_session()
 
-    cursor.execute("SELECT * FROM hardware;")
-    values = cursor.fetchall()
+    stmt = select(Hardware)
+    rows = session.exec(stmt)
 
-    close_db_connection(connection, cursor)
-
-    return parse_model_list(Hardware, values)
+    return rows.all()
 
 
 def create_hardware(hardware: Hardware) -> Hardware:
-    connection, cursor = get_db_connection()
+    now = datetime.now()
 
-    cursor.execute(
-        "INSERT INTO hardware(id, title, room_id, start_time, end_time, recurring) VALUES (%s, %s, %s, %s, %s, %s)",
-        (str(hardware.id), hardware.title, str(hardware.room_id), hardware.start_time, hardware.end_time,
-         hardware.recurring))
-    connection.commit()
+    hardware.id = uuid.uuid4()
+    hardware.created_at = now
+    hardware.updated_at = now
 
-    close_db_connection(connection, cursor)
+    hardware.model_validate()
+
+    session = util.get_db_session()
+
+    session.add(hardware)
+    session.commit()
 
     return hardware

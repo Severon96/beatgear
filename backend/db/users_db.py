@@ -1,44 +1,47 @@
+import uuid
+from datetime import datetime
+from typing import Sequence, Type
 from uuid import UUID
 
 from chalice import NotFoundError
+from sqlmodel import select
 
 from models.models import User
-from util.util import parse_model, get_db_connection, close_db_connection, parse_model_list
+from util import util
 
 
-def get_user(user_id: UUID) -> User:
-    connection, cursor = get_db_connection()
+def get_user(user_id: UUID) -> Type[User]:
+    session = util.get_db_session()
 
-    cursor.execute("SELECT * FROM users WHERE id=%s;", [str(user_id)])
-    values = cursor.fetchone()
+    user = session.get(User, user_id)
 
-    if values is None:
-        raise NotFoundError(f"user not found for id {user_id}")
+    if user is None:
+        raise NotFoundError(f"User with id {user_id} not found")
 
-    close_db_connection(connection, cursor)
-
-    return parse_model(User, values)
+    return user
 
 
-def get_all_users() -> list[User]:
-    connection, cursor = get_db_connection()
+def get_all_users() -> Sequence[User]:
+    session = util.get_db_session()
 
-    cursor.execute("SELECT * FROM users;")
-    values = cursor.fetchall()
+    stmt = select(User)
+    rows = session.exec(stmt)
 
-    close_db_connection(connection, cursor)
-
-    return parse_model_list(User, values)
+    return rows.all()
 
 
 def create_user(user: User) -> User:
-    connection, cursor = get_db_connection()
+    now = datetime.now()
 
-    cursor.execute(
-        "INSERT INTO users(id, username, first_name, last_name, created_at, updated_at) VALUES (%s, %s, %s, %s, %s, %s)",
-        (str(user.id), user.username, user.first_name, user.last_name, user.created_at, user.updated_at))
-    connection.commit()
+    user.id = uuid.uuid4()
+    user.created_at = now
+    user.updated_at = now
 
-    close_db_connection(connection, cursor)
+    user.model_validate(user)
+
+    session = util.get_db_session()
+
+    session.add(user)
+    session.commit()
 
     return user

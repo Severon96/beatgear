@@ -1,9 +1,9 @@
 import os
 from typing import TypeVar
 
-import psycopg2
-from psycopg2._psycopg import cursor, connection
 from pydantic import BaseModel
+from sqlalchemy import Engine, create_engine, Connection
+from sqlmodel import Session, SQLModel
 
 T = TypeVar('T', bound=BaseModel)
 
@@ -16,24 +16,26 @@ def parse_model(model: type[T], values: dict) -> T:
     return model.model_validate(values)
 
 
-def get_db_connection() -> (connection, cursor):
-    db_connection = db_connect()
-    db_cursor = get_cursor_from_connection(db_connection)
+def get_db_connection() -> Connection:
+    engine = get_db_engine()
 
-    return db_connection, db_cursor
-
-
-def close_db_connection(db_connection: connection, db_cursor: cursor) -> None:
-    db_connection.close()
-    db_cursor.close()
+    return engine.connect()
 
 
-def db_connect() -> connection:
-    print(f"Db Data: {os.environ.get("DB_HOST")} {os.environ.get("DB_PORT")} {os.environ.get("")} {os.environ.get("DB_NAME")} {os.environ.get("DB_USER")} {os.environ.get("DB_PASS")}")
-    return psycopg2.connect(host=os.environ.get("DB_HOST"), port=os.environ.get("DB_PORT"), dbname=os.environ.get("DB_NAME"),
-                            user=os.environ.get("DB_USER"), password=os.environ.get("DB_PASS"))
+def get_db_session() -> Session:
+    engine = get_db_engine()
+
+    return Session(engine)
 
 
-def get_cursor_from_connection(connection: connection) -> cursor:
-    return connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+def get_db_engine() -> Engine:
+    host = os.environ.get("DB_HOST") if os.environ.get("DB_USER") is not None else "localhost"
+    port = os.environ.get("DB_PORT") if os.environ.get("DB_PORT") is not None else "5432"
+    dbname = os.environ.get("DB_NAME") if os.environ.get("DB_NAME") is not None else "hardware_management"
+    user = os.environ.get("DB_USER") if os.environ.get("DB_USER") is not None else "postgres"
+    password = os.environ.get("DB_PASS") if os.environ.get("DB_PASS") is not None else ""
 
+    engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}", echo=True)
+    SQLModel.metadata.create_all(engine)
+
+    return engine
