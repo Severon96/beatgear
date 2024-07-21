@@ -37,7 +37,7 @@ def create_hardware(hardware: Hardware) -> Hardware:
     hardware.created_at = now
     hardware.updated_at = now
 
-    hardware.model_validate()
+    Hardware.model_validate(hardware)
 
     session = util.get_db_session()
 

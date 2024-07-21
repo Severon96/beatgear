@@ -37,7 +37,7 @@ def create_booking(booking: Booking) -> Booking:
     booking.created_at = now
     booking.updated_at = now
 
-    booking.model_validate()
+    Booking.model_validate(booking)
 
     session = util.get_db_session()
 
