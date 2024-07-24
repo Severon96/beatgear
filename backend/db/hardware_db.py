@@ -37,11 +37,35 @@ def create_hardware(hardware: Hardware) -> Hardware:
     hardware.created_at = now
     hardware.updated_at = now
 
-    Hardware.model_validate(hardware)
+    validated_model = hardware.model_validate(hardware)
+
+    with util.get_db_session() as session:
+        print('validated hardware model', validated_model)
+        session.add(validated_model)
+        session.commit()
+        session.refresh(validated_model)
+
+    return validated_model
+
+
+def update_hardware(hardware_id: UUID, hardware: Hardware) -> Type[Hardware] | None:
+    now = datetime.now()
+
+    hardware.model_validate(hardware)
 
     session = util.get_db_session()
 
-    session.add(hardware)
-    session.commit()
+    db_hardware = session.get(Hardware, hardware_id)
 
-    return hardware
+    if db_hardware is None:
+        raise NotFoundError(f"Hardware with id {hardware_id} not found.")
+
+    db_hardware.updated_at = now
+
+    db_hardware.sqlmodel_update(hardware)
+
+    session.add(db_hardware)
+    session.commit()
+    session.refresh(db_hardware)
+
+    return db_hardware

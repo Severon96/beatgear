@@ -37,7 +37,7 @@ class Hardware(SQLModel, table=True):
     serial: str
     image: str | None = None
     category: HardwareCategory
-    owner_id: UUID = Field(default=None, foreign_key="users.id")
+    owner_id: UUID = Field(foreign_key="users.id")
     created_at: datetime | None = None
     updated_at: datetime | None = None
 

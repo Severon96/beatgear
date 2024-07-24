@@ -8,13 +8,13 @@ from sqlalchemy import create_engine
 from sqlmodel import SQLModel, Session
 
 from app import app
-from models.models import User
+from models.models import Hardware
 from tests.util import util
 from tests.util.db_util import create_hardware, setup_hardware
 from util.util import parse_model
 
 
-class TestUserApi(unittest.TestCase):
+class TestHardwareApi(unittest.TestCase):
     def setUp(self):
         self.engine = create_engine("sqlite:///", echo=True)
         self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
@@ -60,7 +60,7 @@ class TestUserApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.OK
             assert result.body is not None
-            api_hardware = parse_model(User, util.body_to_dict(result.body))
+            api_hardware = parse_model(Hardware, util.body_to_dict(result.body))
             assert api_hardware.id == hardware.id
 
     def test_get_missing_hardware_by_id(self):
@@ -92,9 +92,10 @@ class TestUserApi(unittest.TestCase):
             )
 
             # expect
+            print('json body', result.json_body)
             assert result.status_code == HTTPStatus.CREATED
             body = result.json_body
-            api_hardware = parse_model(User, body)
+            api_hardware = parse_model(Hardware, body)
             assert api_hardware.hardwarename == hardware.hardwarename
 
     def test_create_hardware_with_missing_hardware_name(self):
@@ -129,7 +130,7 @@ class TestUserApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.OK
             body = result.json_body
-            api_hardware = parse_model(User, body)
+            api_hardware = parse_model(Hardware, body)
             assert api_hardware.hardwarename == hardware.hardwarename
 
     def test_update_missing_hardware(self):

@@ -14,7 +14,7 @@ from tests.util.db_util import create_booking, setup_booking
 from util.util import parse_model
 
 
-class TestUserApi(unittest.TestCase):
+class TestBookingApi(unittest.TestCase):
     def setUp(self):
         self.engine = create_engine("sqlite:///", echo=True)
         self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))

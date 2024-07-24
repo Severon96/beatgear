@@ -23,18 +23,18 @@ def create_user(user: User = None) -> User:
     return users_db.create_user(user)
 
 
-def setup_hardware(user_id: uuid.UUID = None) -> Hardware:
-    if user_id is None:
+def setup_hardware(user: User = None) -> Hardware:
+    if user is None:
         user = create_user()
-        user_id = user.id
 
     return Hardware(
         id=uuid.uuid4(),
-        name='testhardware',
+        name='test hardware',
         serial=f'hdw-{uuid.uuid4()}',
         image=None,
         category=HardwareCategory.CONTROLLER,
-        owner_id=user_id,
+        owner=user,
+        owner_id=user.id,
         created_at=datetime.now(),
         updated_at=datetime.now()
     )

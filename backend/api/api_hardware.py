@@ -7,6 +7,7 @@ from pydantic_core import ValidationError
 from api.constants import cors_config
 from db import hardware_db
 from models.models import Hardware
+from util import util
 from util.util import parse_model
 
 api = Blueprint(__name__)
@@ -41,13 +42,15 @@ def get_hardware(hardware_id: str):
 def create_hardware():
     request = api.current_request
     try:
-        hardware: Hardware = parse_model(Hardware, request.json_body)
+        json_body = request.json_body
+        request_hardware = util.parse_model(Hardware, json_body)
+
+        hardware_db.create_hardware(request_hardware)
+
+        return Response(
+            status_code=HTTPStatus.CREATED,
+            headers={'Content-Type': 'application/json'},
+            body=request_hardware.json()
+        )
     except ValidationError as e:
         raise BadRequestError(str(e))
-
-    hardware_db.create_hardware(hardware)
-
-    return Response(
-        status_code=HTTPStatus.OK,
-        body=hardware.model_dump_json()
-    )
