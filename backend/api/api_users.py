@@ -19,6 +19,7 @@ def get_all_users():
 
     return Response(
         status_code=HTTPStatus.OK,
+        headers={'Content-Type': 'application/json'},
         body=body
     )
 

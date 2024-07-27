@@ -60,7 +60,7 @@ class TestHardwareApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.OK
             assert result.body is not None
-            api_hardware = parse_model(Hardware, util.body_to_dict(result.body))
+            api_hardware = parse_model(Hardware, result.json_body)
             assert api_hardware.id == hardware.id
 
     def test_get_missing_hardware_by_id(self):
@@ -85,10 +85,12 @@ class TestHardwareApi(unittest.TestCase):
 
         # then
         with Client(app) as client:
+            json = hardware.json()
+            print("hardware json", json)
             result = client.http.post(
                 "/api/hardware",
                 headers={'Content-Type': 'application/json'},
-                body=hardware.json()
+                body=json
             )
 
             # expect
@@ -96,7 +98,7 @@ class TestHardwareApi(unittest.TestCase):
             assert result.status_code == HTTPStatus.CREATED
             body = result.json_body
             api_hardware = parse_model(Hardware, body)
-            assert api_hardware.hardwarename == hardware.hardwarename
+            assert api_hardware.name == hardware.name
 
     def test_create_hardware_with_missing_hardware_name(self):
         # when
@@ -131,7 +133,7 @@ class TestHardwareApi(unittest.TestCase):
             assert result.status_code == HTTPStatus.OK
             body = result.json_body
             api_hardware = parse_model(Hardware, body)
-            assert api_hardware.hardwarename == hardware.hardwarename
+            assert api_hardware.name == hardware.name
 
     def test_update_missing_hardware(self):
         # when

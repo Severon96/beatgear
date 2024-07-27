@@ -24,10 +24,6 @@ class User(SQLModel, table=True):
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
-    hardware: list["Hardware"] = Relationship(
-        back_populates="owner"
-    )
-
 
 class Hardware(SQLModel, table=True):
     __tablename__ = "hardware"
@@ -37,11 +33,9 @@ class Hardware(SQLModel, table=True):
     serial: str
     image: str | None = None
     category: HardwareCategory
-    owner_id: UUID = Field(foreign_key="users.id")
+    owner_id: UUID | None = Field(default=None, nullable=False)
     created_at: datetime | None = None
     updated_at: datetime | None = None
-
-    owner: User = Relationship(back_populates="hardware")
 
     def __repr__(self):
         return (f"Hardware(id={self.id}, name={self.name}, serial={self.serial}, image={self.image}, "
