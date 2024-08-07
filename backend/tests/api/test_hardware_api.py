@@ -5,10 +5,10 @@ from unittest.mock import patch
 
 from chalice.test import Client
 from sqlalchemy import create_engine
-from sqlmodel import SQLModel, Session
+from sqlalchemy.orm import DeclarativeBase, Session
 
 from app import app
-from models.models import Hardware
+from models.models import Hardware, Base
 from tests.util.db_util import create_hardware, setup_hardware
 from util.util import parse_model
 
@@ -19,10 +19,10 @@ class TestHardwareApi(unittest.TestCase):
         self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
         self.patch_db_session.start()
 
-        SQLModel.metadata.create_all(self.engine)
+        Base.metadata.create_all(self.engine)
 
     def tearDown(self):
-        SQLModel.metadata.drop_all(self.engine)
+        Base.metadata.drop_all(self.engine)
 
         self.patch_db_session.stop()
 

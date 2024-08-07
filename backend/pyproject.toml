@@ -7,11 +7,11 @@ authors = ["Dominik Mack <dominik.mack@icloud.com>"]
 [tool.poetry.dependencies]
 python = "^3.11"
 chalice = "^1.29.0"
-boto3 = "^1.28.73"
+boto3 = "^1.34.155"
 pydantic = "^2.4.2"
 pytest-postgresql = "^6.0.0"
 psycopg2-binary = "^2.9.9"
-sqlmodel = "^0.0.19"
+sqlalchemy = "^2.0.32"
 mockito = "^1.5.0"
 pytest-mock = "^3.14.0"
 

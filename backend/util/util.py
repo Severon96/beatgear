@@ -3,7 +3,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 from sqlalchemy import Engine, create_engine, Connection
-from sqlmodel import Session, SQLModel
+from sqlalchemy.orm import DeclarativeBase, Session
 
 T = TypeVar('T', bound=BaseModel)
 
@@ -36,6 +36,6 @@ def get_db_engine() -> Engine:
     password = os.environ.get("DB_PASS") if os.environ.get("DB_PASS") is not None else ""
 
     engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}", echo=True)
-    SQLModel.metadata.create_all(engine)
+    DeclarativeBase.metadata.create_all(engine)
 
     return engine

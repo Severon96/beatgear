@@ -43,8 +43,9 @@ def get_user(user_id: str):
 def create_user():
     request = api.current_request
     try:
+        print(request.raw_body)
         json_body = request.json_body
-        request_user = util.parse_model(User, json_body)
+        request_user = User(**json_body)
 
         users_db.create_user(request_user)
 

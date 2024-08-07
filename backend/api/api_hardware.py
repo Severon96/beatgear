@@ -43,7 +43,7 @@ def get_hardware(hardware_id: str):
     return Response(
         status_code=HTTPStatus.OK,
         headers={'Content-Type': 'application/json'},
-        body=Hardware.json(hardware)
+        body=hardware.json()
     )
 
 
@@ -52,7 +52,7 @@ def create_hardware():
     request = api.current_request
     try:
         json_body = request.json_body
-        request_hardware = util.parse_model(Hardware, json_body)
+        request_hardware = Hardware(**json_body)
 
         hardware_db.create_hardware(request_hardware)
 
@@ -75,7 +75,7 @@ def update_user(hardware_id: str):
     request = api.current_request
     try:
         json_body = request.json_body
-        parsed_hardware = util.parse_model(Hardware, json_body)
+        parsed_hardware = Hardware(**json_body)
 
         updated_user = hardware_db.update_hardware(hardware_uuid, parsed_hardware)
 

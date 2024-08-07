@@ -4,7 +4,7 @@ from typing import Sequence, Type
 from uuid import UUID
 
 from chalice import NotFoundError
-from sqlmodel import select
+from sqlalchemy import select
 
 from models.models import User
 from util import util
@@ -25,9 +25,7 @@ def get_all_users() -> Sequence[User]:
     session = util.get_db_session()
 
     stmt = select(User)
-    rows = session.exec(stmt)
-
-    return rows.all()
+    return session.scalars(stmt).all()
 
 
 def create_user(user: User) -> User:
@@ -37,21 +35,17 @@ def create_user(user: User) -> User:
     user.created_at = now
     user.updated_at = now
 
-    validated_model = user.model_validate(user)
-
     session = util.get_db_session()
 
-    session.add(validated_model)
+    session.add(user)
     session.commit()
-    session.refresh(validated_model)
+    session.refresh(user)
 
-    return validated_model
+    return user
 
 
 def update_user(user_id: UUID, user: User) -> Type[User] | None:
     now = datetime.now()
-
-    user.model_validate(user)
 
     session = util.get_db_session()
 
@@ -62,9 +56,7 @@ def update_user(user_id: UUID, user: User) -> Type[User] | None:
 
     db_user.updated_at = now
 
-    db_user.sqlmodel_update(user)
-
-    session.add(db_user)
+    session.merge(user)
     session.commit()
     session.refresh(db_user)
 

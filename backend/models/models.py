@@ -1,8 +1,16 @@
 import enum
 from datetime import datetime
+from typing import Optional, List
 from uuid import UUID
 
-from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Uuid, String, DATETIME, LargeBinary, Enum, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+class Base(DeclarativeBase):
+    def json(self):
+        return {col.name: getattr(self, col.name) for col in self.__table__.columns}
+    pass
 
 
 class HardwareCategory(enum.Enum):
@@ -14,28 +22,38 @@ class HardwareCategory(enum.Enum):
     OTHER = 'other'
 
 
-class User(SQLModel, table=True):
+class User(Base):
     __tablename__ = "users"
 
-    id: UUID | None = Field(default=None, primary_key=True)
-    username: str
-    first_name: str | None = None
-    last_name: str | None = None
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    username: Mapped[str] = mapped_column(String(30))
+    first_name: Mapped[Optional[str]] = mapped_column(String(30))
+    last_name: Mapped[Optional[str]] = mapped_column(String(30))
+    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+
+    hardware: Mapped[List["Hardware"]] = relationship(
+        back_populates="owner", cascade="all, delete-orphan"
+    )
+
+    def __repr__(self):
+        return (f"User(id={self.id}, username={self.username}, first_name={self.first_name}, last_name={self.last_name}"
+                f", created_at={self.created_at}, updated_at={self.updated_at})")
 
 
-class Hardware(SQLModel, table=True):
+class Hardware(Base):
     __tablename__ = "hardware"
 
-    id: UUID | None = Field(default=None, primary_key=True)
-    name: str
-    serial: str
-    image: str | None = None
-    category: HardwareCategory
-    owner_id: UUID | None = Field(default=None, nullable=False)
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    name: Mapped[str] = mapped_column(String(30))
+    serial: Mapped[str] = mapped_column(String(30))
+    image: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
+    category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
+    owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+
+    owner: Mapped["User"] = relationship(back_populates="hardware")
 
     def __repr__(self):
         return (f"Hardware(id={self.id}, name={self.name}, serial={self.serial}, image={self.image}, "
@@ -43,17 +61,17 @@ class Hardware(SQLModel, table=True):
                 f"updated_at={self.updated_at})")
 
 
-class Booking(SQLModel, table=True):
+class Booking(Base):
     __tablename__ = "bookings"
 
-    id: UUID | None = Field(default=None, primary_key=True)
-    name: str | None = None
-    customer_id: UUID = Field(default=None, foreign_key="users.id")
-    hardware_id: UUID = Field(default=None, foreign_key="hardware.id")
-    booking_start: datetime
-    booking_end: datetime
-    created_at: datetime
-    updated_at: datetime
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    name: Mapped[Optional[str]] = mapped_column(String(30))
+    customer_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    hardware_id: Mapped[UUID] = mapped_column(ForeignKey("hardware.id"))
+    booking_start: Mapped[datetime] = mapped_column(DATETIME)
+    booking_end: Mapped[datetime] = mapped_column(DATETIME)
+    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
 
     def __repr__(self):
         return (f"Booking(id={self.id}, name={self.name}, customer_id={self.customer_id}, "
