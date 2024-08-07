@@ -1,11 +1,24 @@
+import json
 import os
+from datetime import datetime
 from typing import TypeVar
+from uuid import UUID
 
 from pydantic import BaseModel
 from sqlalchemy import Engine, create_engine, Connection
 from sqlalchemy.orm import DeclarativeBase, Session
 
 T = TypeVar('T', bound=BaseModel)
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            # if the obj is uuid, we simply return the value of uuid
+            return obj.hex
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return json.JSONEncoder.default(self, obj)
 
 
 def parse_model_list(model: type[T], values: dict) -> list[T]:

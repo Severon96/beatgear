@@ -1,14 +1,20 @@
 import enum
+import json
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from uuid import UUID
 
 from sqlalchemy import Uuid, String, DATETIME, LargeBinary, Enum, ForeignKey
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
+
+from util.util import JSONEncoder
 
 
 class Base(DeclarativeBase):
-    def json(self):
+    def json(self) -> str:
+        return json.dumps(self.dict(), cls=JSONEncoder)
+
+    def dict(self) -> dict[Any, Any]:
         return {col.name: getattr(self, col.name) for col in self.__table__.columns}
     pass
 
@@ -35,6 +41,15 @@ class User(Base):
     hardware: Mapped[List["Hardware"]] = relationship(
         back_populates="owner", cascade="all, delete-orphan"
     )
+
+    @validates("username", include_removes=True)
+    def validates_username(self, key, username, is_remove) -> str:
+        if is_remove:
+            raise ValueError("not allowed to remove username from user")
+        else:
+            if username is None:
+                raise ValueError("Username must be set")
+            return username
 
     def __repr__(self):
         return (f"User(id={self.id}, username={self.username}, first_name={self.first_name}, last_name={self.last_name}"

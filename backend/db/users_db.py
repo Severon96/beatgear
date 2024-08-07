@@ -54,7 +54,10 @@ def update_user(user_id: UUID, user: User) -> Type[User] | None:
     if db_user is None:
         raise NotFoundError(f"User with id {user_id} not found.")
 
-    db_user.updated_at = now
+    # field types might not be appropriate
+    user.id = db_user.id
+    user.created_at = db_user.created_at
+    user.updated_at = now
 
     session.merge(user)
     session.commit()

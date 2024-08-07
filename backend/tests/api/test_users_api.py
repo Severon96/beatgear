@@ -1,5 +1,7 @@
+import json
 import unittest
 import uuid
+from datetime import datetime
 from http import HTTPStatus
 from unittest.mock import patch
 
@@ -11,7 +13,7 @@ from app import app
 from models.models import User, Base
 from tests.util import util
 from tests.util.db_util import create_user, setup_user
-from util.util import parse_model
+from util.util import parse_model, JSONEncoder
 
 
 class TestUserApi(unittest.TestCase):
@@ -59,9 +61,10 @@ class TestUserApi(unittest.TestCase):
 
             # expect
             assert result.status_code == HTTPStatus.OK
-            assert result.body is not None
-            api_user = parse_model(User, util.body_to_dict(result.body))
-            assert api_user.id == user.id
+            result_body = result.json_body
+            assert result_body is not None
+            api_user = User(**result_body)
+            assert uuid.UUID(api_user.id) == user.id
 
     def test_get_missing_user_by_id(self):
         # then
@@ -94,20 +97,26 @@ class TestUserApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.CREATED
             body = result.json_body
-            api_user = parse_model(User, body)
+            api_user = User(**body)
             assert api_user.username == user.username
 
     def test_create_user_with_missing_username(self):
         # when
-        user = setup_user()
-        user.username = None
+        user_dict = {
+            'id': uuid.uuid4(),
+            'username': None,
+            'first_name': 'Test',
+            'last_name': 'User',
+            'created_at': datetime.now(),
+            'updated_at': datetime.now()
+        }
 
         # then
         with Client(app) as client:
             result = client.http.post(
                 "/api/users",
                 headers={'Content-Type': 'application/json'},
-                body=user.json()
+                body=json.dumps(user_dict, cls=JSONEncoder)
             )
 
             # expect
@@ -129,7 +138,7 @@ class TestUserApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.OK
             body = result.json_body
-            api_user = parse_model(User, body)
+            api_user = User(**body)
             assert api_user.username == user.username
 
     def test_update_missing_user(self):
@@ -151,14 +160,15 @@ class TestUserApi(unittest.TestCase):
     def test_update_user_with_missing_username(self):
         # when
         user = create_user(setup_user())
-        user.username = None
+        user_dict = user.dict()
+        user_dict['username'] = None
 
         # then
         with Client(app) as client:
             result = client.http.patch(
                 f"/api/users/{user.id}",
                 headers={'Content-Type': 'application/json'},
-                body=user.json()
+                body=json.dumps(user_dict, cls=JSONEncoder)
             )
 
             # expect
