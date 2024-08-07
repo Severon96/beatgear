@@ -42,7 +42,6 @@ def create_hardware(hardware: Hardware) -> Hardware:
     validated_model = hardware.model_validate(hardware)
 
     with util.get_db_session() as session:
-        print('validated hardware model', validated_model)
         session.add(validated_model)
         session.commit()
         session.refresh(validated_model)

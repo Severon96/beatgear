@@ -41,13 +41,15 @@ def get_booking(booking_id: str):
 def create_booking():
     request = api.current_request
     try:
-        booking: Booking = parse_model(Booking, request.json_body)
+        json_body = request.json_body
+        request_booking = parse_model(Booking, json_body)
+
+        bookings_db.create_booking(request_booking)
+
+        return Response(
+            status_code=HTTPStatus.CREATED,
+            headers={'Content-Type': 'application/json'},
+            body=request_booking.model_dump_json()
+        )
     except ValidationError as e:
         raise BadRequestError(str(e))
-
-    bookings_db.create_booking(booking)
-
-    return Response(
-        status_code=HTTPStatus.OK,
-        body=booking.model_dump_json()
-    )

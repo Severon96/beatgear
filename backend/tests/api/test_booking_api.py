@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlmodel import SQLModel, Session
 
 from app import app
-from models.models import User
+from models.models import Booking
 from tests.util import util
 from tests.util.db_util import create_booking, setup_booking
 from util.util import parse_model
@@ -60,7 +60,7 @@ class TestBookingApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.OK
             assert result.body is not None
-            api_booking = parse_model(User, util.body_to_dict(result.body))
+            api_booking = parse_model(Booking, util.body_to_dict(result.body))
             assert api_booking.id == booking.id
 
     def test_get_missing_booking_by_id(self):
@@ -94,8 +94,8 @@ class TestBookingApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.CREATED
             body = result.json_body
-            api_booking = parse_model(User, body)
-            assert api_booking.bookingname == booking.bookingname
+            api_booking = parse_model(Booking, body)
+            assert api_booking.name == booking.name
 
     def test_create_booking_with_missing_booking_name(self):
         # when
@@ -129,8 +129,8 @@ class TestBookingApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.OK
             body = result.json_body
-            api_booking = parse_model(User, body)
-            assert api_booking.bookingname == booking.bookingname
+            api_booking = parse_model(Booking, body)
+            assert api_booking.name == booking.name
 
     def test_update_missing_booking(self):
         # when
