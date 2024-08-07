@@ -107,6 +107,15 @@ class Booking(Base):
     created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
 
+    @validates("customer_id", "hardware_id", "booking_start", "booking_end", include_removes=True)
+    def validates_username(self, key, value, is_remove) -> str:
+        if is_remove:
+            raise ValueError(f"not allowed to remove {key} from user")
+        else:
+            if value is None:
+                raise ValueError(f"{key} must be set")
+            return value
+
     def __repr__(self):
         return (f"Booking(id={self.id}, name={self.name}, customer_id={self.customer_id}, "
                 f"hardware_id={self.hardware_id}, booking_start={self.booking_start}, booking_end={self.booking_end}, "

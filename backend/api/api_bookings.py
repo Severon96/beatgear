@@ -7,7 +7,6 @@ from pydantic_core import ValidationError
 from api.constants import cors_config
 from db import bookings_db
 from models.models import Booking
-from util.util import parse_model
 
 api = Blueprint(__name__)
 
@@ -15,7 +14,7 @@ api = Blueprint(__name__)
 @api.route("/bookings", methods=['GET'], cors=cors_config)
 def get_all_bookings():
     bookings = bookings_db.get_all_bookings()
-    body = [booking.model_dump(mode='json') for booking in bookings]
+    body = [booking.json() for booking in bookings]
 
     return Response(
         status_code=HTTPStatus.OK,
@@ -33,7 +32,7 @@ def get_booking(booking_id: str):
 
     return Response(
         status_code=HTTPStatus.OK,
-        body=booking.model_dump_json()
+        body=booking.json()
     )
 
 
@@ -42,14 +41,14 @@ def create_booking():
     request = api.current_request
     try:
         json_body = request.json_body
-        request_booking = parse_model(Booking, json_body)
+        request_booking = Booking(**json_body)
 
         bookings_db.create_booking(request_booking)
 
         return Response(
             status_code=HTTPStatus.CREATED,
             headers={'Content-Type': 'application/json'},
-            body=request_booking.model_dump_json()
+            body=request_booking.json()
         )
-    except ValidationError as e:
+    except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))

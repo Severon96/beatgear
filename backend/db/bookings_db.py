@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Sequence, Type
 from uuid import UUID
 
+import dateutil.parser
 from chalice import NotFoundError
 from sqlalchemy import select
 
@@ -25,19 +26,21 @@ def get_all_bookings() -> Sequence[Booking]:
     session = util.get_db_session()
 
     stmt = select(Booking)
-    rows = session.exec(stmt)
-
-    return rows.all()
+    return session.scalars(stmt).all()
 
 
 def create_booking(booking: Booking) -> Booking:
     now = datetime.now()
 
     booking.id = uuid.uuid4()
+    booking.customer_id = UUID(booking.customer_id) if isinstance(booking.customer_id, str) else booking.customer_id
+    booking.hardware_id = UUID(booking.hardware_id) if isinstance(booking.hardware_id, str) else booking.hardware_id
+    booking.booking_start = dateutil.parser.isoparse(booking.booking_start) if isinstance(
+        booking.booking_start, str) else booking.booking_start
+    booking.booking_end = dateutil.parser.isoparse(booking.booking_end) if isinstance(
+        booking.booking_end, str) else booking.booking_end
     booking.created_at = now
     booking.updated_at = now
-
-    Booking.model_validate(booking)
 
     session = util.get_db_session()
 

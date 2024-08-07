@@ -1,3 +1,4 @@
+import json
 import unittest
 import uuid
 from http import HTTPStatus
@@ -8,7 +9,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session
 
 from app import app
-from models.models import Booking, Base
+from models.models import Booking, Base, JSONEncoder
 from tests.util import util
 from tests.util.db_util import create_booking, setup_booking
 from util.util import parse_model
@@ -59,9 +60,10 @@ class TestBookingApi(unittest.TestCase):
 
             # expect
             assert result.status_code == HTTPStatus.OK
-            assert result.body is not None
-            api_booking = parse_model(Booking, util.body_to_dict(result.body))
-            assert api_booking.id == booking.id
+            body = result.json_body
+            assert body is not None
+            api_booking = Booking(**body)
+            assert uuid.UUID(api_booking.id) == booking.id
 
     def test_get_missing_booking_by_id(self):
         # then
@@ -94,20 +96,21 @@ class TestBookingApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.CREATED
             body = result.json_body
-            api_booking = parse_model(Booking, body)
+            api_booking = Booking(**body)
             assert api_booking.name == booking.name
 
     def test_create_booking_with_missing_booking_name(self):
         # when
         booking = setup_booking()
-        booking.name = None
+        booking_dict = booking.dict()
+        booking_dict['customer_id'] = None
 
         # then
         with Client(app) as client:
             result = client.http.post(
                 "/api/bookings",
                 headers={'Content-Type': 'application/json'},
-                body=booking.json()
+                body=json.dumps(booking_dict, cls=JSONEncoder)
             )
 
             # expect
@@ -129,7 +132,7 @@ class TestBookingApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.OK
             body = result.json_body
-            api_booking = parse_model(Booking, body)
+            api_booking = Booking(**body)
             assert api_booking.name == booking.name
 
     def test_update_missing_booking(self):
