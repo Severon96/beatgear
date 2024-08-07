@@ -9,7 +9,6 @@ from sqlmodel import SQLModel, Session
 
 from app import app
 from models.models import Hardware
-from tests.util import util
 from tests.util.db_util import create_hardware, setup_hardware
 from util.util import parse_model
 

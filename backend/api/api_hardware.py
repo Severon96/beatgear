@@ -8,7 +8,6 @@ from api.constants import cors_config
 from db import hardware_db
 from models.models import Hardware
 from util import util
-from util.util import parse_model
 
 api = Blueprint(__name__)
 
@@ -18,8 +17,13 @@ def get_all_hardware():
     all_hardware = hardware_db.get_all_hardware()
     body = []
 
+    # I really don't know why this is necessary and this
+    # database call doesn't work like e.g. get_all_users
+    # but it is what it is
     for hardware in all_hardware:
-        body.append(Hardware.model_dump_json(hardware))
+        hardware_dict = hardware._asdict()
+        hardware_model = Hardware.validate(hardware_dict['Hardware'])
+        body.append(Hardware.json(hardware_model))
 
     return Response(
         status_code=HTTPStatus.OK,

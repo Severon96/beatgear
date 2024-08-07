@@ -5,6 +5,8 @@ from uuid import UUID
 
 from chalice import NotFoundError
 from sqlalchemy import select
+from sqlalchemy.engine import TupleResult
+from sqlmodel.sql._expression_select_cls import _T
 
 from models.models import Hardware
 from util import util
