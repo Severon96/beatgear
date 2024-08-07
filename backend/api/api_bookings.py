@@ -52,3 +52,26 @@ def create_booking():
         )
     except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))
+
+
+@api.route("/bookings/{booking_id}", methods=['PATCH'], cors=cors_config)
+def update_user(booking_id: str):
+    try:
+        booking_uuid = UUID(booking_id)
+    except ValueError:
+        raise BadRequestError(f"{booking_id} is not a valid id")
+
+    request = api.current_request
+    try:
+        json_body = request.json_body
+        parsed_booking = Booking(**json_body)
+
+        updated_user = bookings_db.update_booking(booking_uuid, parsed_booking)
+
+        return Response(
+            status_code=HTTPStatus.OK,
+            headers={'Content-Type': 'application/json'},
+            body=updated_user.json()
+        )
+    except (ValidationError, ValueError) as e:
+        raise BadRequestError(str(e))

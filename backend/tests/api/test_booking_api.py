@@ -151,17 +151,18 @@ class TestBookingApi(unittest.TestCase):
             # expect
             assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_update_booking_with_missing_booking_name(self):
+    def test_update_booking_with_missing_booking_customer_id(self):
         # when
         booking = create_booking(setup_booking())
-        booking.name = None
+        booking_dict = booking.dict()
+        booking_dict['customer_id'] = None
 
         # then
         with Client(app) as client:
             result = client.http.patch(
                 f"/api/bookings/{booking.id}",
                 headers={'Content-Type': 'application/json'},
-                body=booking.json()
+                body=json.dumps(booking_dict, cls=JSONEncoder)
             )
 
             # expect
