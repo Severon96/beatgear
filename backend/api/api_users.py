@@ -19,6 +19,7 @@ def get_all_users():
 
     return Response(
         status_code=HTTPStatus.OK,
+        headers={'Content-Type': 'application/json'},
         body=body
     )
 
@@ -43,7 +44,7 @@ def create_user():
     request = api.current_request
     try:
         json_body = request.json_body
-        request_user = util.parse_model(User, json_body)
+        request_user = User(**json_body)
 
         users_db.create_user(request_user)
 
@@ -52,7 +53,7 @@ def create_user():
             headers={'Content-Type': 'application/json'},
             body=request_user.json()
         )
-    except ValidationError as e:
+    except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))
 
 
@@ -66,14 +67,14 @@ def update_user(user_id: str):
     request = api.current_request
     try:
         json_body = request.json_body
-        parsed_user = util.parse_model(User, json_body)
+        request_user = User(**json_body)
 
-        updated_user = users_db.update_user(user_uuid, parsed_user)
+        updated_user = users_db.update_user(user_uuid, request_user)
 
         return Response(
             status_code=HTTPStatus.OK,
             headers={'Content-Type': 'application/json'},
             body=updated_user.json()
         )
-    except ValidationError as e:
+    except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))

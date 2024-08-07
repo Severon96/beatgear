@@ -1,10 +1,32 @@
 import enum
+import json
 from datetime import datetime
-from typing import List
+from typing import Optional, List, Any
 from uuid import UUID
 
-from sqlalchemy.orm import Mapped, relationship
-from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Uuid, String, DATETIME, LargeBinary, Enum, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
+
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            # if the obj is uuid, we simply return the value of uuid
+            return obj.hex
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        if isinstance(obj, HardwareCategory):
+            return obj.name
+        return json.JSONEncoder.default(self, obj)
+
+
+class Base(DeclarativeBase):
+    def json(self) -> str:
+        return json.dumps(self.dict(), cls=JSONEncoder)
+
+    def dict(self) -> dict[Any, Any]:
+        return {col.name: getattr(self, col.name) for col in self.__table__.columns}
+    pass
 
 
 class HardwareCategory(enum.Enum):
@@ -16,34 +38,56 @@ class HardwareCategory(enum.Enum):
     OTHER = 'other'
 
 
-class User(SQLModel, table=True):
+class User(Base):
     __tablename__ = "users"
 
-    id: UUID | None = Field(default=None, primary_key=True)
-    username: str
-    first_name: str | None = None
-    last_name: str | None = None
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    username: Mapped[str] = mapped_column(String(30))
+    first_name: Mapped[Optional[str]] = mapped_column(String(30))
+    last_name: Mapped[Optional[str]] = mapped_column(String(30))
+    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
 
-    hardware: list["Hardware"] = Relationship(
-        back_populates="owner"
+    hardware: Mapped[List["Hardware"]] = relationship(
+        back_populates="owner", cascade="all, delete-orphan"
     )
 
+    @validates("username", include_removes=True)
+    def validates_username(self, key, username, is_remove) -> str:
+        if is_remove:
+            raise ValueError("not allowed to remove username from user")
+        else:
+            if username is None:
+                raise ValueError("Username must be set")
+            return username
 
-class Hardware(SQLModel, table=True):
+    def __repr__(self):
+        return (f"User(id={self.id}, username={self.username}, first_name={self.first_name}, last_name={self.last_name}"
+                f", created_at={self.created_at}, updated_at={self.updated_at})")
+
+
+class Hardware(Base):
     __tablename__ = "hardware"
 
-    id: UUID | None = Field(default=None, primary_key=True)
-    name: str
-    serial: str
-    image: str | None = None
-    category: HardwareCategory
-    owner_id: UUID = Field(default=None, foreign_key="users.id")
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    name: Mapped[str] = mapped_column(String(30))
+    serial: Mapped[str] = mapped_column(String(30))
+    image: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
+    category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
+    owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
 
-    owner: User = Relationship(back_populates="hardware")
+    owner: Mapped["User"] = relationship(back_populates="hardware")
+
+    @validates("name", "serial", "category", "owner_id", include_removes=True)
+    def validates_username(self, key, value, is_remove) -> str:
+        if is_remove:
+            raise ValueError(f"not allowed to remove {key} from user")
+        else:
+            if value is None:
+                raise ValueError(f"{key} must be set")
+            return value
 
     def __repr__(self):
         return (f"Hardware(id={self.id}, name={self.name}, serial={self.serial}, image={self.image}, "
@@ -51,17 +95,26 @@ class Hardware(SQLModel, table=True):
                 f"updated_at={self.updated_at})")
 
 
-class Booking(SQLModel, table=True):
+class Booking(Base):
     __tablename__ = "bookings"
 
-    id: UUID | None = Field(default=None, primary_key=True)
-    name: str | None = None
-    customer_id: UUID = Field(default=None, foreign_key="users.id")
-    hardware_id: UUID = Field(default=None, foreign_key="hardware.id")
-    booking_start: datetime
-    booking_end: datetime
-    created_at: datetime
-    updated_at: datetime
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    name: Mapped[Optional[str]] = mapped_column(String(30))
+    customer_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    hardware_id: Mapped[UUID] = mapped_column(ForeignKey("hardware.id"))
+    booking_start: Mapped[datetime] = mapped_column(DATETIME)
+    booking_end: Mapped[datetime] = mapped_column(DATETIME)
+    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+
+    @validates("customer_id", "hardware_id", "booking_start", "booking_end", include_removes=True)
+    def validates_username(self, key, value, is_remove) -> str:
+        if is_remove:
+            raise ValueError(f"not allowed to remove {key} from user")
+        else:
+            if value is None:
+                raise ValueError(f"{key} must be set")
+            return value
 
     def __repr__(self):
         return (f"Booking(id={self.id}, name={self.name}, customer_id={self.customer_id}, "

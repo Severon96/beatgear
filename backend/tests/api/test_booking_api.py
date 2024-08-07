@@ -1,7 +1,6 @@
 import json
 import unittest
 import uuid
-from datetime import datetime
 from http import HTTPStatus
 from unittest.mock import patch
 
@@ -10,163 +9,158 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app import app
-from models.models import User, Base, JSONEncoder
-from tests.util.db_util import create_user, setup_user
+from models.models import Booking, Base, JSONEncoder
+from tests.util.db_util import create_booking, setup_booking
 
 
-class TestUserApi(unittest.TestCase):
+class TestBookingApi(unittest.TestCase):
     def setUp(self):
         self.engine = create_engine("sqlite:///", echo=True)
         self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
         self.patch_db_session.start()
 
-        Base.metadata.create_all(bind=self.engine)
+        Base.metadata.create_all(self.engine)
 
     def tearDown(self):
         Base.metadata.drop_all(self.engine)
 
         self.patch_db_session.stop()
 
-    def test_get_all_users_without_users(self):
+    def test_get_all_bookings_without_bookings(self):
         # then
         with Client(app) as client:
-            result = client.http.get("/api/users")
+            result = client.http.get("/api/bookings")
 
             # expect
             assert result.status_code == HTTPStatus.OK
             assert len(result.json_body) == 0
 
-    def test_get_all_users_with_users(self):
+    def test_get_all_bookings_with_bookings(self):
         # when
-        create_user(setup_user())
-        create_user(setup_user())
+        create_booking(setup_booking())
+        create_booking(setup_booking())
 
         # then
         with Client(app) as client:
-            result = client.http.get("/api/users")
+            result = client.http.get("/api/bookings")
 
             # expect
             assert result.status_code == HTTPStatus.OK
             assert len(result.json_body) == 2
 
-    def test_get_user_by_id(self):
+    def test_get_booking_by_id(self):
         # when
-        user = create_user(setup_user())
+        booking = create_booking(setup_booking())
 
         # then
         with Client(app) as client:
-            result = client.http.get(f"/api/users/{user.id}")
+            result = client.http.get(f"/api/bookings/{booking.id}")
 
             # expect
             assert result.status_code == HTTPStatus.OK
-            result_body = result.json_body
-            assert result_body is not None
-            api_user = User(**result_body)
-            assert uuid.UUID(api_user.id) == user.id
+            body = result.json_body
+            assert body is not None
+            api_booking = Booking(**body)
+            assert uuid.UUID(api_booking.id) == booking.id
 
-    def test_get_missing_user_by_id(self):
+    def test_get_missing_booking_by_id(self):
         # then
         with Client(app) as client:
-            result = client.http.get(f"/api/users/{uuid.uuid4()}")
+            result = client.http.get(f"/api/bookings/{uuid.uuid4()}")
 
             # expect
             assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_get_user_by_malformed_uuid(self):
+    def test_get_booking_by_malformed_uuid(self):
         # then
         with Client(app) as client:
-            result = client.http.get(f"/api/users/test")
+            result = client.http.get(f"/api/bookings/test")
 
             # expect
             assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_create_user(self):
+    def test_create_booking(self):
         # when
-        user = setup_user()
+        booking = setup_booking()
 
         # then
         with Client(app) as client:
             result = client.http.post(
-                "/api/users",
+                "/api/bookings",
                 headers={'Content-Type': 'application/json'},
-                body=user.json()
+                body=booking.json()
             )
 
             # expect
             assert result.status_code == HTTPStatus.CREATED
             body = result.json_body
-            api_user = User(**body)
-            assert api_user.username == user.username
+            api_booking = Booking(**body)
+            assert api_booking.name == booking.name
 
-    def test_create_user_with_missing_username(self):
+    def test_create_booking_with_missing_booking_name(self):
         # when
-        user_dict = {
-            'id': uuid.uuid4(),
-            'username': None,
-            'first_name': 'Test',
-            'last_name': 'User',
-            'created_at': datetime.now(),
-            'updated_at': datetime.now()
-        }
+        booking = setup_booking()
+        booking_dict = booking.dict()
+        booking_dict['customer_id'] = None
 
         # then
         with Client(app) as client:
             result = client.http.post(
-                "/api/users",
+                "/api/bookings",
                 headers={'Content-Type': 'application/json'},
-                body=json.dumps(user_dict, cls=JSONEncoder)
+                body=json.dumps(booking_dict, cls=JSONEncoder)
             )
 
             # expect
             assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_update_user(self):
+    def test_update_booking(self):
         # when
-        user = create_user(setup_user())
-        user.username = "updated_username"
+        booking = create_booking(setup_booking())
+        booking.name = "updated_booking_name"
 
         # then
         with Client(app) as client:
             result = client.http.patch(
-                f"/api/users/{user.id}",
+                f"/api/bookings/{booking.id}",
                 headers={'Content-Type': 'application/json'},
-                body=user.json()
+                body=booking.json()
             )
 
             # expect
             assert result.status_code == HTTPStatus.OK
             body = result.json_body
-            api_user = User(**body)
-            assert api_user.username == user.username
+            api_booking = Booking(**body)
+            assert api_booking.name == booking.name
 
-    def test_update_missing_user(self):
+    def test_update_missing_booking(self):
         # when
-        user = setup_user()
-        user.username = "updated_username"
+        booking = setup_booking()
+        booking.name = "updated_booking_name"
 
         # then
         with Client(app) as client:
             result = client.http.patch(
-                f"/api/users/{uuid.uuid4()}",
+                f"/api/bookings/{uuid.uuid4()}",
                 headers={'Content-Type': 'application/json'},
-                body=user.json()
+                body=booking.json()
             )
 
             # expect
             assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_update_user_with_missing_username(self):
+    def test_update_booking_with_missing_booking_customer_id(self):
         # when
-        user = create_user(setup_user())
-        user_dict = user.dict()
-        user_dict['username'] = None
+        booking = create_booking(setup_booking())
+        booking_dict = booking.dict()
+        booking_dict['customer_id'] = None
 
         # then
         with Client(app) as client:
             result = client.http.patch(
-                f"/api/users/{user.id}",
+                f"/api/bookings/{booking.id}",
                 headers={'Content-Type': 'application/json'},
-                body=json.dumps(user_dict, cls=JSONEncoder)
+                body=json.dumps(booking_dict, cls=JSONEncoder)
             )
 
             # expect

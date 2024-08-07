@@ -7,7 +7,6 @@ from pydantic_core import ValidationError
 from api.constants import cors_config
 from db import bookings_db
 from models.models import Booking
-from util.util import parse_model
 
 api = Blueprint(__name__)
 
@@ -15,7 +14,7 @@ api = Blueprint(__name__)
 @api.route("/bookings", methods=['GET'], cors=cors_config)
 def get_all_bookings():
     bookings = bookings_db.get_all_bookings()
-    body = [booking.model_dump(mode='json') for booking in bookings]
+    body = [booking.json() for booking in bookings]
 
     return Response(
         status_code=HTTPStatus.OK,
@@ -33,7 +32,7 @@ def get_booking(booking_id: str):
 
     return Response(
         status_code=HTTPStatus.OK,
-        body=booking.model_dump_json()
+        body=booking.json()
     )
 
 
@@ -41,13 +40,38 @@ def get_booking(booking_id: str):
 def create_booking():
     request = api.current_request
     try:
-        booking: Booking = parse_model(Booking, request.json_body)
-    except ValidationError as e:
+        json_body = request.json_body
+        request_booking = Booking(**json_body)
+
+        bookings_db.create_booking(request_booking)
+
+        return Response(
+            status_code=HTTPStatus.CREATED,
+            headers={'Content-Type': 'application/json'},
+            body=request_booking.json()
+        )
+    except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))
 
-    bookings_db.create_booking(booking)
 
-    return Response(
-        status_code=HTTPStatus.OK,
-        body=booking.model_dump_json()
-    )
+@api.route("/bookings/{booking_id}", methods=['PATCH'], cors=cors_config)
+def update_user(booking_id: str):
+    try:
+        booking_uuid = UUID(booking_id)
+    except ValueError:
+        raise BadRequestError(f"{booking_id} is not a valid id")
+
+    request = api.current_request
+    try:
+        json_body = request.json_body
+        parsed_booking = Booking(**json_body)
+
+        updated_user = bookings_db.update_booking(booking_uuid, parsed_booking)
+
+        return Response(
+            status_code=HTTPStatus.OK,
+            headers={'Content-Type': 'application/json'},
+            body=updated_user.json()
+        )
+    except (ValidationError, ValueError) as e:
+        raise BadRequestError(str(e))

@@ -7,18 +7,18 @@ from pydantic_core import ValidationError
 from api.constants import cors_config
 from db import hardware_db
 from models.models import Hardware
-from util.util import parse_model
 
 api = Blueprint(__name__)
 
 
 @api.route("/hardware", methods=['GET'], cors=cors_config)
 def get_all_hardware():
-    hardware = hardware_db.get_all_hardware()
-    body = [hardware.model_dump(mode='json') for hardware in hardware]
+    all_hardware = hardware_db.get_all_hardware()
+    body = [hardware.json() for hardware in all_hardware]
 
     return Response(
         status_code=HTTPStatus.OK,
+        headers={'Content-Type': 'application/json'},
         body=body
     )
 
@@ -33,7 +33,8 @@ def get_hardware(hardware_id: str):
 
     return Response(
         status_code=HTTPStatus.OK,
-        body=hardware.model_dump_json()
+        headers={'Content-Type': 'application/json'},
+        body=hardware.json()
     )
 
 
@@ -41,13 +42,38 @@ def get_hardware(hardware_id: str):
 def create_hardware():
     request = api.current_request
     try:
-        hardware: Hardware = parse_model(Hardware, request.json_body)
-    except ValidationError as e:
+        json_body = request.json_body
+        request_hardware = Hardware(**json_body)
+
+        hardware_db.create_hardware(request_hardware)
+
+        return Response(
+            status_code=HTTPStatus.CREATED,
+            headers={'Content-Type': 'application/json'},
+            body=request_hardware.json()
+        )
+    except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))
 
-    hardware_db.create_hardware(hardware)
 
-    return Response(
-        status_code=HTTPStatus.OK,
-        body=hardware.model_dump_json()
-    )
+@api.route("/hardware/{hardware_id}", methods=['PATCH'], cors=cors_config)
+def update_user(hardware_id: str):
+    try:
+        hardware_uuid = UUID(hardware_id)
+    except ValueError:
+        raise BadRequestError(f"{hardware_id} is not a valid id")
+
+    request = api.current_request
+    try:
+        json_body = request.json_body
+        parsed_hardware = Hardware(**json_body)
+
+        updated_user = hardware_db.update_hardware(hardware_uuid, parsed_hardware)
+
+        return Response(
+            status_code=HTTPStatus.OK,
+            headers={'Content-Type': 'application/json'},
+            body=updated_user.json()
+        )
+    except (ValidationError, ValueError) as e:
+        raise BadRequestError(str(e))

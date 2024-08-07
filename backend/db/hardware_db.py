@@ -25,23 +25,44 @@ def get_all_hardware() -> Sequence[Hardware]:
     session = util.get_db_session()
 
     stmt = select(Hardware)
-    rows = session.exec(stmt)
-
-    return rows.all()
+    return session.scalars(stmt).all()
 
 
 def create_hardware(hardware: Hardware) -> Hardware:
     now = datetime.now()
 
     hardware.id = uuid.uuid4()
+    hardware.owner_id = UUID(hardware.owner_id) if isinstance(hardware.owner_id, str) else hardware.owner_id
     hardware.created_at = now
     hardware.updated_at = now
 
-    hardware.model_validate()
+    with util.get_db_session() as session:
+        session.add(hardware)
+        session.commit()
+        session.refresh(hardware)
+
+    return hardware
+
+
+def update_hardware(hardware_id: UUID, hardware: Hardware) -> Type[Hardware] | None:
+    now = datetime.now()
 
     session = util.get_db_session()
 
-    session.add(hardware)
-    session.commit()
+    db_hardware = session.get(Hardware, hardware_id)
 
-    return hardware
+    if db_hardware is None:
+        raise NotFoundError(f"Hardware with id {hardware_id} not found.")
+
+    # field types might not be appropriate
+    hardware.id = UUID(hardware.id) if isinstance(hardware.id, str) else hardware.id
+    hardware.owner_id = UUID(hardware.owner_id) if isinstance(hardware.owner_id, str) else hardware.owner_id
+    hardware.updated_at = now
+    hardware.created_at = db_hardware.created_at
+
+    session.merge(hardware)
+
+    session.commit()
+    session.refresh(db_hardware)
+
+    return db_hardware

@@ -1,7 +1,6 @@
 import json
 import unittest
 import uuid
-from datetime import datetime
 from http import HTTPStatus
 from unittest.mock import patch
 
@@ -10,163 +9,161 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app import app
-from models.models import User, Base, JSONEncoder
-from tests.util.db_util import create_user, setup_user
+from models.models import Hardware, Base, JSONEncoder
+from tests.util.db_util import create_hardware, setup_hardware
 
 
-class TestUserApi(unittest.TestCase):
+class TestHardwareApi(unittest.TestCase):
     def setUp(self):
         self.engine = create_engine("sqlite:///", echo=True)
         self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
         self.patch_db_session.start()
 
-        Base.metadata.create_all(bind=self.engine)
+        Base.metadata.create_all(self.engine)
 
     def tearDown(self):
         Base.metadata.drop_all(self.engine)
 
         self.patch_db_session.stop()
 
-    def test_get_all_users_without_users(self):
+    def test_get_all_hardware_without_hardware(self):
         # then
         with Client(app) as client:
-            result = client.http.get("/api/users")
+            result = client.http.get("/api/hardware")
 
             # expect
             assert result.status_code == HTTPStatus.OK
             assert len(result.json_body) == 0
 
-    def test_get_all_users_with_users(self):
+    def test_get_all_hardware_with_hardware(self):
         # when
-        create_user(setup_user())
-        create_user(setup_user())
+        create_hardware(setup_hardware())
+        create_hardware(setup_hardware())
 
         # then
         with Client(app) as client:
-            result = client.http.get("/api/users")
+            result = client.http.get("/api/hardware")
 
             # expect
             assert result.status_code == HTTPStatus.OK
             assert len(result.json_body) == 2
 
-    def test_get_user_by_id(self):
+    def test_get_hardware_by_id(self):
         # when
-        user = create_user(setup_user())
+        hardware = create_hardware(setup_hardware())
 
         # then
         with Client(app) as client:
-            result = client.http.get(f"/api/users/{user.id}")
+            result = client.http.get(f"/api/hardware/{hardware.id}")
 
             # expect
             assert result.status_code == HTTPStatus.OK
-            result_body = result.json_body
-            assert result_body is not None
-            api_user = User(**result_body)
-            assert uuid.UUID(api_user.id) == user.id
+            body = result.json_body
+            assert body is not None
+            api_hardware = Hardware(**body)
+            assert uuid.UUID(api_hardware.id) == hardware.id
 
-    def test_get_missing_user_by_id(self):
+    def test_get_missing_hardware_by_id(self):
         # then
         with Client(app) as client:
-            result = client.http.get(f"/api/users/{uuid.uuid4()}")
+            result = client.http.get(f"/api/hardware/{uuid.uuid4()}")
 
             # expect
             assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_get_user_by_malformed_uuid(self):
+    def test_get_hardware_by_malformed_uuid(self):
         # then
         with Client(app) as client:
-            result = client.http.get(f"/api/users/test")
+            result = client.http.get(f"/api/hardware/test")
 
             # expect
             assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_create_user(self):
+    def test_create_hardware(self):
         # when
-        user = setup_user()
+        hardware = setup_hardware()
 
         # then
         with Client(app) as client:
+            json = hardware.json()
+
             result = client.http.post(
-                "/api/users",
+                "/api/hardware",
                 headers={'Content-Type': 'application/json'},
-                body=user.json()
+                body=json
             )
 
             # expect
+            print('json body', result.json_body)
             assert result.status_code == HTTPStatus.CREATED
             body = result.json_body
-            api_user = User(**body)
-            assert api_user.username == user.username
+            api_hardware = Hardware(**body)
+            assert api_hardware.name == hardware.name
 
-    def test_create_user_with_missing_username(self):
+    def test_create_hardware_with_missing_hardware_name(self):
         # when
-        user_dict = {
-            'id': uuid.uuid4(),
-            'username': None,
-            'first_name': 'Test',
-            'last_name': 'User',
-            'created_at': datetime.now(),
-            'updated_at': datetime.now()
-        }
+        hardware = setup_hardware()
+        hardware_dict = hardware.dict()
+        hardware_dict['name'] = None
 
         # then
         with Client(app) as client:
             result = client.http.post(
-                "/api/users",
+                "/api/hardware",
                 headers={'Content-Type': 'application/json'},
-                body=json.dumps(user_dict, cls=JSONEncoder)
+                body=json.dumps(hardware_dict, cls=JSONEncoder)
             )
 
             # expect
             assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_update_user(self):
+    def test_update_hardware(self):
         # when
-        user = create_user(setup_user())
-        user.username = "updated_username"
+        hardware = create_hardware(setup_hardware())
+        hardware.name = "updated_hardware_name"
 
         # then
         with Client(app) as client:
             result = client.http.patch(
-                f"/api/users/{user.id}",
+                f"/api/hardware/{hardware.id}",
                 headers={'Content-Type': 'application/json'},
-                body=user.json()
+                body=hardware.json()
             )
 
             # expect
             assert result.status_code == HTTPStatus.OK
             body = result.json_body
-            api_user = User(**body)
-            assert api_user.username == user.username
+            api_hardware = Hardware(**body)
+            assert api_hardware.name == hardware.name
 
-    def test_update_missing_user(self):
+    def test_update_missing_hardware(self):
         # when
-        user = setup_user()
-        user.username = "updated_username"
+        hardware = setup_hardware()
+        hardware.name = "updated_hardware_name"
 
         # then
         with Client(app) as client:
             result = client.http.patch(
-                f"/api/users/{uuid.uuid4()}",
+                f"/api/hardware/{uuid.uuid4()}",
                 headers={'Content-Type': 'application/json'},
-                body=user.json()
+                body=hardware.json()
             )
 
             # expect
             assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_update_user_with_missing_username(self):
+    def test_update_hardware_with_missing_hardware_name(self):
         # when
-        user = create_user(setup_user())
-        user_dict = user.dict()
-        user_dict['username'] = None
+        hardware = create_hardware(setup_hardware())
+        hardware_dict = hardware.dict()
+        hardware_dict['name'] = None
 
         # then
         with Client(app) as client:
             result = client.http.patch(
-                f"/api/users/{user.id}",
+                f"/api/hardware/{hardware.id}",
                 headers={'Content-Type': 'application/json'},
-                body=json.dumps(user_dict, cls=JSONEncoder)
+                body=json.dumps(hardware_dict, cls=JSONEncoder)
             )
 
             # expect
