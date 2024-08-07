@@ -32,6 +32,7 @@ def create_hardware(hardware: Hardware) -> Hardware:
     now = datetime.now()
 
     hardware.id = uuid.uuid4()
+    hardware.owner_id = UUID(hardware.owner_id) if isinstance(hardware.owner_id, str) else hardware.owner_id
     hardware.created_at = now
     hardware.updated_at = now
 
@@ -53,7 +54,11 @@ def update_hardware(hardware_id: UUID, hardware: Hardware) -> Type[Hardware] | N
     if db_hardware is None:
         raise NotFoundError(f"Hardware with id {hardware_id} not found.")
 
+    # field types might not be appropriate
+    hardware.id = UUID(hardware.id) if isinstance(hardware.id, str) else hardware.id
+    hardware.owner_id = UUID(hardware.owner_id) if isinstance(hardware.owner_id, str) else hardware.owner_id
     hardware.updated_at = now
+    hardware.created_at = db_hardware.created_at
 
     session.merge(hardware)
 

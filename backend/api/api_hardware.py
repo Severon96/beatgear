@@ -15,15 +15,7 @@ api = Blueprint(__name__)
 @api.route("/hardware", methods=['GET'], cors=cors_config)
 def get_all_hardware():
     all_hardware = hardware_db.get_all_hardware()
-    body = []
-
-    # I really don't know why this is necessary and this
-    # database call doesn't work like e.g. get_all_users
-    # but it is what it is
-    for hardware in all_hardware:
-        hardware_dict = hardware._asdict()
-        hardware_model = Hardware.validate(hardware_dict['Hardware'])
-        body.append(Hardware.json(hardware_model))
+    body = [hardware.json() for hardware in all_hardware]
 
     return Response(
         status_code=HTTPStatus.OK,
@@ -61,7 +53,7 @@ def create_hardware():
             headers={'Content-Type': 'application/json'},
             body=request_hardware.json()
         )
-    except ValidationError as e:
+    except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))
 
 
@@ -84,5 +76,5 @@ def update_user(hardware_id: str):
             headers={'Content-Type': 'application/json'},
             body=updated_user.json()
         )
-    except ValidationError as e:
+    except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))

@@ -6,14 +6,12 @@ from http import HTTPStatus
 from unittest.mock import patch
 
 from chalice.test import Client
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import DeclarativeBase, Session
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 from app import app
-from models.models import User, Base
-from tests.util import util
+from models.models import User, Base, JSONEncoder
 from tests.util.db_util import create_user, setup_user
-from util.util import parse_model, JSONEncoder
 
 
 class TestUserApi(unittest.TestCase):

@@ -7,7 +7,17 @@ from uuid import UUID
 from sqlalchemy import Uuid, String, DATETIME, LargeBinary, Enum, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
 
-from util.util import JSONEncoder
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, UUID):
+            # if the obj is uuid, we simply return the value of uuid
+            return obj.hex
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        if isinstance(obj, HardwareCategory):
+            return obj.name
+        return json.JSONEncoder.default(self, obj)
 
 
 class Base(DeclarativeBase):
@@ -69,6 +79,15 @@ class Hardware(Base):
     updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
 
     owner: Mapped["User"] = relationship(back_populates="hardware")
+
+    @validates("name", "serial", "category", "owner_id", include_removes=True)
+    def validates_username(self, key, value, is_remove) -> str:
+        if is_remove:
+            raise ValueError(f"not allowed to remove {key} from user")
+        else:
+            if value is None:
+                raise ValueError(f"{key} must be set")
+            return value
 
     def __repr__(self):
         return (f"Hardware(id={self.id}, name={self.name}, serial={self.serial}, image={self.image}, "
