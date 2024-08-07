@@ -6,13 +6,11 @@ from unittest.mock import patch
 
 from chalice.test import Client
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, Session
+from sqlalchemy.orm import Session
 
 from app import app
 from models.models import Booking, Base, JSONEncoder
-from tests.util import util
 from tests.util.db_util import create_booking, setup_booking
-from util.util import parse_model
 
 
 class TestBookingApi(unittest.TestCase):

@@ -1,7 +1,7 @@
 import enum
 import json
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Any
 from uuid import UUID
 
 from sqlalchemy import Uuid, String, DATETIME, LargeBinary, Enum, ForeignKey

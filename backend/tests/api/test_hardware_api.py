@@ -6,12 +6,11 @@ from unittest.mock import patch
 
 from chalice.test import Client
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, Session
+from sqlalchemy.orm import Session
 
 from app import app
 from models.models import Hardware, Base, JSONEncoder
 from tests.util.db_util import create_hardware, setup_hardware
-from util.util import parse_model
 
 
 class TestHardwareApi(unittest.TestCase):
