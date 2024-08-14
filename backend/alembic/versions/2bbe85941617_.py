@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 32efb8ebd291
+Revision ID: 2bbe85941617
 Revises: 
-Create Date: 2024-08-14 18:32:13.637864
+Create Date: 2024-08-14 18:43:52.755713
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '32efb8ebd291'
+revision: str = '2bbe85941617'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,8 +25,8 @@ def upgrade() -> None:
     sa.Column('username', sa.String(length=30), nullable=False),
     sa.Column('first_name', sa.String(length=30), nullable=True),
     sa.Column('last_name', sa.String(length=30), nullable=True),
-    sa.Column('created_at', sa.DATETIME(), nullable=False),
-    sa.Column('updated_at', sa.DATETIME(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('hardware',
@@ -36,8 +36,8 @@ def upgrade() -> None:
     sa.Column('image', sa.LargeBinary(), nullable=True),
     sa.Column('category', sa.Enum('CONTROLLER', 'LIGHT', 'CABLE_XLR', 'PLUG_COLD_APPLIANCE', 'LAPTOP_STAND', 'OTHER', name='hardwarecategory'), nullable=False),
     sa.Column('owner_id', sa.Uuid(), nullable=False),
-    sa.Column('created_at', sa.DATETIME(), nullable=False),
-    sa.Column('updated_at', sa.DATETIME(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -46,10 +46,10 @@ def upgrade() -> None:
     sa.Column('name', sa.String(length=30), nullable=True),
     sa.Column('customer_id', sa.Uuid(), nullable=False),
     sa.Column('hardware_id', sa.Uuid(), nullable=False),
-    sa.Column('booking_start', sa.DATETIME(), nullable=False),
-    sa.Column('booking_end', sa.DATETIME(), nullable=False),
-    sa.Column('created_at', sa.DATETIME(), nullable=False),
-    sa.Column('updated_at', sa.DATETIME(), nullable=False),
+    sa.Column('booking_start', sa.DateTime(), nullable=False),
+    sa.Column('booking_end', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['customer_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['hardware_id'], ['hardware.id'], ),
     sa.PrimaryKeyConstraint('id')

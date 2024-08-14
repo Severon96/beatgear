@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional, List, Any
 from uuid import UUID
 
-from sqlalchemy import Uuid, String, DATETIME, LargeBinary, Enum, ForeignKey, Table, Column
+from sqlalchemy import Uuid, String, LargeBinary, Enum, ForeignKey, Table, Column, DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
 
 
@@ -45,8 +45,8 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(30))
     first_name: Mapped[Optional[str]] = mapped_column(String(30))
     last_name: Mapped[Optional[str]] = mapped_column(String(30))
-    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
-    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
     hardware: Mapped[List["Hardware"]] = relationship(
         back_populates="owner", cascade="all, delete-orphan"
@@ -75,8 +75,8 @@ class Hardware(Base):
     image: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
-    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
-    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
     owner: Mapped["User"] = relationship(back_populates="hardware")
 
@@ -110,10 +110,10 @@ class Booking(Base):
     name: Mapped[Optional[str]] = mapped_column(String(30))
     customer_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
     hardware_id: Mapped[UUID] = mapped_column(ForeignKey("hardware.id"))
-    booking_start: Mapped[datetime] = mapped_column(DATETIME)
-    booking_end: Mapped[datetime] = mapped_column(DATETIME)
-    created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
-    updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+    booking_start: Mapped[datetime] = mapped_column(DateTime)
+    booking_end: Mapped[datetime] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
     hardware: Mapped[List[Hardware]] = relationship(secondary=booking_to_hardware_table)
 
