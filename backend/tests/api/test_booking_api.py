@@ -101,6 +101,7 @@ class TestBookingApi(unittest.TestCase):
         # when
         booking = setup_booking()
         booking_dict = booking.dict()
+        booking_dict['hardware_ids'] = ['test']
         booking_dict['customer_id'] = None
 
         # then

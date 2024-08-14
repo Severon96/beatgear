@@ -26,6 +26,7 @@ class Base(DeclarativeBase):
 
     def dict(self) -> dict[Any, Any]:
         return {col.name: getattr(self, col.name) for col in self.__table__.columns}
+
     pass
 
 
@@ -66,6 +67,14 @@ class User(Base):
                 f", created_at={self.created_at}, updated_at={self.updated_at})")
 
 
+booking_to_hardware_table = Table(
+    "bookings_to_hardware",
+    Base.metadata,
+    Column("booking_id", ForeignKey("bookings.id")),
+    Column("hardware_id", ForeignKey("hardware.id")),
+)
+
+
 class Hardware(Base):
     __tablename__ = "hardware"
 
@@ -79,6 +88,7 @@ class Hardware(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
     owner: Mapped["User"] = relationship(back_populates="hardware")
+    bookings: Mapped[List["Booking"]] = relationship(secondary=booking_to_hardware_table, back_populates="hardware")
 
     @validates("name", "serial", "category", "owner_id", include_removes=True)
     def validates_username(self, key, value, is_remove) -> str:
@@ -95,21 +105,17 @@ class Hardware(Base):
                 f"updated_at={self.updated_at})")
 
 
-booking_to_hardware_table = Table(
-    "bookings_to_hardware",
-    Base.metadata,
-    Column("booking_id", ForeignKey("bookings.id")),
-    Column("hardware_id", ForeignKey("hardware.id")),
-)
-
-
 class Booking(Base):
     __tablename__ = "bookings"
+
+    def __init__(self, **kw: Any):
+        super().__init__(**kw)
+        print('hardware ids', kw)
+        self.hardware_ids = []
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     name: Mapped[Optional[str]] = mapped_column(String(30))
     customer_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
-    hardware_id: Mapped[UUID] = mapped_column(ForeignKey("hardware.id"))
     booking_start: Mapped[datetime] = mapped_column(DateTime)
     booking_end: Mapped[datetime] = mapped_column(DateTime)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())

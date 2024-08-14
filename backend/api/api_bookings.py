@@ -41,7 +41,9 @@ def create_booking():
     request = api.current_request
     try:
         json_body = request.json_body
+        print("bboooking", json_body)
         request_booking = Booking(**json_body)
+        print("bboooking", request_booking.dict())
 
         bookings_db.create_booking(request_booking)
 
@@ -55,7 +57,7 @@ def create_booking():
 
 
 @api.route("/bookings/{booking_id}", methods=['PATCH'], cors=cors_config)
-def update_user(booking_id: str):
+def update_booking(booking_id: str):
     try:
         booking_uuid = UUID(booking_id)
     except ValueError:

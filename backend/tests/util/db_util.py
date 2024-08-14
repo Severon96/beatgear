@@ -49,21 +49,15 @@ def create_hardware(hardware: Hardware = None) -> Hardware:
 
 def setup_booking(
         customer_id: uuid.UUID = None,
-        hardware_id: uuid.UUID = None
 ) -> Booking:
     if customer_id is None:
         user = create_user()
         customer_id = user.id
 
-    if hardware_id is None:
-        hardware = create_hardware()
-        hardware_id = hardware.id
-
     return Booking(
         id=uuid.uuid4(),
         name='test booking',
         customer_id=customer_id,
-        hardware_id=hardware_id,
         booking_start=datetime.now(),
         booking_end=datetime.now(),
         created_at=datetime.now(),
