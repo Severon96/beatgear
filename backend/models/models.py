@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional, List, Any
 from uuid import UUID
 
-from sqlalchemy import Uuid, String, DATETIME, LargeBinary, Enum, ForeignKey
+from sqlalchemy import Uuid, String, DATETIME, LargeBinary, Enum, ForeignKey, Table, Column
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
 
 
@@ -95,6 +95,14 @@ class Hardware(Base):
                 f"updated_at={self.updated_at})")
 
 
+booking_to_hardware_table = Table(
+    "bookings_to_hardware",
+    Base.metadata,
+    Column("booking_id", ForeignKey("bookings.id")),
+    Column("hardware_id", ForeignKey("hardware.id")),
+)
+
+
 class Booking(Base):
     __tablename__ = "bookings"
 
@@ -106,6 +114,8 @@ class Booking(Base):
     booking_end: Mapped[datetime] = mapped_column(DATETIME)
     created_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(DATETIME, default=datetime.now())
+
+    hardware: Mapped[List[Hardware]] = relationship(secondary=booking_to_hardware_table)
 
     @validates("customer_id", "hardware_id", "booking_start", "booking_end", include_removes=True)
     def validates_username(self, key, value, is_remove) -> str:

@@ -1,9 +1,9 @@
 import psycopg2.extras
 from chalice import Chalice
 
-from api.api_users import api as api_users
-from api.api_hardware import api as api_hardware
 from api.api_bookings import api as api_bookings
+from api.api_hardware import api as api_hardware
+from api.api_users import api as api_users
 
 app = Chalice("backend")
 
