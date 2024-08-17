@@ -110,8 +110,6 @@ class Booking(Base):
 
     def __init__(self, **kw: Any):
         super().__init__(**kw)
-        print('hardware ids', kw)
-        self.hardware_ids = []
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     name: Mapped[Optional[str]] = mapped_column(String(30))
@@ -134,5 +132,5 @@ class Booking(Base):
 
     def __repr__(self):
         return (f"Booking(id={self.id}, name={self.name}, customer_id={self.customer_id}, "
-                f"hardware_id={self.hardware_id}, booking_start={self.booking_start}, booking_end={self.booking_end}, "
+                f"booking_start={self.booking_start}, booking_end={self.booking_end}, "
                 f"created_at={self.created_at}, updated_at={self.updated_at})")

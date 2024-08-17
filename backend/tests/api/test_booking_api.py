@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app import app
-from models.models import Booking, Base, JSONEncoder
+from models.db_models import Booking, Base, JSONEncoder
 from tests.util.db_util import create_booking, setup_booking
 
 

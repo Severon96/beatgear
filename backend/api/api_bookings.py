@@ -6,7 +6,11 @@ from pydantic_core import ValidationError
 
 from api.constants import cors_config
 from db import bookings_db
-from models.models import Booking
+from db.hardware_db import get_hardware
+from models.db_models import Booking
+from models.request_models import BookingRequest
+from util.model_util import convert_to_db_booking
+from util.util import parse_model
 
 api = Blueprint(__name__)
 
@@ -41,11 +45,15 @@ def create_booking():
     request = api.current_request
     try:
         json_body = request.json_body
-        print("bboooking", json_body)
-        request_booking = Booking(**json_body)
-        print("bboooking", request_booking.dict())
+        request_booking = parse_model(BookingRequest, json_body)
 
-        bookings_db.create_booking(request_booking)
+        hardware = []
+        for hardware_id in request_booking.hardware_ids:
+            request_hardware = get_hardware(hardware_id)
+            hardware.append(request_hardware)
+
+        db_booking = convert_to_db_booking(request_booking, hardware)
+        bookings_db.create_booking(db_booking)
 
         return Response(
             status_code=HTTPStatus.CREATED,

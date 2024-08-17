@@ -1,8 +1,10 @@
 import uuid
 from datetime import datetime
+from typing import List
 
 from db import users_db, bookings_db, hardware_db
-from models.models import User, Booking, Hardware, HardwareCategory
+from models.db_models import User, Booking, Hardware, HardwareCategory
+from models.request_models import BookingRequest
 
 
 def setup_user() -> User:
@@ -27,10 +29,11 @@ def setup_hardware(user: User = None) -> Hardware:
     if user is None:
         user = create_user()
 
+    hardware_id = uuid.uuid4()
     return Hardware(
-        id=uuid.uuid4(),
+        id=hardware_id,
         name='test hardware',
-        serial=f'hdw-{uuid.uuid4()}',
+        serial=f'hdw-{hardware_id}',
         image=None,
         category=HardwareCategory.CONTROLLER,
         owner=user,
@@ -49,19 +52,24 @@ def create_hardware(hardware: Hardware = None) -> Hardware:
 
 def setup_booking(
         customer_id: uuid.UUID = None,
-) -> Booking:
+        hardware_ids: List[uuid.UUID] = None
+) -> BookingRequest:
     if customer_id is None:
         user = create_user()
         customer_id = user.id
 
-    return Booking(
+    if hardware_ids is None:
+        hardware_1 = create_hardware()
+        hardware_2 = create_hardware()
+        hardware_ids = [hardware_1.id, hardware_2.id]
+
+    return BookingRequest(
         id=uuid.uuid4(),
         name='test booking',
         customer_id=customer_id,
+        hardware_ids=hardware_ids,
         booking_start=datetime.now(),
         booking_end=datetime.now(),
-        created_at=datetime.now(),
-        updated_at=datetime.now()
     )
 
 

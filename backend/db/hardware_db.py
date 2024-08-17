@@ -6,7 +6,7 @@ from uuid import UUID
 from chalice import NotFoundError
 from sqlalchemy import select
 
-from models.models import Hardware
+from models.db_models import Hardware
 from util import util
 
 

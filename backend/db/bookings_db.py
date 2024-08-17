@@ -7,7 +7,7 @@ import dateutil.parser
 from chalice import NotFoundError
 from sqlalchemy import select
 
-from models.models import Booking
+from models.db_models import Booking
 from util import util
 
 
