@@ -15,11 +15,11 @@ from tests.util.db_util import create_booking, setup_booking
 
 class TestBookingApi(unittest.TestCase):
     def setUp(self):
-        self.engine = create_engine("sqlite:///", echo=True)
+        self.engine = create_engine("sqlite:///?check_same_thread=False", echo=True)
+        Base.metadata.create_all(self.engine)
         self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
         self.patch_db_session.start()
 
-        Base.metadata.create_all(self.engine)
 
     def tearDown(self):
         Base.metadata.drop_all(self.engine)
@@ -96,6 +96,7 @@ class TestBookingApi(unittest.TestCase):
             body = result.json_body
             api_booking = Booking(**body)
             assert api_booking.name == booking.name
+            assert len(api_booking.hardware) == 2
 
     def test_create_booking_with_missing_booking_name(self):
         # when

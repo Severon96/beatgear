@@ -58,7 +58,7 @@ def create_booking():
         return Response(
             status_code=HTTPStatus.CREATED,
             headers={'Content-Type': 'application/json'},
-            body=request_booking.json()
+            body=db_booking.json()
         )
     except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))
