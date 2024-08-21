@@ -5,6 +5,7 @@ from datetime import datetime
 from http import HTTPStatus
 from unittest.mock import patch
 
+import pytest
 from chalice.test import Client
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -14,18 +15,8 @@ from models.db_models import User, Base, JSONEncoder
 from tests.util.db_util import create_user, setup_user
 
 
+@pytest.mark.usefixtures("postgres")
 class TestUserApi(unittest.TestCase):
-    def setUp(self):
-        self.engine = create_engine("sqlite:///", echo=True)
-        self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
-        self.patch_db_session.start()
-
-        Base.metadata.create_all(bind=self.engine)
-
-    def tearDown(self):
-        Base.metadata.drop_all(self.engine)
-
-        self.patch_db_session.stop()
 
     def test_get_all_users_without_users(self):
         # then

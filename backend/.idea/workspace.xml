@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fed26605-5ee1-4667-8838-7a64ce6bbcc0" name="Changes" comment="Did some fine test adjustments">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/0c71de93-98ce-4914-b66e-a62a8b933d4b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/0c71de93-98ce-4914-b66e-a62a8b933d4b.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/0c71de93-98ce-4914-b66e-a62a8b933d4b/storage_v2/_src_/database/test.kkQ2AA/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/0c71de93-98ce-4914-b66e-a62a8b933d4b/storage_v2/_src_/database/test.kkQ2AA/schema/public.abK9xQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/api_bookings.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/api_bookings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/db_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/db_models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/api/test_booking_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_booking_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/util/db_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/util/db_util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/model_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util/model_util.py" afterDir="false" />
+    <list default="true" id="fed26605-5ee1-4667-8838-7a64ce6bbcc0" name="Changes" comment="Converted booking tests to test containers completely">
+      <change beforePath="$PROJECT_DIR$/tests/api/test_hardware_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_hardware_api.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,10 +33,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Python tests.Python tests for api.test_booking_api.TestBookingApi.executor": "Debug",
+    "Python tests.Python tests for api.test_booking_api.TestBookingApi.executor": "Run",
     "Python tests.Python tests for api.test_booking_api.TestBookingApi.test_create_booking (1).executor": "Run",
     "Python tests.Python tests for api.test_booking_api.TestBookingApi.test_create_booking.executor": "Run",
-    "Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking.executor": "Debug",
+    "Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking.executor": "Run",
     "Python tests.Python tests in tests.executor": "Run",
     "Python tests.pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking.executor": "Run",
     "Python.api_bookings.executor": "Debug",
@@ -74,30 +66,7 @@
       <recent name="$PROJECT_DIR$/util" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking">
-    <configuration name="api_bookings" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="backend" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/api" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/api/api_bookings.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python tests.Python tests for api.test_users_api.TestUserApi">
     <configuration name="Python tests for api.test_booking_api.TestBookingApi" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
@@ -111,22 +80,6 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;api.test_booking_api.TestBookingApi&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for api.test_booking_api.TestBookingApi.test_create_booking (1)" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="backend" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;api.test_booking_api.TestBookingApi.test_create_booking&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -192,6 +145,38 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests for api.test_hardware_api.TestHardwareApi" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;api.test_hardware_api.TestHardwareApi&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for api.test_users_api.TestUserApi" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;api.test_users_api.TestUserApi&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
@@ -211,19 +196,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.api_bookings" />
       <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking" />
+      <item itemvalue="Python tests.Python tests for api.test_hardware_api.TestHardwareApi" />
+      <item itemvalue="Python tests.Python tests for api.test_users_api.TestUserApi" />
       <item itemvalue="Python tests.pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking" />
       <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi" />
-      <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi.test_create_booking (1)" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking" />
+        <item itemvalue="Python tests.Python tests for api.test_users_api.TestUserApi" />
+        <item itemvalue="Python tests.Python tests for api.test_hardware_api.TestHardwareApi" />
         <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi" />
+        <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking" />
         <item itemvalue="Python tests.pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking" />
-        <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi.test_create_booking (1)" />
-        <item itemvalue="Python.api_bookings" />
       </list>
     </recent_temporary>
   </component>
@@ -261,7 +246,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723876608369</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Converted booking tests to test containers completely">
+      <option name="closed" value="true" />
+      <created>1724262922882</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1724262922882</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -270,7 +263,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added reqeust models" />
     <MESSAGE value="Did some fine test adjustments" />
-    <option name="LAST_COMMIT_MESSAGE" value="Did some fine test adjustments" />
+    <MESSAGE value="Converted booking tests to test containers completely" />
+    <option name="LAST_COMMIT_MESSAGE" value="Converted booking tests to test containers completely" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -300,7 +294,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/backend$api_bookings.coverage" NAME="api_bookings Coverage Results" MODIFIED="1724258113252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/api" />
-    <SUITE FILE_PATH="coverage/backend$.coverage" NAME=" Coverage Results" MODIFIED="1724262724776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/backend$.coverage" NAME=" Coverage Results" MODIFIED="1724262884953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/backend$pytest_for_tests_api_test_booking_api_TestBookingApi_test_update_missing_booking.coverage" NAME="pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking Coverage Results" MODIFIED="1724262614835" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>
