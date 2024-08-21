@@ -2,29 +2,17 @@ import json
 import unittest
 import uuid
 from http import HTTPStatus
-from unittest.mock import patch
 
+import pytest
 from chalice.test import Client
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 
 from app import app
-from models.db_models import Booking, Base, JSONEncoder
+from models.db_models import Booking, JSONEncoder
 from tests.util.db_util import create_booking, setup_booking
 
 
+@pytest.mark.usefixtures("postgres")
 class TestBookingApi(unittest.TestCase):
-    def setUp(self):
-        self.engine = create_engine("sqlite:///?check_same_thread=False", echo=True)
-        Base.metadata.create_all(self.engine)
-        self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
-        self.patch_db_session.start()
-
-
-    def tearDown(self):
-        Base.metadata.drop_all(self.engine)
-
-        self.patch_db_session.stop()
 
     def test_get_all_bookings_without_bookings(self):
         # then

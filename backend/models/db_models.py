@@ -79,8 +79,8 @@ class Hardware(Base):
     __tablename__ = "hardware"
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
-    name: Mapped[str] = mapped_column(String(30))
-    serial: Mapped[str] = mapped_column(String(30))
+    name: Mapped[str] = mapped_column(String(250))
+    serial: Mapped[str] = mapped_column(String(50))
     image: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
