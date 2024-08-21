@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="Added test for user creation">
-      <change beforePath="$PROJECT_DIR$/tests/api/test_users_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_users_api.py" afterDir="false" />
+    <list default="true" id="fed26605-5ee1-4667-8838-7a64ce6bbcc0" name="Changes" comment="Converted booking tests to test containers completely">
+      <change beforePath="$PROJECT_DIR$/tests/api/test_hardware_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/api/test_hardware_api.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,98 +15,91 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Unit Test" />
         <option value="Python Script" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$/.." value="feature/sqlite-db-for-tests" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 1
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
 }</component>
-  <component name="ProjectId" id="2jBCRN6jfrzCcwvHyazt8UGna2f" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="2klxcP95qqkqMbRmECqihrzwK6A" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Docker.docker-compose.yml.db: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
-    "Python tests.Python tests for test_users_api.TestUsersApi.executor": "Run",
-    "Python tests.Python tests for test_users_api.TestUsersApi.test_get_all_users.executor": "Run",
-    "Python tests.Python tests for test_users_api.TestUsersApi.test_get_all_users_without_users.executor": "Run",
+    "Python tests.Python tests for api.test_booking_api.TestBookingApi.executor": "Run",
+    "Python tests.Python tests for api.test_booking_api.TestBookingApi.test_create_booking (1).executor": "Run",
+    "Python tests.Python tests for api.test_booking_api.TestBookingApi.test_create_booking.executor": "Run",
+    "Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking.executor": "Run",
     "Python tests.Python tests in tests.executor": "Run",
-    "Python tests.pytest for test_users_api.test_get_all_users_without_users.executor": "Run",
-    "Python tests.pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id.executor": "Run",
-    "Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2.executor": "Run",
-    "Python tests.pytest in test_users_api.py.executor": "Run",
-    "Python.app.executor": "Run",
-    "Python.test_users_api.executor": "Run",
+    "Python tests.pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking.executor": "Run",
+    "Python.api_bookings.executor": "Debug",
+    "RunOnceActivity.OpenDatabaseViewOnStart": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Shell Script.Start Local.executor": "Debug",
-    "git-widget-placeholder": "feature/setup-with-sqlmodel",
-    "last_opened_file_path": "/Users/doctor/Developer/hardware-management/backend/tests/util",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "git-widget-placeholder": "feature/many-to-many-relations-for-booking-hardware",
+    "last_opened_file_path": "/Users/doctor/Developer/hardware-management/backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/tests/util" />
-      <recent name="$PROJECT_DIR$/tests/api" />
-      <recent name="$PROJECT_DIR$/tests" />
-      <recent name="$PROJECT_DIR$/api" />
-      <recent name="$PROJECT_DIR$/db" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/util" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest in test_users_api.py">
-    <configuration name="Start Local" type="ShConfigurationType">
-      <option name="SCRIPT_TEXT" value="chalice local" />
-      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
-      <option name="SCRIPT_PATH" value="chalice local" />
-      <option name="SCRIPT_OPTIONS" value="" />
-      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
-      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
-      <option name="INTERPRETER_PATH" value="/bin/zsh" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="EXECUTE_IN_TERMINAL" value="true" />
-      <option name="EXECUTE_SCRIPT_FILE" value="false" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
-      <deployment type="docker-compose.yml">
-        <settings />
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests in tests" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.Python tests for api.test_users_api.TestUserApi">
+    <configuration name="Python tests for api.test_booking_api.TestBookingApi" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.12/bin/python" />
-      <option name="SDK_NAME" value="Poetry (backend)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;api.test_booking_api.TestBookingApi&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_users_api.test_get_all_users_without_users" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for api.test_booking_api.TestBookingApi.test_create_booking" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;api.test_booking_api.TestBookingApi.test_create_booking&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for api.test_booking_api.TestBookingApi.test_create_booking" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -116,366 +109,192 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_users_api.test_get_all_users_without_users&quot;" />
+      <option name="_new_target" value="&quot;api.test_booking_api.TestBookingApi.test_create_booking&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for api.test_booking_api.TestBookingApi.test_create_booking" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.11/bin/python" />
-      <option name="SDK_NAME" value="Poetry (backend) (2)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.api.test_users_api.TestUserApi.test_get_user_by_id&quot;" />
+      <option name="_new_target" value="&quot;api.test_booking_api.TestBookingApi.test_create_booking&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for tests.api.test_users_api.test_get_all_users_without_users_2" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for api.test_booking_api.TestBookingApi.test_update_booking" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.11/bin/python" />
-      <option name="SDK_NAME" value="Poetry (backend) (2)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;tests.api.test_users_api.test_get_all_users_without_users_2&quot;" />
+      <option name="_new_target" value="&quot;api.test_booking_api.TestBookingApi.test_update_booking&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest in test_users_api.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for api.test_hardware_api.TestHardwareApi" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="backend" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.11/bin/python" />
-      <option name="SDK_NAME" value="Poetry (backend) (2)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;api.test_hardware_api.TestHardwareApi&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for api.test_users_api.TestUserApi" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;api.test_users_api.TestUserApi&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="$USER_HOME$/Library/Caches/pypoetry/virtualenvs/backend-e12yz9jr-py3.12/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/api/test_users_api.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <option name="_new_target" value="&quot;tests.api.test_booking_api.TestBookingApi.test_update_missing_booking&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python tests.pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id" />
-      <item itemvalue="Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2" />
-      <item itemvalue="Python tests.pytest in test_users_api.py" />
-      <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
-      <item itemvalue="Python tests.Python tests in tests" />
-      <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
-      <item itemvalue="Python tests.pytest in test_users_api.py" />
+      <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking" />
+      <item itemvalue="Python tests.Python tests for api.test_hardware_api.TestHardwareApi" />
+      <item itemvalue="Python tests.Python tests for api.test_users_api.TestUserApi" />
+      <item itemvalue="Python tests.pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking" />
+      <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.pytest in test_users_api.py" />
-        <item itemvalue="Python tests.pytest for tests.api.test_users_api.TestUserApi.test_get_user_by_id" />
-        <item itemvalue="Python tests.pytest for tests.api.test_users_api.test_get_all_users_without_users_2" />
-        <item itemvalue="Python tests.Python tests in tests" />
-        <item itemvalue="Python tests.pytest for test_users_api.test_get_all_users_without_users" />
+        <item itemvalue="Python tests.Python tests for api.test_users_api.TestUserApi" />
+        <item itemvalue="Python tests.Python tests for api.test_hardware_api.TestHardwareApi" />
+        <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi" />
+        <item itemvalue="Python tests.Python tests for api.test_booking_api.TestBookingApi.test_update_booking" />
+        <item itemvalue="Python tests.pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-eebebe6c2be4-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.15325.20" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-PY-242.20224.347" />
+        <option value="bundled-python-sdk-c2d6afa66fbe-39cff9de6eef-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.20224.347" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f09509e3-b1db-4b2f-81c0-b7fddab86adc" name="Changes" comment="" />
-      <created>1720851073722</created>
+      <changelist id="fed26605-5ee1-4667-8838-7a64ce6bbcc0" name="Changes" comment="" />
+      <created>1723872042806</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1720851073722</updated>
+      <updated>1723872042806</updated>
+      <workItem from="1724255858141" duration="4573000" />
     </task>
-    <task id="LOCAL-00001" summary="Initial backend commit, setup basic poetry environment">
+    <task id="LOCAL-00001" summary="Added reqeust models">
       <option name="closed" value="true" />
-      <created>1720852099756</created>
+      <created>1723875807992</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1720852099756</updated>
+      <updated>1723875807992</updated>
     </task>
-    <task id="LOCAL-00002" summary="Added users api">
+    <task id="LOCAL-00002" summary="Did some fine test adjustments">
       <option name="closed" value="true" />
-      <created>1720858833035</created>
+      <created>1723876608369</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1720858833035</updated>
+      <updated>1723876608369</updated>
     </task>
-    <task id="LOCAL-00003" summary="Added users api">
+    <task id="LOCAL-00003" summary="Converted booking tests to test containers completely">
       <option name="closed" value="true" />
-      <created>1720858842839</created>
+      <created>1724262922882</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1720858842839</updated>
+      <updated>1724262922882</updated>
     </task>
-    <task id="LOCAL-00004" summary="Merge remote-tracking branch 'origin/main'">
-      <option name="closed" value="true" />
-      <created>1720858984108</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1720858984108</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Database setup">
-      <option name="closed" value="true" />
-      <created>1720862937758</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1720862937758</updated>
-    </task>
-    <task id="LOCAL-00006" summary="New database tables for hardware and bookings">
-      <option name="closed" value="true" />
-      <created>1720945139239</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1720945139240</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Added new database files for hardware and booking.&#10;Also added models">
-      <option name="closed" value="true" />
-      <created>1720945936706</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1720945936706</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Added apis for bookings and hardwares">
-      <option name="closed" value="true" />
-      <created>1720946154048</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1720946154048</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Removed tests for now. Since the chalice test framework doesn't seem to work for now.">
-      <option name="closed" value="true" />
-      <created>1720946416204</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1720946416204</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Basic setup for tests done, db connection not yet working.">
-      <option name="closed" value="true" />
-      <created>1720969419875</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1720969419875</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Adjusted chalice config">
-      <option name="closed" value="true" />
-      <created>1720970205622</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1720970205622</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Tests running!">
-      <option name="closed" value="true" />
-      <created>1721112698910</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1721112698910</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Added sqlalchemy, created models">
-      <option name="closed" value="true" />
-      <created>1721144849755</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1721144849755</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Started converting to sqlalchemy">
-      <option name="closed" value="true" />
-      <created>1721146440792</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1721146440792</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Started working on booking db access">
-      <option name="closed" value="true" />
-      <created>1721148533823</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1721148533823</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Adjusted remaining api accesses">
-      <option name="closed" value="true" />
-      <created>1721148945201</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1721148945201</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Fixed imports">
-      <option name="closed" value="true" />
-      <created>1721148955611</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1721148955611</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Fixed models">
-      <option name="closed" value="true" />
-      <created>1721150245320</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1721150245320</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Added SQLModel, adjusted models to it">
-      <option name="closed" value="true" />
-      <created>1721154178269</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1721154178269</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Fix getter for user with sql model">
-      <option name="closed" value="true" />
-      <created>1721172457849</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1721172457849</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Adjusted booking and hardware db to new changes">
-      <option name="closed" value="true" />
-      <created>1721173087579</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1721173087579</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Started adjusting tests">
-      <option name="closed" value="true" />
-      <created>1721207896402</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1721207896402</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Think I got the db mock working">
-      <option name="closed" value="true" />
-      <created>1721490636395</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1721490636395</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Started adding more tests per endpoint">
-      <option name="closed" value="true" />
-      <created>1721492195377</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1721492195377</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Added test for user creation">
-      <option name="closed" value="true" />
-      <created>1721494333901</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1721494333901</updated>
-    </task>
-    <option name="localTasksCounter" value="26" />
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
-  <component name="Vcs.Log.History.Properties">
-    <option name="COLUMN_ID_ORDER">
-      <list>
-        <option value="Default.Root" />
-        <option value="Default.Author" />
-        <option value="Default.Date" />
-        <option value="Default.Subject" />
-        <option value="Space.CommitStatus" />
-      </list>
-    </option>
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <ignored-roots>
-      <path value="$PROJECT_DIR$" />
-    </ignored-roots>
-    <MESSAGE value="Initial backend commit, setup basic poetry environment" />
-    <MESSAGE value="Added users api" />
-    <MESSAGE value="Merge remote-tracking branch 'origin/main'" />
-    <MESSAGE value="Database setup" />
-    <MESSAGE value="New database tables for hardware and bookings" />
-    <MESSAGE value="Added new database files for hardware and booking.&#10;Also added models" />
-    <MESSAGE value="Added apis for bookings and hardwares" />
-    <MESSAGE value="Removed tests for now. Since the chalice test framework doesn't seem to work for now." />
-    <MESSAGE value="Basic setup for tests done, db connection not yet working." />
-    <MESSAGE value="Adjusted chalice config" />
-    <MESSAGE value="Tests running!" />
-    <MESSAGE value="Added sqlalchemy, created models" />
-    <MESSAGE value="Started converting to sqlalchemy" />
-    <MESSAGE value="Started working on booking db access" />
-    <MESSAGE value="Adjusted remaining api accesses" />
-    <MESSAGE value="Fixed imports" />
-    <MESSAGE value="Fixed models" />
-    <MESSAGE value="Added SQLModel, adjusted models to it" />
-    <MESSAGE value="Fix getter for user with sql model" />
-    <MESSAGE value="Adjusted booking and hardware db to new changes" />
-    <MESSAGE value="Started adjusting tests" />
-    <MESSAGE value="Think I got the db mock working" />
-    <MESSAGE value="Started adding more tests per endpoint" />
-    <MESSAGE value="Added test for user creation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added test for user creation" />
+    <MESSAGE value="Added reqeust models" />
+    <MESSAGE value="Did some fine test adjustments" />
+    <MESSAGE value="Converted booking tests to test containers completely" />
+    <option name="LAST_COMMIT_MESSAGE" value="Converted booking tests to test containers completely" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/util/util.py</url>
-          <line>37</line>
-          <option name="timeStamp" value="7" />
+          <url>file://$PROJECT_DIR$/tests/util/fixtures.py</url>
+          <line>14</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/api/api_bookings.py</url>
+          <line>75</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/api/api_bookings.py</url>
+          <line>71</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/api/api_bookings.py</url>
+          <line>65</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/backend$api_bookings.coverage" NAME="api_bookings Coverage Results" MODIFIED="1724258113252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/api" />
+    <SUITE FILE_PATH="coverage/backend$.coverage" NAME=" Coverage Results" MODIFIED="1724262884953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/backend$pytest_for_tests_api_test_booking_api_TestBookingApi_test_update_missing_booking.coverage" NAME="pytest for tests.api.test_booking_api.TestBookingApi.test_update_missing_booking Coverage Results" MODIFIED="1724262614835" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>

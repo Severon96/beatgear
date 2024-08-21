@@ -6,7 +6,11 @@ from pydantic_core import ValidationError
 
 from api.constants import cors_config
 from db import bookings_db
-from models.models import Booking
+from db.hardware_db import get_hardware
+from models.db_models import Booking
+from models.request_models import BookingRequest
+from util.model_util import convert_to_db_booking
+from util.util import parse_model
 
 api = Blueprint(__name__)
 
@@ -41,21 +45,22 @@ def create_booking():
     request = api.current_request
     try:
         json_body = request.json_body
-        request_booking = Booking(**json_body)
+        request_booking = parse_model(BookingRequest, json_body)
 
-        bookings_db.create_booking(request_booking)
+        db_booking = convert_to_db_booking(request_booking)
+        bookings_db.create_booking(db_booking)
 
         return Response(
             status_code=HTTPStatus.CREATED,
             headers={'Content-Type': 'application/json'},
-            body=request_booking.json()
+            body=db_booking.json()
         )
     except (ValidationError, ValueError) as e:
         raise BadRequestError(str(e))
 
 
 @api.route("/bookings/{booking_id}", methods=['PATCH'], cors=cors_config)
-def update_user(booking_id: str):
+def update_booking(booking_id: str):
     try:
         booking_uuid = UUID(booking_id)
     except ValueError:
@@ -64,9 +69,11 @@ def update_user(booking_id: str):
     request = api.current_request
     try:
         json_body = request.json_body
-        parsed_booking = Booking(**json_body)
+        request_booking = BookingRequest(**json_body)
 
-        updated_user = bookings_db.update_booking(booking_uuid, parsed_booking)
+        db_booking = convert_to_db_booking(request_booking)
+
+        updated_user = bookings_db.update_booking(booking_uuid, db_booking)
 
         return Response(
             status_code=HTTPStatus.OK,

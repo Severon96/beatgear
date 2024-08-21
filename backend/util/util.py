@@ -1,6 +1,7 @@
 import os
 from typing import TypeVar
 
+import dotenv
 from pydantic import BaseModel
 from sqlalchemy import Engine, create_engine, Connection
 from sqlalchemy.orm import DeclarativeBase, Session
@@ -29,13 +30,7 @@ def get_db_session() -> Session:
 
 
 def get_db_engine() -> Engine:
-    host = os.environ.get("DB_HOST") if os.environ.get("DB_USER") is not None else "localhost"
-    port = os.environ.get("DB_PORT") if os.environ.get("DB_PORT") is not None else "5432"
-    dbname = os.environ.get("DB_NAME") if os.environ.get("DB_NAME") is not None else "hardware_management"
-    user = os.environ.get("DB_USER") if os.environ.get("DB_USER") is not None else "postgres"
-    password = os.environ.get("DB_PASS") if os.environ.get("DB_PASS") is not None else ""
-
-    engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}", echo=True)
+    engine = create_engine(os.environ.get("DB_URL"), echo=True)
     DeclarativeBase.metadata.create_all(engine)
 
     return engine

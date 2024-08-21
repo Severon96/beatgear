@@ -6,7 +6,7 @@ from uuid import UUID
 from chalice import NotFoundError
 from sqlalchemy import select
 
-from models.models import User
+from models.db_models import User
 from util import util
 
 
