@@ -5,6 +5,7 @@ from typing import List
 from db import users_db, bookings_db, hardware_db
 from models.db_models import User, Booking, Hardware, HardwareCategory
 from models.request_models import BookingRequest
+from util.model_util import convert_to_db_booking
 
 
 def setup_user() -> User:
@@ -73,8 +74,10 @@ def setup_booking(
     )
 
 
-def create_booking(booking: Booking) -> Booking:
+def create_booking(booking: BookingRequest) -> Booking:
     if booking is None:
         booking = setup_booking()
 
-    return bookings_db.create_booking(booking)
+    db_booking = convert_to_db_booking(booking)
+
+    return bookings_db.create_booking(db_booking)

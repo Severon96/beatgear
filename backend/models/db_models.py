@@ -121,6 +121,11 @@ class Booking(Base):
 
     hardware: Mapped[List[Hardware]] = relationship(secondary=booking_to_hardware_table)
 
+    def dict(self) -> dict[Any, Any]:
+        booking_dict = super().dict()
+        booking_dict['hardware'] = [hardware_obj.dict() for hardware_obj in self.hardware]
+        return booking_dict
+
     @validates("customer_id", "hardware_id", "booking_start", "booking_end", include_removes=True)
     def validates_username(self, key, value, is_remove) -> str:
         if is_remove:

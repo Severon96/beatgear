@@ -47,12 +47,7 @@ def create_booking():
         json_body = request.json_body
         request_booking = parse_model(BookingRequest, json_body)
 
-        hardware = []
-        for hardware_id in request_booking.hardware_ids:
-            request_hardware = get_hardware(hardware_id)
-            hardware.append(request_hardware)
-
-        db_booking = convert_to_db_booking(request_booking, hardware)
+        db_booking = convert_to_db_booking(request_booking)
         bookings_db.create_booking(db_booking)
 
         return Response(
@@ -74,9 +69,11 @@ def update_booking(booking_id: str):
     request = api.current_request
     try:
         json_body = request.json_body
-        parsed_booking = Booking(**json_body)
+        request_booking = BookingRequest(**json_body)
 
-        updated_user = bookings_db.update_booking(booking_uuid, parsed_booking)
+        db_booking = convert_to_db_booking(request_booking)
+
+        updated_user = bookings_db.update_booking(booking_uuid, db_booking)
 
         return Response(
             status_code=HTTPStatus.OK,

@@ -9,6 +9,7 @@ from chalice.test import Client
 from app import app
 from models.db_models import Booking, JSONEncoder
 from tests.util.db_util import create_booking, setup_booking
+from util.model_util import convert_to_booking_request
 
 
 @pytest.mark.usefixtures("postgres")
@@ -76,7 +77,7 @@ class TestBookingApi(unittest.TestCase):
             result = client.http.post(
                 "/api/bookings",
                 headers={'Content-Type': 'application/json'},
-                body=booking.json()
+                body=booking.model_dump_json()
             )
 
             # expect
@@ -109,12 +110,14 @@ class TestBookingApi(unittest.TestCase):
         booking = create_booking(setup_booking())
         booking.name = "updated_booking_name"
 
+        request_booking = convert_to_booking_request(booking)
+
         # then
         with Client(app) as client:
             result = client.http.patch(
                 f"/api/bookings/{booking.id}",
                 headers={'Content-Type': 'application/json'},
-                body=booking.json()
+                body=request_booking.model_dump_json()
             )
 
             # expect
