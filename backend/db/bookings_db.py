@@ -7,7 +7,7 @@ import dateutil.parser
 from chalice import NotFoundError
 from sqlalchemy import select
 
-from models.models import Booking
+from models.db_models import Booking
 from util import util
 
 
@@ -34,7 +34,6 @@ def create_booking(booking: Booking) -> Booking:
 
     booking.id = uuid.uuid4()
     booking.customer_id = UUID(booking.customer_id) if isinstance(booking.customer_id, str) else booking.customer_id
-    booking.hardware_id = UUID(booking.hardware_id) if isinstance(booking.hardware_id, str) else booking.hardware_id
     booking.booking_start = dateutil.parser.isoparse(booking.booking_start) if isinstance(
         booking.booking_start, str) else booking.booking_start
     booking.booking_end = dateutil.parser.isoparse(booking.booking_end) if isinstance(
@@ -63,7 +62,6 @@ def update_booking(booking_id: UUID, booking: Booking) -> Type[Booking] | None:
     # field types might not be appropriate
     booking.id = UUID(booking.id) if isinstance(booking.id, str) else booking.id
     booking.customer_id = UUID(booking.customer_id) if isinstance(booking.customer_id, str) else booking.customer_id
-    booking.hardware_id = UUID(booking.hardware_id) if isinstance(booking.hardware_id, str) else booking.hardware_id
     booking.booking_start = dateutil.parser.isoparse(booking.booking_start) if isinstance(
         booking.booking_start, str) else booking.booking_start
     booking.booking_end = dateutil.parser.isoparse(booking.booking_end) if isinstance(

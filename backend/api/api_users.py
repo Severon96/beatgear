@@ -6,7 +6,7 @@ from pydantic_core import ValidationError
 
 from api.constants import cors_config
 from db import users_db
-from models.models import User
+from models.db_models import User
 from util import util
 
 api = Blueprint(__name__)

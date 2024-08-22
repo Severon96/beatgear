@@ -2,29 +2,18 @@ import json
 import unittest
 import uuid
 from http import HTTPStatus
-from unittest.mock import patch
 
+import pytest
 from chalice.test import Client
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 
 from app import app
-from models.models import Booking, Base, JSONEncoder
+from models.db_models import Booking, JSONEncoder
 from tests.util.db_util import create_booking, setup_booking
+from util.model_util import convert_to_booking_request
 
 
+@pytest.mark.usefixtures("postgres")
 class TestBookingApi(unittest.TestCase):
-    def setUp(self):
-        self.engine = create_engine("sqlite:///", echo=True)
-        self.patch_db_session = patch('util.util.get_db_session', return_value=Session(self.engine))
-        self.patch_db_session.start()
-
-        Base.metadata.create_all(self.engine)
-
-    def tearDown(self):
-        Base.metadata.drop_all(self.engine)
-
-        self.patch_db_session.stop()
 
     def test_get_all_bookings_without_bookings(self):
         # then
@@ -88,7 +77,7 @@ class TestBookingApi(unittest.TestCase):
             result = client.http.post(
                 "/api/bookings",
                 headers={'Content-Type': 'application/json'},
-                body=booking.json()
+                body=booking.model_dump_json()
             )
 
             # expect
@@ -96,11 +85,13 @@ class TestBookingApi(unittest.TestCase):
             body = result.json_body
             api_booking = Booking(**body)
             assert api_booking.name == booking.name
+            assert len(api_booking.hardware) == 2
 
     def test_create_booking_with_missing_booking_name(self):
         # when
         booking = setup_booking()
         booking_dict = booking.dict()
+        booking_dict['hardware_ids'] = ['test']
         booking_dict['customer_id'] = None
 
         # then
@@ -119,12 +110,14 @@ class TestBookingApi(unittest.TestCase):
         booking = create_booking(setup_booking())
         booking.name = "updated_booking_name"
 
+        request_booking = convert_to_booking_request(booking)
+
         # then
         with Client(app) as client:
             result = client.http.patch(
                 f"/api/bookings/{booking.id}",
                 headers={'Content-Type': 'application/json'},
-                body=booking.json()
+                body=request_booking.model_dump_json()
             )
 
             # expect

@@ -6,7 +6,7 @@ from pydantic_core import ValidationError
 
 from api.constants import cors_config
 from db import hardware_db
-from models.models import Hardware
+from models.db_models import Hardware
 
 api = Blueprint(__name__)
 
