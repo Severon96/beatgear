@@ -1,161 +1,145 @@
 import json
-import unittest
 import uuid
 from http import HTTPStatus
-from unittest.mock import patch
 
 import pytest
-from chalice.test import Client
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 
-from app import app
-from models.db_models import Hardware, Base, JSONEncoder
+from models.db_models import Hardware, JSONEncoder
 from tests.util.db_util import create_hardware, setup_hardware
 
 
 @pytest.mark.usefixtures("postgres")
-class TestHardwareApi(unittest.TestCase):
+class TestHardwareApi:
 
-    def test_get_all_hardware_without_hardware(self):
+    def test_get_all_hardware_without_hardware(self, client):
         # then
-        with Client(app) as client:
-            result = client.http.get("/api/hardware")
+        result = client.get("/api/hardware")
 
-            # expect
-            assert result.status_code == HTTPStatus.OK
-            assert len(result.json_body) == 0
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 0
 
-    def test_get_all_hardware_with_hardware(self):
+    def test_get_all_hardware_with_hardware(self, client):
         # when
         create_hardware(setup_hardware())
         create_hardware(setup_hardware())
 
         # then
-        with Client(app) as client:
-            result = client.http.get("/api/hardware")
+        result = client.get("/api/hardware")
 
-            # expect
-            assert result.status_code == HTTPStatus.OK
-            assert len(result.json_body) == 2
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 2
 
-    def test_get_hardware_by_id(self):
+    def test_get_hardware_by_id(self, client):
         # when
         hardware = create_hardware(setup_hardware())
 
         # then
-        with Client(app) as client:
-            result = client.http.get(f"/api/hardware/{hardware.id}")
+        result = client.get(f"/api/hardware/{hardware.id}")
 
-            # expect
-            assert result.status_code == HTTPStatus.OK
-            body = result.json_body
-            assert body is not None
-            api_hardware = Hardware(**body)
-            assert uuid.UUID(api_hardware.id) == hardware.id
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        body = result.json
+        assert body is not None
+        api_hardware = Hardware(**body)
+        assert uuid.UUID(api_hardware.id) == hardware.id
 
-    def test_get_missing_hardware_by_id(self):
+    def test_get_missing_hardware_by_id(self, client):
         # then
-        with Client(app) as client:
-            result = client.http.get(f"/api/hardware/{uuid.uuid4()}")
+        result = client.get(f"/api/hardware/{uuid.uuid4()}")
 
-            # expect
-            assert result.status_code == HTTPStatus.NOT_FOUND
+        # expect
+        assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_get_hardware_by_malformed_uuid(self):
+    def test_get_hardware_by_malformed_uuid(self, client):
         # then
-        with Client(app) as client:
-            result = client.http.get(f"/api/hardware/test")
+        result = client.get(f"/api/hardware/test")
 
-            # expect
-            assert result.status_code == HTTPStatus.BAD_REQUEST
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_create_hardware(self):
+    def test_create_hardware(self, client):
         # when
         hardware = setup_hardware()
 
         # then
-        with Client(app) as client:
-            json = hardware.json()
+        json = hardware.json()
 
-            result = client.http.post(
-                "/api/hardware",
-                headers={'Content-Type': 'application/json'},
-                body=json
-            )
+        result = client.post(
+            "/api/hardware",
+            headers={'Content-Type': 'application/json'},
+            data=json
+        )
 
-            # expect
-            print('json body', result.json_body)
-            assert result.status_code == HTTPStatus.CREATED
-            body = result.json_body
-            api_hardware = Hardware(**body)
-            assert api_hardware.name == hardware.name
+        # expect
+        print('json body', result.json)
+        assert result.status_code == HTTPStatus.CREATED
+        body = result.json
+        api_hardware = Hardware(**body)
+        assert api_hardware.name == hardware.name
 
-    def test_create_hardware_with_missing_hardware_name(self):
+    def test_create_hardware_with_missing_hardware_name(self, client):
         # when
         hardware = setup_hardware()
         hardware_dict = hardware.dict()
         hardware_dict['name'] = None
 
         # then
-        with Client(app) as client:
-            result = client.http.post(
-                "/api/hardware",
-                headers={'Content-Type': 'application/json'},
-                body=json.dumps(hardware_dict, cls=JSONEncoder)
-            )
+        result = client.post(
+            "/api/hardware",
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps(hardware_dict, cls=JSONEncoder)
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.BAD_REQUEST
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_update_hardware(self):
+    def test_update_hardware(self, client):
         # when
         hardware = create_hardware(setup_hardware())
         hardware.name = "updated_hardware_name"
 
         # then
-        with Client(app) as client:
-            result = client.http.patch(
-                f"/api/hardware/{hardware.id}",
-                headers={'Content-Type': 'application/json'},
-                body=hardware.json()
-            )
+        result = client.patch(
+            f"/api/hardware/{hardware.id}",
+            headers={'Content-Type': 'application/json'},
+            data=hardware.json()
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.OK
-            body = result.json_body
-            api_hardware = Hardware(**body)
-            assert api_hardware.name == hardware.name
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        body = result.json
+        api_hardware = Hardware(**body)
+        assert api_hardware.name == hardware.name
 
-    def test_update_missing_hardware(self):
+    def test_update_missing_hardware(self, client):
         # when
         hardware = setup_hardware()
         hardware.name = "updated_hardware_name"
 
         # then
-        with Client(app) as client:
-            result = client.http.patch(
-                f"/api/hardware/{uuid.uuid4()}",
-                headers={'Content-Type': 'application/json'},
-                body=hardware.json()
-            )
+        result = client.patch(
+            f"/api/hardware/{uuid.uuid4()}",
+            headers={'Content-Type': 'application/json'},
+            data=hardware.json()
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.NOT_FOUND
+        # expect
+        assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_update_hardware_with_missing_hardware_name(self):
+    def test_update_hardware_with_missing_hardware_name(self, client):
         # when
         hardware = create_hardware(setup_hardware())
         hardware_dict = hardware.dict()
         hardware_dict['name'] = None
 
         # then
-        with Client(app) as client:
-            result = client.http.patch(
-                f"/api/hardware/{hardware.id}",
-                headers={'Content-Type': 'application/json'},
-                body=json.dumps(hardware_dict, cls=JSONEncoder)
-            )
+        result = client.patch(
+            f"/api/hardware/{hardware.id}",
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps(hardware_dict, cls=JSONEncoder)
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.BAD_REQUEST
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST

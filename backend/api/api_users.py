@@ -1,12 +1,12 @@
+import json
 from http import HTTPStatus
 from uuid import UUID
 
-from flask import Blueprint, Response, abort
+from flask import Blueprint, Response, abort, request
 from pydantic_core import ValidationError
 
-
 from db import users_db
-from models.db_models import User
+from models.db_models import User, JSONEncoder
 
 api = Blueprint('users', __name__)
 
@@ -14,16 +14,17 @@ api = Blueprint('users', __name__)
 @api.route("/users", methods=['GET'])
 def get_all_users():
     users = users_db.get_all_users()
-    body = [user.json() for user in users]
+    body = [user.dict() for user in users]
+    body_json = json.dumps(body, cls=JSONEncoder)
 
     return Response(
         status=HTTPStatus.OK,
-        headers={'Content-Type': 'application/json'},
-        response=body
+        content_type='application/json',
+        response=body_json
     )
 
 
-@api.route("/users/{user_id}", methods=['GET'])
+@api.route("/users/<user_id>", methods=['GET'])
 def get_user(user_id: str):
     try:
         uuid = UUID(user_id)
@@ -33,46 +34,44 @@ def get_user(user_id: str):
 
     return Response(
         status=HTTPStatus.OK,
-        headers={'Content-Type': 'application/json'},
+        content_type='application/json',
         response=user.json()
     )
 
 
 @api.route("/users", methods=['POST'])
 def create_user():
-    request = api.current_request
     try:
-        json_body = request.json_body
+        json_body = request.json
         request_user = User(**json_body)
 
         users_db.create_user(request_user)
 
         return Response(
             status=HTTPStatus.CREATED,
-            headers={'Content-Type': 'application/json'},
+            content_type='application/json',
             response=request_user.json()
         )
     except (ValidationError, ValueError) as e:
         abort(400, str(e))
 
 
-@api.route("/users/{user_id}", methods=['PATCH'])
+@api.route("/users/<user_id>", methods=['PATCH'])
 def update_user(user_id: str):
     try:
         user_uuid = UUID(user_id)
     except ValueError:
         abort(400, f"{user_id} is not a valid id")
 
-    request = api.current_request
     try:
-        json_body = request.json_body
+        json_body = request.json
         request_user = User(**json_body)
 
         updated_user = users_db.update_user(user_uuid, request_user)
 
         return Response(
             status=HTTPStatus.OK,
-            headers={'Content-Type': 'application/json'},
+            content_type='application/json',
             response=updated_user.json()
         )
     except (ValidationError, ValueError) as e:
