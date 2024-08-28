@@ -1,74 +1,74 @@
+import json
 from http import HTTPStatus
 from uuid import UUID
 
-from chalice import Blueprint, Response, BadRequestError
+from flask import Blueprint, Response, abort, request
 from pydantic_core import ValidationError
 
-from api.constants import cors_config
 from db import bookings_db
-from db.hardware_db import get_hardware
-from models.db_models import Booking
+from models.db_models import JSONEncoder
 from models.request_models import BookingRequest
 from util.model_util import convert_to_db_booking
 from util.util import parse_model
 
-api = Blueprint(__name__)
+api = Blueprint('bookings', __name__)
 
 
-@api.route("/bookings", methods=['GET'], cors=cors_config)
+@api.route("/bookings", methods=['GET'])
 def get_all_bookings():
     bookings = bookings_db.get_all_bookings()
-    body = [booking.json() for booking in bookings]
+    body = [booking.dict() for booking in bookings]
+    body_json = json.dumps(body, cls=JSONEncoder)
 
     return Response(
-        status_code=HTTPStatus.OK,
-        body=body
+        status=HTTPStatus.OK,
+        content_type='application/json',
+        response=body_json
     )
 
 
-@api.route("/bookings/{booking_id}", methods=['GET'], cors=cors_config)
+@api.route("/bookings/<booking_id>", methods=['GET'])
 def get_booking(booking_id: str):
     try:
         uuid = UUID(booking_id)
     except ValueError:
-        raise BadRequestError(f"{booking_id} is not a valid id")
+        abort(400, f"{booking_id} is not a valid id")
     booking = bookings_db.get_booking(uuid)
 
     return Response(
-        status_code=HTTPStatus.OK,
-        body=booking.json()
+        status=HTTPStatus.OK,
+        content_type='application/json',
+        response=booking.json()
     )
 
 
-@api.route("/bookings", methods=['POST'], cors=cors_config)
+@api.route("/bookings", methods=['POST'])
 def create_booking():
-    request = api.current_request
     try:
-        json_body = request.json_body
+        json_body = request.json
         request_booking = parse_model(BookingRequest, json_body)
 
         db_booking = convert_to_db_booking(request_booking)
         bookings_db.create_booking(db_booking)
 
         return Response(
-            status_code=HTTPStatus.CREATED,
-            headers={'Content-Type': 'application/json'},
-            body=db_booking.json()
+            status=HTTPStatus.CREATED,
+            content_type='application/json',
+            response=db_booking.json()
         )
     except (ValidationError, ValueError) as e:
-        raise BadRequestError(str(e))
+        abort(400, str(e))
 
 
-@api.route("/bookings/{booking_id}", methods=['PATCH'], cors=cors_config)
+@api.route("/bookings/<booking_id>", methods=['PATCH'])
 def update_booking(booking_id: str):
     try:
         booking_uuid = UUID(booking_id)
     except ValueError:
-        raise BadRequestError(f"{booking_id} is not a valid id")
+        abort(400, f"{booking_id} is not a valid id")
 
-    request = api.current_request
     try:
-        json_body = request.json_body
+        json_body = request.json
         request_booking = BookingRequest(**json_body)
 
         db_booking = convert_to_db_booking(request_booking)
@@ -76,9 +76,9 @@ def update_booking(booking_id: str):
         updated_user = bookings_db.update_booking(booking_uuid, db_booking)
 
         return Response(
-            status_code=HTTPStatus.OK,
-            headers={'Content-Type': 'application/json'},
-            body=updated_user.json()
+            status=HTTPStatus.OK,
+            content_type='application/json',
+            response=updated_user.json()
         )
     except (ValidationError, ValueError) as e:
-        raise BadRequestError(str(e))
+        abort(400, str(e))

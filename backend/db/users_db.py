@@ -4,6 +4,7 @@ from typing import Sequence, Type
 from uuid import UUID
 
 from chalice import NotFoundError
+from flask import abort
 from sqlalchemy import select
 
 from models.db_models import User
@@ -16,7 +17,7 @@ def get_user(user_id: UUID) -> Type[User]:
     user = session.get(User, user_id)
 
     if user is None:
-        raise NotFoundError(f"User with id {user_id} not found")
+        abort(404, f"User with id {user_id} not found")
 
     return user
 
@@ -52,7 +53,7 @@ def update_user(user_id: UUID, user: User) -> Type[User] | None:
     db_user = session.get(User, user_id)
 
     if db_user is None:
-        raise NotFoundError(f"User with id {user_id} not found.")
+        abort(404, f"User with id {user_id} not found.")
 
     # field types might not be appropriate
     user.id = db_user.id

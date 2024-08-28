@@ -1,79 +1,79 @@
+import json
 from http import HTTPStatus
 from uuid import UUID
 
-from chalice import Blueprint, Response, BadRequestError
+from flask import Blueprint, Response, abort, request
 from pydantic_core import ValidationError
 
-from api.constants import cors_config
+
 from db import hardware_db
-from models.db_models import Hardware
+from models.db_models import Hardware, JSONEncoder
 
-api = Blueprint(__name__)
+api = Blueprint('hardware', __name__)
 
 
-@api.route("/hardware", methods=['GET'], cors=cors_config)
+@api.route("/hardware", methods=['GET'])
 def get_all_hardware():
     all_hardware = hardware_db.get_all_hardware()
-    body = [hardware.json() for hardware in all_hardware]
+    body = [hardware.dict() for hardware in all_hardware]
+    body_json = json.dumps(body, cls=JSONEncoder)
 
     return Response(
-        status_code=HTTPStatus.OK,
-        headers={'Content-Type': 'application/json'},
-        body=body
+        status=HTTPStatus.OK,
+        content_type='application/json',
+        response=body_json
     )
 
 
-@api.route("/hardware/{hardware_id}", methods=['GET'], cors=cors_config)
+@api.route("/hardware/<hardware_id>", methods=['GET'])
 def get_hardware(hardware_id: str):
     try:
         uuid = UUID(hardware_id)
     except ValueError:
-        raise BadRequestError(f"{hardware_id} is not a valid id")
+        abort(400, f"{hardware_id} is not a valid id")
     hardware = hardware_db.get_hardware(uuid)
 
     return Response(
-        status_code=HTTPStatus.OK,
-        headers={'Content-Type': 'application/json'},
-        body=hardware.json()
+        status=HTTPStatus.OK,
+        content_type='application/json',
+        response=hardware.json()
     )
 
 
-@api.route("/hardware", methods=['POST'], cors=cors_config)
+@api.route("/hardware", methods=['POST'])
 def create_hardware():
-    request = api.current_request
     try:
-        json_body = request.json_body
+        json_body = request.json
         request_hardware = Hardware(**json_body)
 
         hardware_db.create_hardware(request_hardware)
 
         return Response(
-            status_code=HTTPStatus.CREATED,
-            headers={'Content-Type': 'application/json'},
-            body=request_hardware.json()
+            status=HTTPStatus.CREATED,
+            content_type='application/json',
+            response=request_hardware.json()
         )
     except (ValidationError, ValueError) as e:
-        raise BadRequestError(str(e))
+        abort(400, str(e))
 
 
-@api.route("/hardware/{hardware_id}", methods=['PATCH'], cors=cors_config)
+@api.route("/hardware/<hardware_id>", methods=['PATCH'])
 def update_user(hardware_id: str):
     try:
         hardware_uuid = UUID(hardware_id)
     except ValueError:
-        raise BadRequestError(f"{hardware_id} is not a valid id")
+        abort(400, f"{hardware_id} is not a valid id")
 
-    request = api.current_request
     try:
-        json_body = request.json_body
+        json_body = request.json
         parsed_hardware = Hardware(**json_body)
 
         updated_user = hardware_db.update_hardware(hardware_uuid, parsed_hardware)
 
         return Response(
-            status_code=HTTPStatus.OK,
-            headers={'Content-Type': 'application/json'},
-            body=updated_user.json()
+            status=HTTPStatus.OK,
+            content_type='application/json',
+            response=updated_user.json()
         )
     except (ValidationError, ValueError) as e:
-        raise BadRequestError(str(e))
+        abort(400, str(e))

@@ -5,6 +5,7 @@ from uuid import UUID
 
 import dateutil.parser
 from chalice import NotFoundError
+from flask import abort
 from sqlalchemy import select
 
 from models.db_models import Booking
@@ -17,7 +18,7 @@ def get_booking(booking_id: UUID) -> Type[Booking]:
     booking = session.get(Booking, booking_id)
 
     if booking is None:
-        raise NotFoundError(f"Booking with id {booking_id} not found")
+        abort(404, f"Booking with id {booking_id} not found")
 
     return booking
 
@@ -57,7 +58,7 @@ def update_booking(booking_id: UUID, booking: Booking) -> Type[Booking] | None:
     db_booking = session.get(Booking, booking_id)
 
     if db_booking is None:
-        raise NotFoundError(f"Booking with id {booking_id} not found.")
+        abort(404, f"Booking with id {booking_id} not found.")
 
     # field types might not be appropriate
     booking.id = UUID(booking.id) if isinstance(booking.id, str) else booking.id

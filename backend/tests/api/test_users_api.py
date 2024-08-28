@@ -1,95 +1,83 @@
 import json
-import unittest
 import uuid
 from datetime import datetime
 from http import HTTPStatus
-from unittest.mock import patch
 
 import pytest
-from chalice.test import Client
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
 
-from app import app
-from models.db_models import User, Base, JSONEncoder
+from models.db_models import User, JSONEncoder
 from tests.util.db_util import create_user, setup_user
 
 
 @pytest.mark.usefixtures("postgres")
-class TestUserApi(unittest.TestCase):
+class TestUserApi:
 
-    def test_get_all_users_without_users(self):
+    def test_get_all_users_without_users(self, client):
         # then
-        with Client(app) as client:
-            result = client.http.get("/api/users")
+        result = client.get("/api/users")
 
-            # expect
-            assert result.status_code == HTTPStatus.OK
-            assert len(result.json_body) == 0
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 0
 
-    def test_get_all_users_with_users(self):
+    def test_get_all_users_with_users(self, client):
         # when
         create_user(setup_user())
         create_user(setup_user())
 
         # then
-        with Client(app) as client:
-            result = client.http.get("/api/users")
+        result = client.get("/api/users")
 
-            # expect
-            assert result.status_code == HTTPStatus.OK
-            assert len(result.json_body) == 2
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 2
 
-    def test_get_user_by_id(self):
+    def test_get_user_by_id(self, client):
         # when
         user = create_user(setup_user())
 
         # then
-        with Client(app) as client:
-            result = client.http.get(f"/api/users/{user.id}")
+        result = client.get(f"/api/users/{user.id}")
 
-            # expect
-            assert result.status_code == HTTPStatus.OK
-            result_body = result.json_body
-            assert result_body is not None
-            api_user = User(**result_body)
-            assert uuid.UUID(api_user.id) == user.id
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        result_body = result.json
+        assert result_body is not None
+        api_user = User(**result_body)
+        assert uuid.UUID(api_user.id) == user.id
 
-    def test_get_missing_user_by_id(self):
+    def test_get_missing_user_by_id(self, client):
         # then
-        with Client(app) as client:
-            result = client.http.get(f"/api/users/{uuid.uuid4()}")
+        result = client.get(f"/api/users/{uuid.uuid4()}")
 
-            # expect
-            assert result.status_code == HTTPStatus.NOT_FOUND
+        # expect
+        assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_get_user_by_malformed_uuid(self):
+    def test_get_user_by_malformed_uuid(self, client):
         # then
-        with Client(app) as client:
-            result = client.http.get(f"/api/users/test")
+        result = client.get(f"/api/users/test")
 
-            # expect
-            assert result.status_code == HTTPStatus.BAD_REQUEST
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_create_user(self):
+    def test_create_user(self, client):
         # when
         user = setup_user()
 
         # then
-        with Client(app) as client:
-            result = client.http.post(
-                "/api/users",
-                headers={'Content-Type': 'application/json'},
-                body=user.json()
-            )
+        result = client.post(
+            "/api/users",
+            headers={'Content-Type': 'application/json'},
+            data=user.json()
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.CREATED
-            body = result.json_body
-            api_user = User(**body)
-            assert api_user.username == user.username
+        # expect
+        assert result.status_code == HTTPStatus.CREATED
+        body = result.json
+        api_user = User(**body)
+        assert api_user.username == user.username
 
-    def test_create_user_with_missing_username(self):
+    def test_create_user_with_missing_username(self, client):
         # when
         user_dict = {
             'id': uuid.uuid4(),
@@ -101,64 +89,60 @@ class TestUserApi(unittest.TestCase):
         }
 
         # then
-        with Client(app) as client:
-            result = client.http.post(
-                "/api/users",
-                headers={'Content-Type': 'application/json'},
-                body=json.dumps(user_dict, cls=JSONEncoder)
-            )
+        result = client.post(
+            "/api/users",
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps(user_dict, cls=JSONEncoder)
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.BAD_REQUEST
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_update_user(self):
+    def test_update_user(self, client):
         # when
         user = create_user(setup_user())
         user.username = "updated_username"
 
         # then
-        with Client(app) as client:
-            result = client.http.patch(
-                f"/api/users/{user.id}",
-                headers={'Content-Type': 'application/json'},
-                body=user.json()
-            )
+        result = client.patch(
+            f"/api/users/{user.id}",
+            headers={'Content-Type': 'application/json'},
+            data=user.json()
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.OK
-            body = result.json_body
-            api_user = User(**body)
-            assert api_user.username == user.username
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        body = result.json
+        api_user = User(**body)
+        assert api_user.username == user.username
 
-    def test_update_missing_user(self):
+    def test_update_missing_user(self, client):
         # when
         user = setup_user()
         user.username = "updated_username"
 
         # then
-        with Client(app) as client:
-            result = client.http.patch(
-                f"/api/users/{uuid.uuid4()}",
-                headers={'Content-Type': 'application/json'},
-                body=user.json()
-            )
+        result = client.patch(
+            f"/api/users/{uuid.uuid4()}",
+            headers={'Content-Type': 'application/json'},
+            data=user.json()
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.NOT_FOUND
+        # expect
+        assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_update_user_with_missing_username(self):
+    def test_update_user_with_missing_username(self, client):
         # when
         user = create_user(setup_user())
         user_dict = user.dict()
         user_dict['username'] = None
 
         # then
-        with Client(app) as client:
-            result = client.http.patch(
-                f"/api/users/{user.id}",
-                headers={'Content-Type': 'application/json'},
-                body=json.dumps(user_dict, cls=JSONEncoder)
-            )
+        result = client.patch(
+            f"/api/users/{user.id}",
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps(user_dict, cls=JSONEncoder)
+        )
 
-            # expect
-            assert result.status_code == HTTPStatus.BAD_REQUEST
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST

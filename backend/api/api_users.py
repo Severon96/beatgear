@@ -1,80 +1,78 @@
+import json
 from http import HTTPStatus
 from uuid import UUID
 
-from chalice import Blueprint, Response, BadRequestError, NotFoundError
+from flask import Blueprint, Response, abort, request
 from pydantic_core import ValidationError
 
-from api.constants import cors_config
 from db import users_db
-from models.db_models import User
-from util import util
+from models.db_models import User, JSONEncoder
 
-api = Blueprint(__name__)
+api = Blueprint('users', __name__)
 
 
-@api.route("/users", methods=['GET'], cors=cors_config)
+@api.route("/users", methods=['GET'])
 def get_all_users():
     users = users_db.get_all_users()
-    body = [user.json() for user in users]
+    body = [user.dict() for user in users]
+    body_json = json.dumps(body, cls=JSONEncoder)
 
     return Response(
-        status_code=HTTPStatus.OK,
-        headers={'Content-Type': 'application/json'},
-        body=body
+        status=HTTPStatus.OK,
+        content_type='application/json',
+        response=body_json
     )
 
 
-@api.route("/users/{user_id}", methods=['GET'], cors=cors_config)
+@api.route("/users/<user_id>", methods=['GET'])
 def get_user(user_id: str):
     try:
         uuid = UUID(user_id)
     except ValueError:
-        raise BadRequestError(f"{user_id} is not a valid id")
+        abort(400, f"{user_id} is not a valid id")
     user = users_db.get_user(uuid)
 
     return Response(
-        status_code=HTTPStatus.OK,
-        headers={'Content-Type': 'application/json'},
-        body=user.json()
+        status=HTTPStatus.OK,
+        content_type='application/json',
+        response=user.json()
     )
 
 
-@api.route("/users", methods=['POST'], cors=cors_config)
+@api.route("/users", methods=['POST'])
 def create_user():
-    request = api.current_request
     try:
-        json_body = request.json_body
+        json_body = request.json
         request_user = User(**json_body)
 
         users_db.create_user(request_user)
 
         return Response(
-            status_code=HTTPStatus.CREATED,
-            headers={'Content-Type': 'application/json'},
-            body=request_user.json()
+            status=HTTPStatus.CREATED,
+            content_type='application/json',
+            response=request_user.json()
         )
     except (ValidationError, ValueError) as e:
-        raise BadRequestError(str(e))
+        abort(400, str(e))
 
 
-@api.route("/users/{user_id}", methods=['PATCH'], cors=cors_config)
+@api.route("/users/<user_id>", methods=['PATCH'])
 def update_user(user_id: str):
     try:
         user_uuid = UUID(user_id)
     except ValueError:
-        raise BadRequestError(f"{user_id} is not a valid id")
+        abort(400, f"{user_id} is not a valid id")
 
-    request = api.current_request
     try:
-        json_body = request.json_body
+        json_body = request.json
         request_user = User(**json_body)
 
         updated_user = users_db.update_user(user_uuid, request_user)
 
         return Response(
-            status_code=HTTPStatus.OK,
-            headers={'Content-Type': 'application/json'},
-            body=updated_user.json()
+            status=HTTPStatus.OK,
+            content_type='application/json',
+            response=updated_user.json()
         )
     except (ValidationError, ValueError) as e:
-        raise BadRequestError(str(e))
+        abort(400, str(e))
