@@ -1,44 +1,44 @@
 from http import HTTPStatus
 from uuid import UUID
 
-from chalice import Blueprint, Response, BadRequestError
+from flask import Blueprint, Response, abort
 from pydantic_core import ValidationError
 
-from api.constants import cors_config
+
 from db import hardware_db
 from models.db_models import Hardware
 
-api = Blueprint(__name__)
+api = Blueprint('hardware', __name__)
 
 
-@api.route("/hardware", methods=['GET'], cors=cors_config)
+@api.route("/hardware", methods=['GET'])
 def get_all_hardware():
     all_hardware = hardware_db.get_all_hardware()
     body = [hardware.json() for hardware in all_hardware]
 
     return Response(
-        status_code=HTTPStatus.OK,
+        status=HTTPStatus.OK,
         headers={'Content-Type': 'application/json'},
-        body=body
+        response=body
     )
 
 
-@api.route("/hardware/{hardware_id}", methods=['GET'], cors=cors_config)
+@api.route("/hardware/{hardware_id}", methods=['GET'])
 def get_hardware(hardware_id: str):
     try:
         uuid = UUID(hardware_id)
     except ValueError:
-        raise BadRequestError(f"{hardware_id} is not a valid id")
+        abort(400, f"{hardware_id} is not a valid id")
     hardware = hardware_db.get_hardware(uuid)
 
     return Response(
-        status_code=HTTPStatus.OK,
+        status=HTTPStatus.OK,
         headers={'Content-Type': 'application/json'},
-        body=hardware.json()
+        response=hardware.json()
     )
 
 
-@api.route("/hardware", methods=['POST'], cors=cors_config)
+@api.route("/hardware", methods=['POST'])
 def create_hardware():
     request = api.current_request
     try:
@@ -48,20 +48,20 @@ def create_hardware():
         hardware_db.create_hardware(request_hardware)
 
         return Response(
-            status_code=HTTPStatus.CREATED,
+            status=HTTPStatus.CREATED,
             headers={'Content-Type': 'application/json'},
-            body=request_hardware.json()
+            response=request_hardware.json()
         )
     except (ValidationError, ValueError) as e:
-        raise BadRequestError(str(e))
+        abort(400, str(e))
 
 
-@api.route("/hardware/{hardware_id}", methods=['PATCH'], cors=cors_config)
+@api.route("/hardware/{hardware_id}", methods=['PATCH'])
 def update_user(hardware_id: str):
     try:
         hardware_uuid = UUID(hardware_id)
     except ValueError:
-        raise BadRequestError(f"{hardware_id} is not a valid id")
+        abort(400, f"{hardware_id} is not a valid id")
 
     request = api.current_request
     try:
@@ -71,9 +71,9 @@ def update_user(hardware_id: str):
         updated_user = hardware_db.update_hardware(hardware_uuid, parsed_hardware)
 
         return Response(
-            status_code=HTTPStatus.OK,
+            status=HTTPStatus.OK,
             headers={'Content-Type': 'application/json'},
-            body=updated_user.json()
+            response=updated_user.json()
         )
     except (ValidationError, ValueError) as e:
-        raise BadRequestError(str(e))
+        abort(400, str(e))
