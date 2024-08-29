@@ -2,9 +2,12 @@ import json
 from http import HTTPStatus
 from uuid import UUID
 
+import flask
 from flask import Blueprint, Response, abort, request
+from flask_pyoidc.user_session import UserSession
 from pydantic_core import ValidationError
 
+from auth.oauth import auth, PROVIDER_NAME
 from db import users_db
 from models.db_models import User, JSONEncoder
 
@@ -25,7 +28,10 @@ def get_all_users():
 
 
 @api.route("/users/<user_id>", methods=['GET'])
+@auth.oidc_auth(PROVIDER_NAME)
 def get_user(user_id: str):
+    user_session = UserSession(flask.session)
+    print(user_session)
     try:
         uuid = UUID(user_id)
     except ValueError:
