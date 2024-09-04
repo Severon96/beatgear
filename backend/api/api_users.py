@@ -9,12 +9,13 @@ from pydantic_core import ValidationError
 
 from db import users_db
 from models.db_models import User, JSONEncoder
+from util.auth_util import token_required
 
 api = Blueprint('users', __name__)
 
 
 @api.route("/users", methods=['GET'])
-@jwt_required()
+@token_required
 def get_all_users():
     users = users_db.get_all_users()
     body = [user.dict() for user in users]

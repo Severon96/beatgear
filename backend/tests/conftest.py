@@ -3,6 +3,7 @@ from unittest.mock import patch
 import dotenv
 import pytest
 import requests
+from flask_jwt_extended import JWTManager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from testcontainers.postgres import PostgresContainer
@@ -34,6 +35,8 @@ def flask_app():
         flask_app.config.get('OAUTH_ISSUER'),
         flask_app.config.get('REALM_NAME')
     )
+
+    JWTManager(flask_app)
 
     yield flask_app
 
