@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Sequence, Type
 from uuid import UUID
 
-from chalice import NotFoundError
 from flask import abort
 from sqlalchemy import select
 

@@ -19,7 +19,7 @@ def postgres(request):
         db_url = postgres.get_connection_url()
         engine = create_engine(db_url, echo=True)
         Base.metadata.create_all(engine)
-        patch_db_session = patch('util.util.get_db_session', return_value=Session(engine))
+        patch_db_session = patch('test_util.test_util.get_db_session', return_value=Session(engine))
         patch_db_session.start()
         yield
         patch_db_session.stop()

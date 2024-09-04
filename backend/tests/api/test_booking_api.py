@@ -5,7 +5,7 @@ from http import HTTPStatus
 import pytest
 
 from models.db_models import Booking, JSONEncoder
-from tests.util.db_util import create_booking, setup_booking
+from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
 
 

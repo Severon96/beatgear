@@ -5,7 +5,7 @@ from http import HTTPStatus
 import pytest
 
 from models.db_models import Hardware, JSONEncoder
-from tests.util.db_util import create_hardware, setup_hardware
+from tests.test_util.db_util import create_hardware, setup_hardware
 
 
 @pytest.mark.usefixtures("postgres")
