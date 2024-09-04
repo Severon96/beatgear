@@ -12,7 +12,7 @@ from tests.util.db_util import create_user, setup_user
 @pytest.mark.usefixtures("postgres")
 class TestUserApi:
 
-    def test_get_all_users_without_users(self, client):
+    def test_get_all_users_without_users(self, client, jwt):
         # then
         result = client.get("/api/users")
 

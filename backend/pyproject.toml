@@ -17,8 +17,8 @@ pytest-mock = "^3.14.0"
 testcontainers = "^4.8.0"
 python-dotenv = "^1.0.1"
 flask = "^3.0.3"
-flask-cors = "^4.0.1"
-flask-pyoidc = "^3.14.3"
+flask-cors = "^5.0.0"
+flask-jwt-extended = "^4.6.0"
 
 [tool.poetry.dev-dependencies]
 
