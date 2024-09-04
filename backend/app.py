@@ -1,23 +1,20 @@
-import dotenv
 import psycopg2.extras
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
+import config
 from api.api_bookings import api as api_bookings
 from api.api_hardware import api as api_hardware
 from api.api_users import api as api_users
-from config import Config
-
-dotenv.load_dotenv()
+from util.auth_util import fetch_public_key
 
 
 def create_app() -> Flask:
     flask_app = Flask("backend")
-    flask_app.config.from_object(Config)
+    flask_app.config.from_object(config.Config)
 
     CORS(flask_app)
-    JWTManager(flask_app)
 
     psycopg2.extras.register_uuid()
 
@@ -41,5 +38,11 @@ def add_root_route(flask_app):
 
 if __name__ == "__main__":
     app = create_app()
+
+    app.config['JWT_PUBLIC_KEY'] = fetch_public_key(
+        app.config.get('OAUTH_ISSUER'),
+        app.config.get('REALM_NAME')
+    )
+    JWTManager(app)
 
     app.run(debug=True)

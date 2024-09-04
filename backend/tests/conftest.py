@@ -1,5 +1,3 @@
-import os
-from os.path import join, dirname
 from unittest.mock import patch
 
 import dotenv
@@ -9,8 +7,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from testcontainers.postgres import PostgresContainer
 
-from app import create_app
+import app
 from models.db_models import Base
+from util.auth_util import fetch_public_key
 
 
 @pytest.fixture(scope='function')
@@ -19,24 +18,29 @@ def postgres(request):
         db_url = postgres.get_connection_url()
         engine = create_engine(db_url, echo=True)
         Base.metadata.create_all(engine)
-        patch_db_session = patch('test_util.test_util.get_db_session', return_value=Session(engine))
+        patch_db_session = patch('util.util.get_db_session', return_value=Session(engine))
         patch_db_session.start()
         yield
         patch_db_session.stop()
 
 @pytest.fixture(scope='function')
-def app():
-    flask_app = create_app()
-    flask_app.config.update({
-        "TESTING": True,
-    })
+def flask_app():
+    flask_app = app.create_app()
+
+    dotenv_values = dotenv.dotenv_values('.env.testing')
+    flask_app.config.update(dotenv_values)
+
+    flask_app.config['JWT_PUBLIC_KEY'] = fetch_public_key(
+        flask_app.config.get('OAUTH_ISSUER'),
+        flask_app.config.get('REALM_NAME')
+    )
 
     yield flask_app
 
 
 @pytest.fixture(scope='function')
-def client(app):
-    return app.test_client()
+def client(flask_app):
+    return flask_app.test_client()
 
 
 @pytest.fixture(scope='function')
