@@ -1,12 +1,12 @@
-import os
-
 from flask_pyoidc import OIDCAuthentication
 from flask_pyoidc.provider_configuration import ProviderConfiguration, ClientMetadata
 
-OAUTH_ISSUER = os.environ.get('OAUTH_ISSUER')
-CLIENT_ID = os.environ.get('CLIENT_ID')
-CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
-PROVIDER_NAME = 'oauth_provider'
+import config
+
+OAUTH_ISSUER=config.Config.OAUTH_ISSUER
+CLIENT_ID=config.Config.CLIENT_ID
+CLIENT_SECRET=config.Config.CLIENT_SECRET
+PROVIDER_NAME=config.Config.PROVIDER_NAME
 
 def create_auth() -> OIDCAuthentication:
     provider_config = ProviderConfiguration(issuer=OAUTH_ISSUER,

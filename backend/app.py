@@ -1,4 +1,5 @@
 import os
+from os.path import dirname, join
 
 import dotenv
 import psycopg2.extras
@@ -9,13 +10,17 @@ from api.api_bookings import api as api_bookings
 from api.api_hardware import api as api_hardware
 from api.api_users import api as api_users
 from auth import oauth
+from config import Config
+
+dotenv.load_dotenv()
 
 
 def create_app() -> Flask:
     flask_app = Flask("backend")
+    flask_app.config.from_object(Config)
 
     CORS(flask_app)
-    dotenv.load_dotenv()
+
     psycopg2.extras.register_uuid()
 
     add_root_route(flask_app)
@@ -38,5 +43,8 @@ def add_root_route(flask_app):
 
 if __name__ == "__main__":
     app = create_app()
+
     auth = oauth.create_auth()
+    auth.init_app(app)
+
     app.run(debug=True)

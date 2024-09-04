@@ -1,11 +1,14 @@
+from os.path import join, dirname
 from unittest.mock import patch
 
+import dotenv
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from testcontainers.postgres import PostgresContainer
 
 from app import create_app
+from auth import oauth
 from models.db_models import Base
 
 
@@ -22,14 +25,24 @@ def postgres(request):
 
 @pytest.fixture(scope='function')
 def app():
-    app = create_app()
-    app.config.update({
+    dotenv_path = join(dirname(__file__), '.env.testing')
+    dotenv.load_dotenv(dotenv_path)
+
+    flask_app = create_app()
+    flask_app.config.update({
         "TESTING": True,
     })
 
-    yield app
+    yield flask_app
 
 
 @pytest.fixture(scope='function')
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture(scope='function')
+def auth(app):
+    auth = oauth.create_auth()
+    auth.init_app(app)
+    yield
