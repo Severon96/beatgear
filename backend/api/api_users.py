@@ -29,7 +29,7 @@ def get_all_users():
 
 
 @api.route("/users/<user_id>", methods=['GET'])
-@jwt_required()
+@token_required
 def get_user(user_id: str):
     try:
         uuid = UUID(user_id)
@@ -45,7 +45,7 @@ def get_user(user_id: str):
 
 
 @api.route("/users", methods=['POST'])
-@jwt_required()
+@token_required
 def create_user():
     try:
         json_body = request.json
@@ -63,7 +63,7 @@ def create_user():
 
 
 @api.route("/users/<user_id>", methods=['PATCH'])
-@jwt_required()
+@token_required
 def update_user(user_id: str):
     try:
         user_uuid = UUID(user_id)

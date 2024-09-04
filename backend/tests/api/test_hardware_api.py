@@ -11,32 +11,47 @@ from tests.test_util.db_util import create_hardware, setup_hardware
 @pytest.mark.usefixtures("postgres")
 class TestHardwareApi:
 
-    def test_get_all_hardware_without_hardware(self, client):
+    def test_get_all_hardware_without_hardware(self, client, jwt):
         # then
-        result = client.get("/api/hardware")
+        result = client.get("/api/hardware",
+                            headers={
+                                "Content-Type": "application/json",
+                                "Authorization": f"Bearer {jwt}"
+                            }
+                            )
 
         # expect
         assert result.status_code == HTTPStatus.OK
         assert len(result.json) == 0
 
-    def test_get_all_hardware_with_hardware(self, client):
+    def test_get_all_hardware_with_hardware(self, client, jwt):
         # when
         create_hardware(setup_hardware())
         create_hardware(setup_hardware())
 
         # then
-        result = client.get("/api/hardware")
+        result = client.get("/api/hardware",
+                            headers={
+                                "Content-Type": "application/json",
+                                "Authorization": f"Bearer {jwt}"
+                            }
+                            )
 
         # expect
         assert result.status_code == HTTPStatus.OK
         assert len(result.json) == 2
 
-    def test_get_hardware_by_id(self, client):
+    def test_get_hardware_by_id(self, client, jwt):
         # when
         hardware = create_hardware(setup_hardware())
 
         # then
-        result = client.get(f"/api/hardware/{hardware.id}")
+        result = client.get(f"/api/hardware/{hardware.id}",
+                            headers={
+                                "Content-Type": "application/json",
+                                "Authorization": f"Bearer {jwt}"
+                            }
+                            )
 
         # expect
         assert result.status_code == HTTPStatus.OK
@@ -45,21 +60,31 @@ class TestHardwareApi:
         api_hardware = Hardware(**body)
         assert uuid.UUID(api_hardware.id) == hardware.id
 
-    def test_get_missing_hardware_by_id(self, client):
+    def test_get_missing_hardware_by_id(self, client, jwt):
         # then
-        result = client.get(f"/api/hardware/{uuid.uuid4()}")
+        result = client.get(f"/api/hardware/{uuid.uuid4()}",
+                            headers={
+                                "Content-Type": "application/json",
+                                "Authorization": f"Bearer {jwt}"
+                            }
+                            )
 
         # expect
         assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_get_hardware_by_malformed_uuid(self, client):
+    def test_get_hardware_by_malformed_uuid(self, client, jwt):
         # then
-        result = client.get(f"/api/hardware/test")
+        result = client.get(f"/api/hardware/test",
+                            headers={
+                                "Content-Type": "application/json",
+                                "Authorization": f"Bearer {jwt}"
+                            }
+                            )
 
         # expect
         assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_create_hardware(self, client):
+    def test_create_hardware(self, client, jwt):
         # when
         hardware = setup_hardware()
 
@@ -68,7 +93,10 @@ class TestHardwareApi:
 
         result = client.post(
             "/api/hardware",
-            headers={'Content-Type': 'application/json'},
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
             data=json
         )
 
@@ -79,7 +107,7 @@ class TestHardwareApi:
         api_hardware = Hardware(**body)
         assert api_hardware.name == hardware.name
 
-    def test_create_hardware_with_missing_hardware_name(self, client):
+    def test_create_hardware_with_missing_hardware_name(self, client, jwt):
         # when
         hardware = setup_hardware()
         hardware_dict = hardware.dict()
@@ -88,14 +116,17 @@ class TestHardwareApi:
         # then
         result = client.post(
             "/api/hardware",
-            headers={'Content-Type': 'application/json'},
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
             data=json.dumps(hardware_dict, cls=JSONEncoder)
         )
 
         # expect
         assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_update_hardware(self, client):
+    def test_update_hardware(self, client, jwt):
         # when
         hardware = create_hardware(setup_hardware())
         hardware.name = "updated_hardware_name"
@@ -103,7 +134,10 @@ class TestHardwareApi:
         # then
         result = client.patch(
             f"/api/hardware/{hardware.id}",
-            headers={'Content-Type': 'application/json'},
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
             data=hardware.json()
         )
 
@@ -113,7 +147,7 @@ class TestHardwareApi:
         api_hardware = Hardware(**body)
         assert api_hardware.name == hardware.name
 
-    def test_update_missing_hardware(self, client):
+    def test_update_missing_hardware(self, client, jwt):
         # when
         hardware = setup_hardware()
         hardware.name = "updated_hardware_name"
@@ -121,14 +155,17 @@ class TestHardwareApi:
         # then
         result = client.patch(
             f"/api/hardware/{uuid.uuid4()}",
-            headers={'Content-Type': 'application/json'},
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
             data=hardware.json()
         )
 
         # expect
         assert result.status_code == HTTPStatus.NOT_FOUND
 
-    def test_update_hardware_with_missing_hardware_name(self, client):
+    def test_update_hardware_with_missing_hardware_name(self, client, jwt):
         # when
         hardware = create_hardware(setup_hardware())
         hardware_dict = hardware.dict()
@@ -137,7 +174,10 @@ class TestHardwareApi:
         # then
         result = client.patch(
             f"/api/hardware/{hardware.id}",
-            headers={'Content-Type': 'application/json'},
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
             data=json.dumps(hardware_dict, cls=JSONEncoder)
         )
 

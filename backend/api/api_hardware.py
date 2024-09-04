@@ -8,11 +8,13 @@ from pydantic_core import ValidationError
 
 from db import hardware_db
 from models.db_models import Hardware, JSONEncoder
+from util.auth_util import token_required
 
 api = Blueprint('hardware', __name__)
 
 
 @api.route("/hardware", methods=['GET'])
+@token_required
 def get_all_hardware():
     all_hardware = hardware_db.get_all_hardware()
     body = [hardware.dict() for hardware in all_hardware]
@@ -26,6 +28,7 @@ def get_all_hardware():
 
 
 @api.route("/hardware/<hardware_id>", methods=['GET'])
+@token_required
 def get_hardware(hardware_id: str):
     try:
         uuid = UUID(hardware_id)
@@ -41,6 +44,7 @@ def get_hardware(hardware_id: str):
 
 
 @api.route("/hardware", methods=['POST'])
+@token_required
 def create_hardware():
     try:
         json_body = request.json
@@ -58,6 +62,7 @@ def create_hardware():
 
 
 @api.route("/hardware/<hardware_id>", methods=['PATCH'])
+@token_required
 def update_user(hardware_id: str):
     try:
         hardware_uuid = UUID(hardware_id)
