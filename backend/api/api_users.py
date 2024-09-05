@@ -2,16 +2,20 @@ import json
 from http import HTTPStatus
 from uuid import UUID
 
+import flask
 from flask import Blueprint, Response, abort, request
+from flask_jwt_extended import jwt_required
 from pydantic_core import ValidationError
 
 from db import users_db
 from models.db_models import User, JSONEncoder
+from util.auth_util import token_required
 
 api = Blueprint('users', __name__)
 
 
 @api.route("/users", methods=['GET'])
+@token_required
 def get_all_users():
     users = users_db.get_all_users()
     body = [user.dict() for user in users]
@@ -25,6 +29,7 @@ def get_all_users():
 
 
 @api.route("/users/<user_id>", methods=['GET'])
+@token_required
 def get_user(user_id: str):
     try:
         uuid = UUID(user_id)
@@ -40,6 +45,7 @@ def get_user(user_id: str):
 
 
 @api.route("/users", methods=['POST'])
+@token_required
 def create_user():
     try:
         json_body = request.json
@@ -57,6 +63,7 @@ def create_user():
 
 
 @api.route("/users/<user_id>", methods=['PATCH'])
+@token_required
 def update_user(user_id: str):
     try:
         user_uuid = UUID(user_id)
