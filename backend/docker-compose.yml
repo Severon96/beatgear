@@ -12,3 +12,14 @@ services:
       - ./sql/postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
     ports:
       - "5432:5432"
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak_hardware_management
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - /keycloak/import:/opt/keycloak/data/import
+    command: start-dev

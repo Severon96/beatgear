@@ -8,6 +8,7 @@ from pydantic_core import ValidationError
 from db import bookings_db
 from models.db_models import JSONEncoder
 from models.request_models import BookingRequest
+from util.auth_util import token_required
 from util.model_util import convert_to_db_booking
 from util.util import parse_model
 
@@ -15,6 +16,7 @@ api = Blueprint('bookings', __name__)
 
 
 @api.route("/bookings", methods=['GET'])
+@token_required
 def get_all_bookings():
     bookings = bookings_db.get_all_bookings()
     body = [booking.dict() for booking in bookings]
@@ -28,6 +30,7 @@ def get_all_bookings():
 
 
 @api.route("/bookings/<booking_id>", methods=['GET'])
+@token_required
 def get_booking(booking_id: str):
     try:
         uuid = UUID(booking_id)
@@ -43,6 +46,7 @@ def get_booking(booking_id: str):
 
 
 @api.route("/bookings", methods=['POST'])
+@token_required
 def create_booking():
     try:
         json_body = request.json
@@ -61,6 +65,7 @@ def create_booking():
 
 
 @api.route("/bookings/<booking_id>", methods=['PATCH'])
+@token_required
 def update_booking(booking_id: str):
     try:
         booking_uuid = UUID(booking_id)
