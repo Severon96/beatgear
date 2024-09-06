@@ -63,7 +63,7 @@ def create_hardware():
 
 @api.route("/hardware/<hardware_id>", methods=['PATCH'])
 @token_required
-def update_user(hardware_id: str):
+def update_hardware(hardware_id: str):
     try:
         hardware_uuid = UUID(hardware_id)
     except ValueError:

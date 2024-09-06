@@ -86,6 +86,15 @@
         "clientRole": false,
         "containerId": "803a1dd9-1128-41bd-82b4-97a70c03cc85",
         "attributes": {}
+      },
+      {
+        "id": "a6480730-6208-4e13-9837-a9c4e68200f8",
+        "name": "admin",
+        "description": "",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "803a1dd9-1128-41bd-82b4-97a70c03cc85",
+        "attributes": {}
       }
     ],
     "client": {

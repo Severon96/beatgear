@@ -2,9 +2,7 @@ import json
 from http import HTTPStatus
 from uuid import UUID
 
-import flask
 from flask import Blueprint, Response, abort, request
-from flask_jwt_extended import jwt_required
 from pydantic_core import ValidationError
 
 from db import users_db

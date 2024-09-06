@@ -43,6 +43,6 @@ if __name__ == "__main__":
         app.config.get('OAUTH_ISSUER'),
         app.config.get('REALM_NAME')
     )
-    JWTManager(app)
+
 
     app.run(debug=True)

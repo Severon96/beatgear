@@ -2,8 +2,11 @@ import json
 from functools import wraps
 
 import requests
-from flask_jwt_extended import verify_jwt_in_request
+from flask_jwt_extended import verify_jwt_in_request, get_jwt
 from jwt.algorithms import RSAAlgorithm
+
+from db import users_db
+from models.request_models import AuthenticatedUser
 
 
 def fetch_public_key(oauth_issuer: str, realm_name: str) -> str:
@@ -23,7 +26,11 @@ def fetch_public_key(oauth_issuer: str, realm_name: str) -> str:
 def token_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
+        roles = []
         verify_jwt_in_request()
-        return fn(*args, **kwargs)
+        jwt = get_jwt()
+        print("user claims", jwt)
+        print("user roles", roles)
+        return fn(roles, *args, **kwargs)
 
     return wrapper
