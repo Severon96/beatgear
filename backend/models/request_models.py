@@ -7,6 +7,12 @@ from pydantic import BaseModel
 from models.db_models import HardwareCategory
 
 
+class AuthenticatedUser(BaseModel):
+    id: UUID
+    username: str
+    roles: list[str]
+
+
 class User(BaseModel):
     id: UUID
     username: str
@@ -30,3 +36,4 @@ class BookingRequest(BaseModel):
     hardware_ids: List[UUID]
     booking_start: datetime
     booking_end: datetime
+    author_id: UUID

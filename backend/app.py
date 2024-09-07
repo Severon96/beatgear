@@ -6,7 +6,6 @@ from flask_jwt_extended import JWTManager
 import config
 from api.api_bookings import api as api_bookings
 from api.api_hardware import api as api_hardware
-from api.api_users import api as api_users
 from util.auth_util import fetch_public_key
 
 
@@ -25,7 +24,6 @@ def create_app() -> Flask:
 
 
 def add_blueprints(flask_app):
-    flask_app.register_blueprint(api_users, url_prefix="/api")
     flask_app.register_blueprint(api_hardware, url_prefix="/api")
     flask_app.register_blueprint(api_bookings, url_prefix="/api")
 

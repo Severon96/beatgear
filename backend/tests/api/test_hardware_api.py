@@ -5,6 +5,7 @@ from http import HTTPStatus
 import pytest
 
 from models.db_models import Hardware, JSONEncoder
+from test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_hardware, setup_hardware
 
 
@@ -126,9 +127,29 @@ class TestHardwareApi:
         # expect
         assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_update_hardware(self, client, jwt):
+    def test_create_hardware_with_missing_jwt(self, client):
         # when
-        hardware = create_hardware(setup_hardware())
+        hardware = setup_hardware()
+        hardware_dict = hardware.dict()
+        hardware_dict['name'] = None
+
+        # then
+        result = client.post(
+            "/api/hardware",
+            headers={
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(hardware_dict, cls=JSONEncoder)
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.UNAUTHORIZED
+
+    def test_update_hardware_as_author(self, client, jwt):
+        # when
+        user_id_from_jwt = get_user_id_from_jwt(jwt)
+
+        hardware = create_hardware(setup_hardware(user_uuid=user_id_from_jwt))
         hardware.name = "updated_hardware_name"
 
         # then
@@ -146,6 +167,45 @@ class TestHardwareApi:
         body = result.json
         api_hardware = Hardware(**body)
         assert api_hardware.name == hardware.name
+
+    def test_update_hardware_as_admin(self, client, jwt_admin):
+        # when
+        hardware = create_hardware(setup_hardware())
+        hardware.name = "updated_hardware_name"
+
+        # then
+        result = client.patch(
+            f"/api/hardware/{hardware.id}",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt_admin}",
+            },
+            data=hardware.json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        body = result.json
+        api_hardware = Hardware(**body)
+        assert api_hardware.name == hardware.name
+
+    def test_update_hardware_without_being_admin_or_author(self, client, jwt):
+        # when
+        hardware = create_hardware(setup_hardware(user_uuid=uuid.uuid4()))
+        hardware.name = "updated_hardware_name"
+
+        # then
+        result = client.patch(
+            f"/api/hardware/{hardware.id}",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=hardware.json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.FORBIDDEN
 
     def test_update_missing_hardware(self, client, jwt):
         # when
@@ -165,9 +225,28 @@ class TestHardwareApi:
         # expect
         assert result.status_code == HTTPStatus.NOT_FOUND
 
+    def test_update_missing_jwt(self, client):
+        # when
+        hardware = setup_hardware()
+        hardware.name = "updated_hardware_name"
+
+        # then
+        result = client.patch(
+            f"/api/hardware/{uuid.uuid4()}",
+            headers={
+                'Content-Type': 'application/json',
+            },
+            data=hardware.json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.UNAUTHORIZED
+
     def test_update_hardware_with_missing_hardware_name(self, client, jwt):
         # when
-        hardware = create_hardware(setup_hardware())
+        user_id_from_jwt = get_user_id_from_jwt(jwt)
+
+        hardware = create_hardware(setup_hardware(user_uuid=user_id_from_jwt))
         hardware_dict = hardware.dict()
         hardware_dict['name'] = None
 
