@@ -7,8 +7,8 @@ from pydantic_core import ValidationError
 
 from db import bookings_db
 from models.db_models import JSONEncoder
-from models.request_models import BookingRequest
-from util.auth_util import token_required
+from models.request_models import BookingRequest, AuthenticatedUser
+from util.auth_util import token_required, user, is_author_or_admin
 from util.model_util import convert_to_db_booking
 from util.util import parse_model
 
@@ -66,11 +66,17 @@ def create_booking():
 
 @api.route("/bookings/<booking_id>", methods=['PATCH'])
 @token_required
-def update_booking(booking_id: str):
+@user
+def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
     try:
         booking_uuid = UUID(booking_id)
     except ValueError:
         abort(400, f"{booking_id} is not a valid id")
+
+    db_booking = bookings_db.get_booking(booking_uuid)
+    is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_booking.author_id)
+    if not is_user_allowed_to_update:
+        abort(HTTPStatus.FORBIDDEN, "You are not authorized to edit this hardware.")
 
     try:
         json_body = request.json
