@@ -34,7 +34,8 @@ def create_hardware(hardware: Hardware = None) -> Hardware:
 
 def setup_booking(
         customer_id: uuid.UUID = None,
-        hardware_ids: List[uuid.UUID] = None
+        hardware_ids: List[uuid.UUID] = None,
+        author_id: uuid.UUID = None,
 ) -> BookingRequest:
     if customer_id is None:
         customer_id = uuid.uuid4()
@@ -44,6 +45,9 @@ def setup_booking(
         hardware_2 = create_hardware()
         hardware_ids = [hardware_1.id, hardware_2.id]
 
+    if author_id is None:
+        author_id = uuid.uuid4()
+
     return BookingRequest(
         id=uuid.uuid4(),
         name='test booking',
@@ -51,6 +55,7 @@ def setup_booking(
         hardware_ids=hardware_ids,
         booking_start=datetime.now(),
         booking_end=datetime.now(),
+        author_id=author_id,
     )
 
 

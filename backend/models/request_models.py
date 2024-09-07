@@ -36,3 +36,4 @@ class BookingRequest(BaseModel):
     hardware_ids: List[UUID]
     booking_start: datetime
     booking_end: datetime
+    author_id: UUID
