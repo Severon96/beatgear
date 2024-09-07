@@ -38,35 +38,6 @@ class HardwareCategory(enum.Enum):
     LAPTOP_STAND = 'laptop_stand'
     OTHER = 'other'
 
-
-class User(Base):
-    __tablename__ = "users"
-
-    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
-    username: Mapped[str] = mapped_column(String(30))
-    first_name: Mapped[Optional[str]] = mapped_column(String(30))
-    last_name: Mapped[Optional[str]] = mapped_column(String(30))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
-
-    hardware: Mapped[List["Hardware"]] = relationship(
-        back_populates="owner", cascade="all, delete-orphan"
-    )
-
-    @validates("username", include_removes=True)
-    def validates_username(self, key, username, is_remove) -> str:
-        if is_remove:
-            raise ValueError("not allowed to remove username from user")
-        else:
-            if username is None:
-                raise ValueError("Username must be set")
-            return username
-
-    def __repr__(self):
-        return (f"User(id={self.id}, username={self.username}, first_name={self.first_name}, last_name={self.last_name}"
-                f", created_at={self.created_at}, updated_at={self.updated_at})")
-
-
 booking_to_hardware_table = Table(
     "bookings_to_hardware",
     Base.metadata,
@@ -83,15 +54,14 @@ class Hardware(Base):
     serial: Mapped[str] = mapped_column(String(50))
     image: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
-    owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    owner_id: Mapped[UUID] = mapped_column(Uuid)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
-    owner: Mapped["User"] = relationship(back_populates="hardware")
     bookings: Mapped[List["Booking"]] = relationship(secondary=booking_to_hardware_table, back_populates="hardware")
 
     @validates("name", "serial", "category", "owner_id", include_removes=True)
-    def validates_username(self, key, value, is_remove) -> str:
+    def validates_hardware(self, key, value, is_remove) -> str:
         if is_remove:
             raise ValueError(f"not allowed to remove {key} from user")
         else:
@@ -113,7 +83,7 @@ class Booking(Base):
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     name: Mapped[Optional[str]] = mapped_column(String(30))
-    customer_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    customer_id: Mapped[UUID] = mapped_column(Uuid)
     booking_start: Mapped[datetime] = mapped_column(DateTime)
     booking_end: Mapped[datetime] = mapped_column(DateTime)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
@@ -127,9 +97,9 @@ class Booking(Base):
         return booking_dict
 
     @validates("customer_id", "hardware_id", "booking_start", "booking_end", include_removes=True)
-    def validates_username(self, key, value, is_remove) -> str:
+    def validates_booking(self, key, value, is_remove) -> str:
         if is_remove:
-            raise ValueError(f"not allowed to remove {key} from user")
+            raise ValueError(f"not allowed to remove {key} from booking")
         else:
             if value is None:
                 raise ValueError(f"{key} must be set")

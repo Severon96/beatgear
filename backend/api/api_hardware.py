@@ -73,12 +73,12 @@ def update_hardware(hardware_id: str):
         json_body = request.json
         parsed_hardware = Hardware(**json_body)
 
-        updated_user = hardware_db.update_hardware(hardware_uuid, parsed_hardware)
+        updated_hardware = hardware_db.update_hardware(hardware_uuid, parsed_hardware)
 
         return Response(
             status=HTTPStatus.OK,
             content_type='application/json',
-            response=updated_user.json()
+            response=updated_hardware.json()
         )
     except (ValidationError, ValueError) as e:
         abort(400, str(e))

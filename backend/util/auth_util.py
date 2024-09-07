@@ -1,11 +1,12 @@
 import json
 from functools import wraps
+from uuid import UUID
 
 import requests
+from flask import jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
 from jwt.algorithms import RSAAlgorithm
 
-from db import users_db
 from models.request_models import AuthenticatedUser
 
 
@@ -26,11 +27,29 @@ def fetch_public_key(oauth_issuer: str, realm_name: str) -> str:
 def token_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        roles = []
+        verify_jwt_in_request()
+        return fn(*args, **kwargs)
+
+    return wrapper
+
+
+def user(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
         verify_jwt_in_request()
         jwt = get_jwt()
-        print("user claims", jwt)
-        print("user roles", roles)
-        return fn(roles, *args, **kwargs)
+
+        if jwt is None:
+            return jsonify('Access denied'), 401
+
+        user_id = jwt['sub']
+        username = jwt['prefferd_username']
+        roles = jwt['realm_access']['roles']
+
+        return fn(AuthenticatedUser(
+            id=UUID(user_id),
+            username=username,
+            roles=roles,
+        ), *args, **kwargs)
 
     return wrapper

@@ -2,33 +2,15 @@ import uuid
 from datetime import datetime
 from typing import List
 
-from db import users_db, bookings_db, hardware_db
-from models.db_models import User, Booking, Hardware, HardwareCategory
+from db import bookings_db, hardware_db
+from models.db_models import Booking, Hardware, HardwareCategory
 from models.request_models import BookingRequest
 from util.model_util import convert_to_db_booking
 
 
-def setup_user() -> User:
-    return User(
-        id=uuid.uuid4(),
-        username='testuser',
-        first_name='Test',
-        last_name='User',
-        created_at=datetime.now(),
-        updated_at=datetime.now()
-    )
-
-
-def create_user(user: User = None) -> User:
-    if user is None:
-        user = setup_user()
-
-    return users_db.create_user(user)
-
-
-def setup_hardware(user: User = None) -> Hardware:
-    if user is None:
-        user = create_user()
+def setup_hardware(user_uuid = None) -> Hardware:
+    if user_uuid is None:
+        user_uuid = uuid.uuid4()
 
     hardware_id = uuid.uuid4()
     return Hardware(
@@ -37,8 +19,7 @@ def setup_hardware(user: User = None) -> Hardware:
         serial=f'hdw-{hardware_id}',
         image=None,
         category=HardwareCategory.CONTROLLER,
-        owner=user,
-        owner_id=user.id,
+        owner_id=user_uuid,
         created_at=datetime.now(),
         updated_at=datetime.now()
     )
@@ -56,8 +37,7 @@ def setup_booking(
         hardware_ids: List[uuid.UUID] = None
 ) -> BookingRequest:
     if customer_id is None:
-        user = create_user()
-        customer_id = user.id
+        customer_id = uuid.uuid4()
 
     if hardware_ids is None:
         hardware_1 = create_hardware()
