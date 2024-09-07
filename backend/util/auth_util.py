@@ -1,4 +1,5 @@
 import json
+import os
 from functools import wraps
 from uuid import UUID
 
@@ -33,6 +34,15 @@ def token_required(fn):
     return wrapper
 
 
+def is_author_or_admin(authenticated_user: AuthenticatedUser, author_id: UUID) -> bool:
+    admin_role = os.environ.get('ADMIN_ROLE_NAME')
+
+    if admin_role in authenticated_user.roles:
+        return True
+
+    return author_id == authenticated_user.id
+
+
 def user(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
@@ -43,7 +53,7 @@ def user(fn):
             return jsonify('Access denied'), 401
 
         user_id = jwt['sub']
-        username = jwt['prefferd_username']
+        username = jwt['preferred_username']
         roles = jwt['realm_access']['roles']
 
         return fn(AuthenticatedUser(

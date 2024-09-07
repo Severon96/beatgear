@@ -86,6 +86,7 @@ class Booking(Base):
     customer_id: Mapped[UUID] = mapped_column(Uuid)
     booking_start: Mapped[datetime] = mapped_column(DateTime)
     booking_end: Mapped[datetime] = mapped_column(DateTime)
+    author_id: Mapped[UUID] = mapped_column(Uuid)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
