@@ -165,3 +165,5 @@ backend/.idea/workspace.xml
 .DS_STORE
 backend/.DS_STORE
 backend/.tests/.env.testing
+backend/.chalice
+backend/.idea
