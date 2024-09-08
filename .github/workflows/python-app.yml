@@ -46,5 +46,6 @@ jobs:
         services: "keycloak"
         up-flags: "-d"
     - name: Test with pytest and keycloak test container
+      working-directory: ./backend/tests
       run: |
         pytest
