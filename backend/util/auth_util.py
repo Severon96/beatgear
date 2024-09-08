@@ -38,6 +38,7 @@ def token_required(fn):
 
 def is_author_or_admin(authenticated_user: AuthenticatedUser, author_id: UUID) -> bool:
     admin_role = os.environ.get('ADMIN_ROLE_NAME')
+    print('admin role name: ', admin_role)
 
     if admin_role in authenticated_user.roles:
         return True

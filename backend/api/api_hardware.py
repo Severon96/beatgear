@@ -1,4 +1,5 @@
 import json
+import os
 from http import HTTPStatus
 from uuid import UUID
 
@@ -73,7 +74,11 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
     print("Authenticated user for admin and stuff", authenticated_user)
     db_hardware = hardware_db.get_hardware(hardware_uuid)
 
-    if not is_author_or_admin(authenticated_user, db_hardware.owner_id):
+    is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_hardware.owner_id)
+    admin_role = os.environ.get('ADMIN_ROLE_NAME')
+    print('admin role name: ', admin_role)
+    print('user allowed to update: ', is_user_allowed_to_update)
+    if not is_user_allowed_to_update:
         abort(HTTPStatus.FORBIDDEN, "You are not authorized to edit this hardware.")
 
     try:
