@@ -41,6 +41,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Start keycloak docker container
       uses: hoverkraft-tech/compose-action@v2.0.1
+      working-directory: ./backend
       with:
         services: "keycloak"
         up-flags: "-d"
