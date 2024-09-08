@@ -3,6 +3,7 @@ import os
 from http import HTTPStatus
 from uuid import UUID
 
+import dotenv
 from flask import Blueprint, Response, abort, request
 from pydantic_core import ValidationError
 
@@ -75,7 +76,9 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
     db_hardware = hardware_db.get_hardware(hardware_uuid)
 
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_hardware.owner_id)
-    admin_role = os.environ.get('ADMIN_ROLE_NAME')
+    dotenv_values = dotenv.dotenv_values()
+    print('dotenv values', dotenv_values)
+    admin_role = dotenv_values.get('ADMIN_ROLE_NAME')
     print('admin role name: ', admin_role)
     print('user allowed to update: ', is_user_allowed_to_update)
     if not is_user_allowed_to_update:
