@@ -47,7 +47,7 @@ jobs:
         up-flags: "-d"
     - name: Wait for Keycloak to be ready
       run: |
-        until curl -s http://localhost:8080/auth/; do
+        until curl -s http://localhost:8080/health/ready; do
           echo "Waiting for Keycloak..."
           sleep 5
         done
