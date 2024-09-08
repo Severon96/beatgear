@@ -79,7 +79,7 @@ def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
     db_booking = bookings_db.get_booking(booking_uuid)
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_booking.author_id)
     dotenv_values = dotenv.dotenv_values()
-    print('dotenv values', dotenv_values)
+    print('dotenv values', dotenv_values.values())
     admin_role = dotenv_values.get('ADMIN_ROLE_NAME')
     print('admin role name: ', admin_role)
     print('user allowed to update: ', is_user_allowed_to_update)

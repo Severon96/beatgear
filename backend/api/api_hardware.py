@@ -77,7 +77,7 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
 
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_hardware.owner_id)
     dotenv_values = dotenv.dotenv_values()
-    print('dotenv values', dotenv_values)
+    print('dotenv values', dotenv_values.values())
     admin_role = dotenv_values.get('ADMIN_ROLE_NAME')
     print('admin role name: ', admin_role)
     print('user allowed to update: ', is_user_allowed_to_update)
