@@ -38,7 +38,6 @@ def token_required(fn):
 
 def is_author_or_admin(authenticated_user: AuthenticatedUser, author_id: UUID) -> bool:
     admin_role = dotenv.dotenv_values('.env').get('ADMIN_ROLE_NAME')
-    print('admin role name: ', admin_role)
 
     if admin_role in authenticated_user.roles:
         return True

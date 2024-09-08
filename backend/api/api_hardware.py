@@ -72,18 +72,10 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
         hardware_uuid = UUID(hardware_id)
     except ValueError:
         abort(400, f"{hardware_id} is not a valid id")
-    print("Authenticated user for admin and stuff", authenticated_user)
+
     db_hardware = hardware_db.get_hardware(hardware_uuid)
 
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_hardware.owner_id)
-
-    print('current dir', os.getcwd())
-    print('current files in dir', os.listdir(os.getcwd()))
-    dotenv_values = dotenv.dotenv_values('.env')
-    print('dotenv values', dotenv_values.values())
-    admin_role = dotenv_values.get('ADMIN_ROLE_NAME')
-    print('admin role name: ', admin_role)
-    print('user allowed to update: ', is_user_allowed_to_update)
     if not is_user_allowed_to_update:
         abort(HTTPStatus.FORBIDDEN, "You are not authorized to edit this hardware.")
 
