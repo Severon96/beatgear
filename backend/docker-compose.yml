@@ -18,8 +18,11 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
     ports:
       - "8080:8080"
+      - "9000:9000"
     volumes:
-      - /keycloak/import:/opt/keycloak/data/import
-    command: start-dev
+      - ./keycloak/import:/opt/keycloak/data/import
+    command: start-dev --import-realm

@@ -14,7 +14,9 @@ from models.request_models import AuthenticatedUser
 def fetch_public_key(oauth_issuer: str, realm_name: str) -> str:
     response = requests.get(f"{oauth_issuer}/realms/{realm_name}/.well-known/openid-configuration", verify=False)
 
-    if response.status_code != 200: raise ValueError(f"Couldn't fetch openid configuration: {response.status_code}")
+    if response.status_code != 200:
+        print(f"failed fetching public key: {response.status_code}", response.text)
+        raise ValueError(f"Couldn't fetch openid configuration: {response.status_code}")
 
     oidc_config = response.json()
 
