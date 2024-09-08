@@ -28,7 +28,8 @@ def postgres(request):
 @pytest.fixture(scope='function')
 def flask_app():
     flask_app = app.create_app()
-
+    print('current dir', os.getcwd())
+    print('current files in dir', os.listdir(os.getcwd()))
     dotenv_values = dotenv.dotenv_values('.env')
     flask_app.config.update(dotenv_values)
 
