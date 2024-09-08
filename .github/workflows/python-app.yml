@@ -53,6 +53,5 @@ jobs:
           sleep 5
         done
     - name: Test with pytest and keycloak test container
-      working-directory: ./backend/tests
       run: |
         pytest
