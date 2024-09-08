@@ -15,7 +15,8 @@ def convert_to_db_booking(booking_request: BookingRequest) -> Booking:
         customer_id=booking_request.customer_id,
         hardware=hardware,
         booking_start=booking_request.booking_start,
-        booking_end=booking_request.booking_end
+        booking_end=booking_request.booking_end,
+        author_id=booking_request.author_id,
     )
 
 
@@ -26,5 +27,6 @@ def convert_to_booking_request(booking: Booking) -> BookingRequest:
         customer_id=booking.customer_id,
         hardware_ids=[hardware.id for hardware in booking.hardware],
         booking_start=booking.booking_start,
-        booking_end=booking.booking_end
+        booking_end=booking.booking_end,
+        author_id=booking.author_id,
     )

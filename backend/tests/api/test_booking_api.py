@@ -5,6 +5,7 @@ from http import HTTPStatus
 import pytest
 
 from models.db_models import Booking, JSONEncoder
+from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
 
@@ -111,6 +112,25 @@ class TestBookingApi:
         assert api_booking.name == booking.name
         assert len(api_booking.hardware) == 2
 
+    def test_create_booking_with_missing_jwt(self, client):
+        # when
+        booking = setup_booking()
+        booking_dict = booking.model_dump()
+        booking_dict['hardware_ids'] = ['test']
+        booking_dict['customer_id'] = None
+
+        # then
+        result = client.post(
+            "/api/bookings",
+            headers={
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(booking_dict, cls=JSONEncoder)
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.UNAUTHORIZED
+
     def test_create_booking_with_missing_booking_name(self, client, jwt):
         # when
         booking = setup_booking()
@@ -131,9 +151,11 @@ class TestBookingApi:
         # expect
         assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_update_booking(self, client, jwt):
+    def test_update_booking_as_author(self, client, jwt):
         # when
-        booking = create_booking(setup_booking())
+        user_id_from_token = get_user_id_from_jwt(jwt)
+
+        booking = create_booking(setup_booking(author_id=uuid.UUID(user_id_from_token)))
         booking.name = "updated_booking_name"
 
         request_booking = convert_to_booking_request(booking)
@@ -153,6 +175,66 @@ class TestBookingApi:
         body = result.json
         api_booking = Booking(**body)
         assert api_booking.name == booking.name
+
+    def test_update_booking_as_admin(self, client, jwt_admin):
+        # when
+        booking = create_booking(setup_booking())
+        booking.name = "updated_booking_name"
+
+        request_booking = convert_to_booking_request(booking)
+
+        # then
+        result = client.patch(
+            f"/api/bookings/{booking.id}",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt_admin}",
+            },
+            data=request_booking.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        body = result.json
+        api_booking = Booking(**body)
+        assert api_booking.name == booking.name
+
+    def test_update_no_author_or_admin(self, client, jwt):
+        # when
+        booking = create_booking(setup_booking())
+        booking.name = "updated_booking_name"
+
+        request_booking = convert_to_booking_request(booking)
+
+        # then
+        result = client.patch(
+            f"/api/bookings/{booking.id}",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=request_booking.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.FORBIDDEN
+
+    def test_update_missing_jwt(self, client):
+        # when
+        booking = setup_booking()
+        booking.name = "updated_booking_name"
+
+        # then
+        result = client.patch(
+            f"/api/bookings/{uuid.uuid4()}",
+            headers={
+                'Content-Type': 'application/json',
+            },
+            data=booking.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.UNAUTHORIZED
 
     def test_update_missing_booking(self, client, jwt):
         # when
@@ -174,7 +256,9 @@ class TestBookingApi:
 
     def test_update_booking_with_missing_booking_customer_id(self, client, jwt):
         # when
-        booking = create_booking(setup_booking())
+        user_id_from_token = get_user_id_from_jwt(jwt)
+
+        booking = create_booking(setup_booking(author_id=uuid.UUID(user_id_from_token)))
         booking_dict = booking.dict()
         booking_dict['customer_id'] = None
 
