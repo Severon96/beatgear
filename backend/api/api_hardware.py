@@ -76,6 +76,9 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
     db_hardware = hardware_db.get_hardware(hardware_uuid)
 
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_hardware.owner_id)
+
+    print('current dir', os.getcwd())
+    print('current files in dir', os.listdir(os.getcwd()))
     dotenv_values = dotenv.dotenv_values()
     print('dotenv values', dotenv_values.values())
     admin_role = dotenv_values.get('ADMIN_ROLE_NAME')
