@@ -48,7 +48,7 @@ jobs:
         cwd: "./backend"
     - name: Wait for Keycloak to be ready
       run: |
-        until curl -s http://localhost:9000/health/setup; do
+        until curl -s http://localhost:9000/health/ready; do
           echo "Waiting for Keycloak..."
           sleep 5
         done
