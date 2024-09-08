@@ -1,7 +1,7 @@
 # Hardware Management
 ![main](https://github.com/Severon96/Hardware-Management/actions/workflows/backend.yml/badge.svg?branch=main)
 
-Brief description of the project and its purpose.
+Hardware Management for use in between multiple Persons.
 
 ## Table of Contents
 
@@ -14,10 +14,15 @@ Brief description of the project and its purpose.
 
 ## Installation
 
-Describe how to install the project. Example:
+The project uses poetry for dependency management. If you haven't installed poetry, yet, install it with the official installer.
 
 ```bash
-pip install projectname
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+After that, install the backend dependencies.
+```bash
+poetry install 
 ```
 
 If there are specific dependencies, mention them here.
