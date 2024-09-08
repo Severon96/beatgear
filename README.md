@@ -14,36 +14,29 @@ Hardware Management for use in between multiple Persons.
 
 ## Installation
 
-The project uses poetry for dependency management. If you haven't installed poetry, yet, install it with the official installer.
+### Prerequisites
+
+- Python 3.12
+- Docker and Docker Compose
+
+Install those dependencies, using the official docs as guide.
+
+The project uses poetry for dependency management. If you haven't installed poetry, yet, install it by using the official installer.
 
 ```bash
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
 After that, install the backend dependencies.
+
 ```bash
 poetry install 
 ```
 
-If there are specific dependencies, mention them here.
-
-### Prerequisites
-
-- Python 3.x
-- Other required packages or libraries (if necessary).
 
 ## Usage
 
-Describe how to use the project. Provide an example:
-
-```python
-from projectname import function
-
-result = function(param)
-print(result)
-```
-
-You can add more usage examples here.
+The project environment is already configured in the docker-compose.
 
 ## Examples
 
