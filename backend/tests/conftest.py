@@ -96,7 +96,7 @@ def jwt_admin():
 
     if response.status_code == 200:
         token = response.json().get('access_token')
-
+        print('admin token: ', token)
         yield token
     else:
         print(response.text)
