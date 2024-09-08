@@ -5,7 +5,7 @@ from http import HTTPStatus
 import pytest
 
 from models.db_models import Hardware, JSONEncoder
-from test_util.auth_util import get_user_id_from_jwt
+from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_hardware, setup_hardware
 
 

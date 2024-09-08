@@ -1,7 +1,9 @@
 import json
+import os
 from http import HTTPStatus
 from uuid import UUID
 
+import dotenv
 from flask import Blueprint, Response, abort, request
 from pydantic_core import ValidationError
 
@@ -74,6 +76,7 @@ def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
         abort(400, f"{booking_id} is not a valid id")
 
     db_booking = bookings_db.get_booking(booking_uuid)
+
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_booking.author_id)
     if not is_user_allowed_to_update:
         abort(HTTPStatus.FORBIDDEN, "You are not authorized to edit this hardware.")

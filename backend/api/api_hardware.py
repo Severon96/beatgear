@@ -1,7 +1,9 @@
 import json
+import os
 from http import HTTPStatus
 from uuid import UUID
 
+import dotenv
 from flask import Blueprint, Response, abort, request
 from pydantic_core import ValidationError
 
@@ -73,7 +75,8 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
 
     db_hardware = hardware_db.get_hardware(hardware_uuid)
 
-    if not is_author_or_admin(authenticated_user, db_hardware.owner_id):
+    is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_hardware.owner_id)
+    if not is_user_allowed_to_update:
         abort(HTTPStatus.FORBIDDEN, "You are not authorized to edit this hardware.")
 
     try:

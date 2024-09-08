@@ -1,8 +1,8 @@
 import json
-import os
 from functools import wraps
 from uuid import UUID
 
+import dotenv
 import requests
 from flask import jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
@@ -37,7 +37,7 @@ def token_required(fn):
 
 
 def is_author_or_admin(authenticated_user: AuthenticatedUser, author_id: UUID) -> bool:
-    admin_role = os.environ.get('ADMIN_ROLE_NAME')
+    admin_role = dotenv.dotenv_values('.env').get('ADMIN_ROLE_NAME')
 
     if admin_role in authenticated_user.roles:
         return True

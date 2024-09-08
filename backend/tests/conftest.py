@@ -28,10 +28,9 @@ def postgres(request):
 @pytest.fixture(scope='function')
 def flask_app():
     flask_app = app.create_app()
-
-    print("Current dir: ", os.getcwd())
-    print("files in current dir: ", os.listdir(os.getcwd()))
-    dotenv_values = dotenv.dotenv_values('.env.testing')
+    print('current dir', os.getcwd())
+    print('current files in dir', os.listdir(os.getcwd()))
+    dotenv_values = dotenv.dotenv_values('.env')
     flask_app.config.update(dotenv_values)
 
     flask_app.config['JWT_PUBLIC_KEY'] = fetch_public_key(
@@ -51,7 +50,7 @@ def client(flask_app):
 
 @pytest.fixture(scope='function')
 def jwt():
-    dotenv_dict = dotenv.dotenv_values('.env.testing')
+    dotenv_dict = dotenv.dotenv_values('.env')
 
     realm_name = dotenv_dict.get('REALM_NAME')
     oauth_issuer = dotenv_dict.get('OAUTH_ISSUER')
@@ -79,7 +78,7 @@ def jwt():
 
 @pytest.fixture(scope='function')
 def jwt_admin():
-    dotenv_dict = dotenv.dotenv_values('.env.testing')
+    dotenv_dict = dotenv.dotenv_values('.env')
 
     realm_name = dotenv_dict.get('REALM_NAME')
     oauth_issuer = dotenv_dict.get('OAUTH_ISSUER')
@@ -98,7 +97,7 @@ def jwt_admin():
 
     if response.status_code == 200:
         token = response.json().get('access_token')
-
+        print('admin token: ', token)
         yield token
     else:
         print(response.text)
