@@ -45,6 +45,12 @@ jobs:
         compose-file: "./backend/docker-compose.yml"
         services: "keycloak"
         up-flags: "-d"
+    - name: Wait for Keycloak to be ready
+      run: |
+        until curl -s http://localhost:8080/auth/; do
+          echo "Waiting for Keycloak..."
+          sleep 5
+        done
     - name: Test with pytest and keycloak test container
       working-directory: ./backend/tests
       run: |
