@@ -70,7 +70,7 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
         hardware_uuid = UUID(hardware_id)
     except ValueError:
         abort(400, f"{hardware_id} is not a valid id")
-
+    print("Authenticated user for admin and stuff", authenticated_user)
     db_hardware = hardware_db.get_hardware(hardware_uuid)
 
     if not is_author_or_admin(authenticated_user, db_hardware.owner_id):
