@@ -5,7 +5,7 @@ from http import HTTPStatus
 import pytest
 
 from models.db_models import Booking, JSONEncoder
-from test_util.auth_util import get_user_id_from_jwt
+from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
 
