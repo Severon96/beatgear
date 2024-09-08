@@ -51,6 +51,8 @@ jobs:
           echo "Waiting for Keycloak..."
           sleep 5
         done
+    - name: Keycloak logs
+      run: docker logs keycloak
     - name: Test with pytest and keycloak test container
       working-directory: ./backend/tests
       run: |
