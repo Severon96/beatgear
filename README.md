@@ -1,4 +1,5 @@
 # Hardware Management
+![main](https://github.com/Severon96/Hardware-Management/actions/workflows/backend.yml/badge.svg?branch=main)
 
 Brief description of the project and its purpose.
 
