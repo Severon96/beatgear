@@ -51,10 +51,8 @@ jobs:
           echo "Waiting for Keycloak..."
           sleep 5
         done
-    - name: docker containers
-      run: docker ps -a
     - name: Keycloak logs
-      run: docker logs keycloak
+      run: docker logs keycloak_hardware_management
     - name: Test with pytest and keycloak test container
       working-directory: ./backend/tests
       run: |
