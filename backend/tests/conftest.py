@@ -29,7 +29,7 @@ def postgres(request):
 def flask_app():
     flask_app = app.create_app()
 
-    dotenv_values = dotenv.dotenv_values('.env.testing')
+    dotenv_values = dotenv.dotenv_values('.env')
     flask_app.config.update(dotenv_values)
 
     flask_app.config['JWT_PUBLIC_KEY'] = fetch_public_key(
@@ -49,7 +49,7 @@ def client(flask_app):
 
 @pytest.fixture(scope='function')
 def jwt():
-    dotenv_dict = dotenv.dotenv_values('.env.testing')
+    dotenv_dict = dotenv.dotenv_values('.env')
 
     realm_name = dotenv_dict.get('REALM_NAME')
     oauth_issuer = dotenv_dict.get('OAUTH_ISSUER')
@@ -77,7 +77,7 @@ def jwt():
 
 @pytest.fixture(scope='function')
 def jwt_admin():
-    dotenv_dict = dotenv.dotenv_values('.env.testing')
+    dotenv_dict = dotenv.dotenv_values('.env')
 
     realm_name = dotenv_dict.get('REALM_NAME')
     oauth_issuer = dotenv_dict.get('OAUTH_ISSUER')

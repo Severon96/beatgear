@@ -5,7 +5,7 @@ from util.auth_util import fetch_public_key
 
 
 def get_user_id_from_jwt(jwt_token: str) -> str:
-    dotenv_dict = dotenv.dotenv_values('.env.testing')
+    dotenv_dict = dotenv.dotenv_values('.env')
     realm_name = dotenv_dict.get('REALM_NAME')
     oauth_issuer = dotenv_dict.get('OAUTH_ISSUER')
 
