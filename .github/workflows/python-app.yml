@@ -42,9 +42,10 @@ jobs:
     - name: Start keycloak docker container
       uses: hoverkraft-tech/compose-action@v2.0.1
       with:
-        compose-file: "./backend/docker-compose.yml"
+        compose-file: "docker-compose.yml"
         services: "keycloak"
         up-flags: "-d"
+        cwd: "./backend"
     - name: Wait for Keycloak to be ready
       run: |
         until curl -s http://localhost:9000/health/setup; do
