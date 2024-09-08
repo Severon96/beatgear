@@ -1,3 +1,4 @@
+import os
 from unittest.mock import patch
 
 import dotenv
@@ -28,6 +29,8 @@ def postgres(request):
 def flask_app():
     flask_app = app.create_app()
 
+    print("Current dir: ", os.getcwd())
+    print("files in current dir: ", os.listdir(os.getcwd()))
     dotenv_values = dotenv.dotenv_values('.env.testing')
     flask_app.config.update(dotenv_values)
 
