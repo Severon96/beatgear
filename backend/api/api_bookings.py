@@ -80,7 +80,7 @@ def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_booking.author_id)
     print('current dir', os.getcwd())
     print('current files in dir', os.listdir(os.getcwd()))
-    dotenv_values = dotenv.dotenv_values()
+    dotenv_values = dotenv.dotenv_values('.env')
     print('dotenv values', dotenv_values.values())
     admin_role = dotenv_values.get('ADMIN_ROLE_NAME')
     print('admin role name: ', admin_role)

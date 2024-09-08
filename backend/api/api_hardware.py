@@ -79,7 +79,7 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
 
     print('current dir', os.getcwd())
     print('current files in dir', os.listdir(os.getcwd()))
-    dotenv_values = dotenv.dotenv_values()
+    dotenv_values = dotenv.dotenv_values('.env')
     print('dotenv values', dotenv_values.values())
     admin_role = dotenv_values.get('ADMIN_ROLE_NAME')
     print('admin role name: ', admin_role)
