@@ -7,10 +7,7 @@ Hardware Management for use in between multiple Persons.
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Examples](#examples)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-- [License](#license)
+- [Tests](#tests)
 
 ## Installation
 
@@ -19,7 +16,7 @@ Hardware Management for use in between multiple Persons.
 - Python 3.12
 - Docker and Docker Compose
 
-Install those dependencies, using the official docs as guide.
+Install those dependencies, using the official docs for your system as guide.
 
 The project uses poetry for dependency management. If you haven't installed poetry, yet, install it by using the official installer.
 
@@ -38,41 +35,21 @@ poetry install
 
 The project environment is already configured in the docker-compose.
 
-## Examples
+> [!CAUTION]
+> When setting up this tool for production, set up a new realm or at least regenerate  all client secrets, since they are maintained in this repository for testing purposes.
 
-Provide complete examples or use cases to help users get started.
-
-```bash
-python example_script.py
-```
-
-## Documentation
-
-Link to the full documentation, if available.
-
-## Contributing
-
-Instructions for people who want to contribute to the project:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/YourFeature`)
-3. Commit your changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature/YourFeature`)
-5. Create a Pull Request
-
-### Code of Conduct
-
-If you have a Code of Conduct, link to it here.
+Frontend is still wip.
 
 ## Tests
+The tests are set up as End-2-End tests. This means we are using a real Keycloak instance (the one from the docker-compose.yml) and real postgres databases for the tests.
 
-Explain how to run tests:
+If you haven't already a keycloak running, start it by using docker-compose.
 
 ```bash
-pytest
+docker compose up -d keycloak
 ```
 
-Or if you are using a specific test framework.
+The Keycloak instance will import the initial realm, used for tests.
 
 ## License
 
