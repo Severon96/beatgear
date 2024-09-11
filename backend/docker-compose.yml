@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:latest
@@ -17,6 +15,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: hardware_management/backend:latest
     env_file:
       - .env
     ports:
