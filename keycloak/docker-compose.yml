@@ -1,14 +1,15 @@
-keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: keycloak_hardware_management
-    environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HEALTH_ENABLED: true
-      KC_METRICS_ENABLED: true
-    ports:
-      - "8080:8080"
-      - "9000:9000"
-    volumes:
-      - ./import:/opt/keycloak/data/import
-    command: start-dev --import-realm
+services:
+  keycloak:
+      image: quay.io/keycloak/keycloak:latest
+      container_name: keycloak_hardware_management
+      environment:
+        KEYCLOAK_ADMIN: admin
+        KEYCLOAK_ADMIN_PASSWORD: admin
+        KC_HEALTH_ENABLED: true
+        KC_METRICS_ENABLED: true
+      ports:
+        - "8080:8080"
+        - "9000:9000"
+      volumes:
+        - ./import:/opt/keycloak/data/import
+      command: start-dev --import-realm
