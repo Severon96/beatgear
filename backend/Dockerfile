@@ -1,4 +1,4 @@
-FROM python:3.12-bullseye as builder
+FROM python:3.12-bullseye AS builder
 
 RUN pip install poetry==1.8
 
@@ -16,7 +16,7 @@ RUN poetry install --no-interaction --without dev --no-root && rm -rf $POETRY_CA
 COPY . ./
 
 # The runtime image, used to just run the code provided its virtual environment
-FROM python:3.12-slim-bullseye as runtime
+FROM python:3.12-slim-bullseye AS runtime
 
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
@@ -27,4 +27,4 @@ COPY . ./
 
 EXPOSE 5000
 
-ENTRYPOINT ["python", "-m", "flask", "run", "--host=0.0.0.0"]
+ENTRYPOINT ["python", "app.py"]

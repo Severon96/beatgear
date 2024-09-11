@@ -16,6 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: hardware_management/backend:latest
+    restart: always
     env_file:
       - .env
     ports:
