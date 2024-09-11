@@ -27,4 +27,4 @@ COPY . ./
 
 EXPOSE 5000
 
-ENTRYPOINT ["python", "-m", "flask", "run"]
+ENTRYPOINT ["python", "-m", "flask", "run", "--host=0.0.0.0"]
