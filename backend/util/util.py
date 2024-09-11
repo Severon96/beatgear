@@ -6,6 +6,8 @@ from pydantic import BaseModel
 from sqlalchemy import Engine, create_engine, Connection
 from sqlalchemy.orm import DeclarativeBase, Session
 
+from models.db_models import Base
+
 T = TypeVar('T', bound=BaseModel)
 
 
@@ -31,6 +33,6 @@ def get_db_session() -> Session:
 
 def get_db_engine() -> Engine:
     engine = create_engine(os.environ.get("DB_URL"), echo=True)
-    DeclarativeBase.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
 
     return engine
