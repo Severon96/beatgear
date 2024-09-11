@@ -34,13 +34,12 @@ def add_root_route(flask_app):
         return {"hello": "world"}
 
 
-if __name__ == "__main__":
-    app = create_app()
+app = create_app()
 
-    app.config['JWT_PUBLIC_KEY'] = fetch_public_key(
-        app.config.get('OAUTH_ISSUER'),
-        app.config.get('REALM_NAME')
-    )
-    JWTManager(app)
+app.config['JWT_PUBLIC_KEY'] = fetch_public_key(
+    app.config.get('OAUTH_ISSUER'),
+    app.config.get('REALM_NAME')
+)
+JWTManager(app)
 
-    app.run(debug=True)
+app.run(debug=True)
