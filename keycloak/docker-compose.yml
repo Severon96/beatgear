@@ -10,5 +10,5 @@ keycloak:
       - "8080:8080"
       - "9000:9000"
     volumes:
-      - ./keycloak/import:/opt/keycloak/data/import
+      - ./import:/opt/keycloak/data/import
     command: start-dev --import-realm
