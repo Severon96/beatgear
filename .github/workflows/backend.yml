@@ -45,7 +45,7 @@ jobs:
         compose-file: "docker-compose.yml"
         services: "keycloak"
         up-flags: "-d"
-        cwd: "./backend"
+        cwd: "./keycloak"
     - name: Wait for Keycloak to be ready
       run: |
         until curl -s http://localhost:9000/health/ready; do

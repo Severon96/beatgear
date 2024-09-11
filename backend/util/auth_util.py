@@ -7,24 +7,33 @@ import requests
 from flask import jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
 from jwt.algorithms import RSAAlgorithm
+from requests import JSONDecodeError
 
 from models.request_models import AuthenticatedUser
 
 
 def fetch_public_key(oauth_issuer: str, realm_name: str) -> str:
-    response = requests.get(f"{oauth_issuer}/realms/{realm_name}/.well-known/openid-configuration", verify=False)
+    response = requests.get(
+        f"{oauth_issuer}/realms/{realm_name}/.well-known/openid-configuration",
+        headers={"Content-Type": "application/json"},
+        verify=False
+    )
 
     if response.status_code != 200:
         print(f"failed fetching public key: {response.status_code}", response.text)
         raise ValueError(f"Couldn't fetch openid configuration: {response.status_code}")
+    try:
+        oidc_config = response.json()
 
-    oidc_config = response.json()
+        oidc_jwks_uri = requests.get(oidc_config["jwks_uri"], verify=False).json()
 
-    oidc_jwks_uri = requests.get(oidc_config["jwks_uri"], verify=False).json()
+        return RSAAlgorithm.from_jwk(
+            json.dumps(oidc_jwks_uri["keys"][0])
+        )
+    except JSONDecodeError as e:
+        print(f"failed fetching public key: {e}", e.response)
+        raise ValueError(f"Couldn't fetch public key: {e}")
 
-    return RSAAlgorithm.from_jwk(
-        json.dumps(oidc_jwks_uri["keys"][0])
-    )
 
 
 def token_required(fn):
