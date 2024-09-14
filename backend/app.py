@@ -1,3 +1,5 @@
+import os
+
 import psycopg2.extras
 from flask import Flask
 from flask_cors import CORS
@@ -34,7 +36,7 @@ def add_root_route(flask_app):
         return {"hello": "world"}
 
 
-if __name__ == "__main__":
+def main():
     app = create_app()
 
     app.config['JWT_PUBLIC_KEY'] = fetch_public_key(
@@ -44,3 +46,17 @@ if __name__ == "__main__":
     JWTManager(app)
 
     app.run(debug=True)
+
+if __name__ == "__main__":
+    app = create_app()
+
+    app.config['JWT_PUBLIC_KEY'] = fetch_public_key(
+        app.config.get('OAUTH_ISSUER'),
+        app.config.get('REALM_NAME')
+    )
+    JWTManager(app)
+
+    app_port = os.environ.get("FLASK_RUN_PORT", 5000)
+
+    app.run(debug=True, host='0.0.0.0', port=app_port)
+
