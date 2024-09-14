@@ -535,7 +535,7 @@
     {
       "id": "909de689-c1b5-49d1-ba6e-48c913d38ca2",
       "username": "test-admin",
-      "emailVerified": false,
+      "emailVerified": true,
       "createdTimestamp": 1725698691656,
       "enabled": true,
       "totp": false,
@@ -551,13 +551,18 @@
           "value": "admin"
         }
       ],
+      "attributes": {
+          "firstName": "Admin",
+          "lastName": "Test",
+          "email": "admin@test.de"
+      },
       "notBefore": 0,
       "groups": []
     },
     {
       "id": "e544f8ed-df11-465f-ab70-23193e5553a5",
       "username": "test-user",
-      "emailVerified": false,
+      "emailVerified": true,
       "createdTimestamp": 1725698691656,
       "enabled": true,
       "totp": false,
@@ -572,6 +577,11 @@
           "value": "test"
         }
       ],
+      "attributes": {
+          "firstName": "User",
+          "lastName": "Test",
+          "email": "user@test.de"
+      },
       "notBefore": 0,
       "groups": []
     }
