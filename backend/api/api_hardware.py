@@ -4,7 +4,7 @@ from http import HTTPStatus
 from uuid import UUID
 
 import dotenv
-from flask import Blueprint, Response, abort, request
+from flask import Blueprint, Response, abort, request, make_response, jsonify
 from pydantic_core import ValidationError
 
 
@@ -36,7 +36,8 @@ def get_hardware(hardware_id: str):
     try:
         uuid = UUID(hardware_id)
     except ValueError:
-        abort(400, f"{hardware_id} is not a valid id")
+        abort(make_response(jsonify(message=f"{hardware_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
+
     hardware = hardware_db.get_hardware(uuid)
 
     return Response(
@@ -61,7 +62,7 @@ def create_hardware():
             response=request_hardware.json()
         )
     except (ValidationError, ValueError) as e:
-        abort(400, str(e))
+        abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
 
 
 @api.route("/hardware/<hardware_id>", methods=['PATCH'])
@@ -71,13 +72,14 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
     try:
         hardware_uuid = UUID(hardware_id)
     except ValueError:
-        abort(400, f"{hardware_id} is not a valid id")
+        abort(make_response(jsonify(message=f"{hardware_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
+        abort(HTTPStatus.BAD_REQUEST, f"{hardware_id} is not a valid id")
 
     db_hardware = hardware_db.get_hardware(hardware_uuid)
 
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_hardware.owner_id)
     if not is_user_allowed_to_update:
-        abort(HTTPStatus.FORBIDDEN, "You are not authorized to edit this hardware.")
+        abort(make_response(jsonify(message="You are not authorized to edit this hardware."), HTTPStatus.FORBIDDEN))
 
     try:
         json_body = request.json
@@ -91,4 +93,4 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
             response=updated_hardware.json()
         )
     except (ValidationError, ValueError) as e:
-        abort(400, str(e))
+        abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))

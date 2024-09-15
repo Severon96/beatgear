@@ -1,9 +1,10 @@
 import uuid
 from datetime import datetime
+from http import HTTPStatus
 from typing import Type, Sequence
 from uuid import UUID
 
-from flask import abort
+from flask import abort, make_response, jsonify
 from sqlalchemy import select
 
 from models.db_models import Hardware
@@ -16,7 +17,7 @@ def get_hardware(hardware_id: UUID) -> Type[Hardware]:
     hardware = session.get(Hardware, hardware_id)
 
     if hardware is None:
-        abort(404, f"Hardware with id {hardware_id} not found")
+        abort(make_response(jsonify(message=f"Hardware with id {hardware_id} not found"), HTTPStatus.NOT_FOUND))
 
     return hardware
 
@@ -52,7 +53,7 @@ def update_hardware(hardware_id: UUID, hardware: Hardware) -> Type[Hardware] | N
     db_hardware = session.get(Hardware, hardware_id)
 
     if db_hardware is None:
-        abort(404, f"Hardware with id {hardware_id} not found.")
+        abort(make_response(jsonify(message=f"Hardware with id {hardware_id} not found"), HTTPStatus.NOT_FOUND))
 
     # field types might not be appropriate
     hardware.id = UUID(hardware.id) if isinstance(hardware.id, str) else hardware.id
