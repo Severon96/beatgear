@@ -1,11 +1,11 @@
 import uuid
 from datetime import datetime
+from http import HTTPStatus
 from typing import Sequence, Type
 from uuid import UUID
 
 import dateutil.parser
-from chalice import NotFoundError
-from flask import abort
+from flask import abort, make_response, jsonify
 from sqlalchemy import select
 
 from models.db_models import Booking
@@ -18,7 +18,7 @@ def get_booking(booking_id: UUID) -> Type[Booking]:
     booking = session.get(Booking, booking_id)
 
     if booking is None:
-        abort(404, f"Booking with id {booking_id} not found")
+        abort(make_response(jsonify(message=f"Booking with id {booking_id} not found"), HTTPStatus.NOT_FOUND))
 
     return booking
 
@@ -58,7 +58,7 @@ def update_booking(booking_id: UUID, booking: Booking) -> Type[Booking] | None:
     db_booking = session.get(Booking, booking_id)
 
     if db_booking is None:
-        abort(404, f"Booking with id {booking_id} not found.")
+        abort(make_response(jsonify(message=f"Booking with id {booking_id} not found"), HTTPStatus.NOT_FOUND))
 
     # field types might not be appropriate
     booking.id = UUID(booking.id) if isinstance(booking.id, str) else booking.id

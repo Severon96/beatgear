@@ -71,7 +71,7 @@ def user(fn):
         jwt = get_jwt()
 
         if jwt is None:
-            return jsonify('Access denied'), 401
+            return jsonify(message='Access denied'), 401
 
         user_id = jwt['sub']
         username = jwt['preferred_username']

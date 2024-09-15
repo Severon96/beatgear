@@ -1,10 +1,8 @@
 import json
-import os
 from http import HTTPStatus
 from uuid import UUID
 
-import dotenv
-from flask import Blueprint, Response, abort, request
+from flask import Blueprint, Response, abort, request, make_response, jsonify
 from pydantic_core import ValidationError
 
 from db import bookings_db
@@ -37,7 +35,8 @@ def get_booking(booking_id: str):
     try:
         uuid = UUID(booking_id)
     except ValueError:
-        abort(400, f"{booking_id} is not a valid id")
+        abort(make_response(jsonify(message=f"{booking_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
+
     booking = bookings_db.get_booking(uuid)
 
     return Response(
@@ -63,7 +62,7 @@ def create_booking():
             response=db_booking.json()
         )
     except (ValidationError, ValueError) as e:
-        abort(400, str(e))
+        abort(HTTPStatus.BAD_REQUEST, str(e))
 
 
 @api.route("/bookings/<booking_id>", methods=['PATCH'])
@@ -73,13 +72,13 @@ def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
     try:
         booking_uuid = UUID(booking_id)
     except ValueError:
-        abort(400, f"{booking_id} is not a valid id")
+        abort(make_response(jsonify(message=f"{booking_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
 
     db_booking = bookings_db.get_booking(booking_uuid)
 
     is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_booking.author_id)
     if not is_user_allowed_to_update:
-        abort(HTTPStatus.FORBIDDEN, "You are not authorized to edit this hardware.")
+        abort(make_response(jsonify(message="You are not authorized to edit this booking."), HTTPStatus.FORBIDDEN))
 
     try:
         json_body = request.json
@@ -95,4 +94,4 @@ def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
             response=updated_user.json()
         )
     except (ValidationError, ValueError) as e:
-        abort(400, str(e))
+        abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))

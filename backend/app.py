@@ -9,6 +9,7 @@ import config
 from api.api_bookings import api as api_bookings
 from api.api_hardware import api as api_hardware
 from util.auth_util import fetch_public_key
+from util.util import setup_db_engine
 
 
 def create_app() -> Flask:
@@ -58,5 +59,6 @@ if __name__ == "__main__":
 
     app_port = os.environ.get("FLASK_RUN_PORT", 5000)
 
-    app.run(debug=True, host='0.0.0.0', port=app_port)
+    setup_db_engine()
 
+    app.run(debug=True, host='0.0.0.0', port=app_port)
