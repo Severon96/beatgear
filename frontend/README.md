@@ -2,6 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Early Frontend Design Concepts
 
+![Landing Page](images/concept_0.png)
 ![Booking Screen 1](images/concept_1.jpeg)
 ![Booking Screen 2](images/concept_2.jpeg)
 
