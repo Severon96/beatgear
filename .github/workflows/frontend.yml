@@ -1,5 +1,5 @@
-name: Deploy Next.js site to Pages
-'on':
+name: Frontend
+on:
   push:
     branches:
       - main
