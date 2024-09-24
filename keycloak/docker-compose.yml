@@ -1,7 +1,7 @@
 services:
   keycloak:
       image: quay.io/keycloak/keycloak:latest
-      container_name: keycloak_hardware_management
+      container_name: keycloak_beatzgear
       environment:
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: admin

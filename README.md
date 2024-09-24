@@ -1,5 +1,5 @@
-# Hardware Management
-![main](https://github.com/Severon96/Hardware-Management/actions/workflows/backend.yml/badge.svg?branch=main)
+# BeatzGear
+![main](https://github.com/Severon96/beatzgear/actions/workflows/backend.yml/badge.svg?branch=main)
 
 Hardware Management for use in between multiple Persons.
 

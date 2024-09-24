@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:latest
-    container_name: postgres_hardware_management
+    container_name: postgres_beatzgear
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD:
@@ -11,11 +11,11 @@ services:
     ports:
       - "5432:5432"
   backend:
-    container_name: backend_hardware_management
+    container_name: backend_beatzgear
     build:
       context: .
       dockerfile: Dockerfile
-    image: hardware_management/backend:latest
+    image: beatzgear/backend:latest
     restart: always
     env_file:
       - .env
