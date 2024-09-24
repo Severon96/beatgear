@@ -4,16 +4,16 @@ import {metadata} from "@/app/layout";
 
 export function Header() {
     return (
-        <div className={`w-screen flex-col grid-cols-3`}>
-            <div className={"flex-col grid-cols-2"}>
+        <div className={`w-screen grid flex-col grid-cols-4`}>
+            <div className={"grid flex-col grid-cols-2"}>
                 <Image
                     src="/images/logo.png"
                     width={50}
                     height={50}
                     alt="BeatzGear Logo"
                 />
-                <div>
-                    {`${metadata.title}`}
+                <div className={"flex h-full font-[family-name:var(--font-outfit)]"}>
+                    <span className={"content-center"}>{`${metadata.title}`}</span>
                 </div>
             </div>
 
