@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:latest
-    container_name: postgres_beatzgear
+    container_name: postgres_beatgear
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD:
@@ -11,11 +11,11 @@ services:
     ports:
       - "5432:5432"
   backend:
-    container_name: backend_beatzgear
+    container_name: backend_beatgear
     build:
       context: .
       dockerfile: Dockerfile
-    image: beatzgear/backend:latest
+    image: beatgear/backend:latest
     restart: always
     env_file:
       - .env

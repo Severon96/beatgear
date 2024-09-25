@@ -10,7 +10,7 @@ export function Header() {
                     src="/images/logo.png"
                     width={50}
                     height={50}
-                    alt="BeatzGear Logo"
+                    alt="BeatGear Logo"
                 />
                 <div className={"flex h-full font-[family-name:var(--font-outfit)]"}>
                     <span className={"content-center"}>{`${metadata.title}`}</span>

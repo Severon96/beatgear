@@ -22,7 +22,7 @@ export const outfit: NextFontWithVariable = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: "BeatzGear",
+  title: "BeatGear",
   description: "Rent out your equipment",
 };
 
