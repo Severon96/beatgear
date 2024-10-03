@@ -1,6 +1,7 @@
 import React from "react";
 import {Header} from "@/app/components/header";
 import {isLoggedIn} from "@/app/utils/auth";
+import {LandingPage} from "@/app/components/landing-page";
 
 export default async function Home() {
     return (
@@ -11,7 +12,7 @@ export default async function Home() {
                     <Header/>
                 </header>
                 {
-                    await isLoggedIn() ? "Logged in" : "Logged out"
+                    await isLoggedIn() ? "Logged in" : <LandingPage />
                 }
             </main>
         </div>
