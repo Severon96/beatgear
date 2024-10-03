@@ -4,7 +4,6 @@ import "./globals.css";
 import React from "react";
 import {Outfit} from "next/font/google";
 import {NextFontWithVariable} from "next/dist/compiled/@next/font";
-import {AuthProvider} from "../../context/AuthContext";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -35,9 +34,7 @@ export default function RootLayout({children,}: Readonly<{
             <body
                 className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} antialiased bg-white text-slate-700`}
             >
-                <AuthProvider>
-                    {children}
-                </AuthProvider>
+                {children}
             </body>
         </html>
     );
