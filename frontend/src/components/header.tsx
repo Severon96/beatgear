@@ -1,0 +1,58 @@
+import React, {useEffect, useState} from "react";
+import {getIdToken, isLoggedIn} from "../utils/auth";
+
+export function Header() {
+    const rootUrl = process.env.ROOT_URL;
+    const oauthUrl = process.env.OAUTH_ISSUER;
+    const realmName = process.env.OAUTH_REALM;
+    const clientId = process.env.OAUTH_CLIENT_ID;
+    const redirectPath = process.env.OAUTH_REDIRECT_PATH;
+    const idToken = getIdToken()
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        async function getIsLoggedIn() {
+            const userIsLoggedIn = await isLoggedIn();
+            setLoggedIn(userIsLoggedIn)
+        }
+
+        getIsLoggedIn()
+    }, []);
+
+    return (
+        <div
+            className="w-full flex flex-col md:flex-row justify-between items-center py-1 md:mt-0 border-b-2 relative"
+            suppressHydrationWarning={true}
+        >
+            <div className="flex items-center space-x-2 relative">
+                <img
+                    src="/images/logo.jpeg"
+                    width={50}
+                    height={50}
+                    alt="BeatGear Logo"
+                />
+                <span className={"pr-2"}>BeatGear</span>
+            </div>
+            <span>{`${loggedIn}`}</span>
+            <div className="flex items-center space-x-2 mt-4 md:mt-0 md:ml-auto md:pr-2 relative">
+                {
+                    loggedIn ? (
+                        <a
+                            href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/api/logout`}
+                            className="button-secondary-blue py-1 px-3 rounded-lg"
+                        >
+                            Abmelden
+                        </a>
+                    ) : (
+                        <a
+                            href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}
+                            className="button-secondary-blue py-1 px-3 rounded-lg"
+                        >
+                            Anmelden
+                        </a>
+                    )
+                }
+            </div>
+        </div>
+    );
+}
