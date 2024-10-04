@@ -6,7 +6,7 @@ const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
 const clientSecret = process.env.REACT_APP_OAUTH_CLIENT_SECRET;
 
 export const isLoggedIn = async (): Promise<boolean> => {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) return false;
 
@@ -32,7 +32,7 @@ async function getTokenValidity(accessToken: string) {
 }
 
 export const refreshAccessToken = async (): Promise<string | null> => {
-    const refreshToken = localStorage.getItem('refresh_token');
+    const refreshToken = localStorage.getItem('refreshToken');
 
     if (!refreshToken) {
         return null;
@@ -56,9 +56,10 @@ export const refreshAccessToken = async (): Promise<string | null> => {
 
         if (response.ok) {
             const {access_token, refresh_token, id_token} = data;
-            localStorage.set('access_token', access_token)
-            localStorage.set('refresh_token', refresh_token)
-            localStorage.set('id_token', id_token)
+
+            localStorage.set('accessToken', access_token)
+            localStorage.set('refreshToken', refresh_token)
+            localStorage.set('idToken', id_token)
 
             return access_token;
         } else {
@@ -79,15 +80,19 @@ function isAccessTokenValid(accessToken: string) {
 }
 
 export function getIdToken(): string|null {
-    return localStorage.getItem('id_token');
+    return localStorage.getItem('idToken');
+}
+
+export function deleteTokens(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('idToken');
 }
 
 export async function setAccessTokenByAuthorizationCode(authorizationCode: string | null): Promise<void> {
     if (!authorizationCode) {
         console.error("Authorization code not found")
     }
-
-    console.log("authorization code", authorizationCode);
 
     try {
         const rootUrl = process.env.REACT_APP_ROOT_URL;

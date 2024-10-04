@@ -13,6 +13,7 @@ export function Header() {
     useEffect(() => {
         async function getIsLoggedIn() {
             const userIsLoggedIn = await isLoggedIn();
+
             setLoggedIn(userIsLoggedIn)
         }
 
@@ -38,7 +39,7 @@ export function Header() {
                 {
                     loggedIn ? (
                         <a
-                            href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/api/logout`}
+                            href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
                             className="button-secondary-blue py-1 px-3 rounded-lg"
                         >
                             Abmelden

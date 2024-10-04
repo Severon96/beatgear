@@ -4,7 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import Redirect from "./OAuthRedirect";
+import LoginRedirect from "./OAuthLoginRedirect";
+import LogoutRedirect from "./OAuthLogoutRedirect";
 
 const router = createBrowserRouter([
     {
@@ -13,7 +14,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/auth/callback",
-        element: <Redirect />
+        element: <LoginRedirect />
+    },
+    {
+        path: "/auth/logout",
+        element: <LogoutRedirect />
     }
 ]);
 
