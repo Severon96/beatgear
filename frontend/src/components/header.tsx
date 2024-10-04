@@ -22,19 +22,19 @@ export function Header() {
 
     return (
         <div
-            className="w-full flex flex-col md:flex-row justify-between items-center py-1 md:mt-0 border-b-2 relative"
+            className="w-full flex flex-col md:flex-row justify-between items-center py-1 px-2 md:mt-0 border-b-2 relative"
             suppressHydrationWarning={true}
         >
             <div className="flex items-center space-x-2 relative">
                 <img
-                    src="/images/logo.jpeg"
+                    src="/images/logo.png"
                     width={50}
                     height={50}
                     alt="BeatGear Logo"
                 />
                 <span className={"pr-2"}>BeatGear</span>
             </div>
-            <div className="flex items-center space-x-2 mt-4 md:mt-0 md:ml-auto md:pr-2 relative">
+            <div className="flex items-center space-x-2 mt-4 md:mt-0 md:ml-auto relative">
                 {
                     loggedIn ? (
                         <a
