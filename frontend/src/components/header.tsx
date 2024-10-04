@@ -23,7 +23,6 @@ export function Header() {
     return (
         <div
             className="w-full flex flex-col md:flex-row justify-between items-center py-1 px-2 md:mt-0 border-b-2 relative"
-            suppressHydrationWarning={true}
         >
             <div className="flex items-center space-x-2 relative">
                 <img
