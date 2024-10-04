@@ -11,11 +11,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     try {
+        const rootUrl = process.env.ROOT_URL;
         const oauthUrl = process.env.OAUTH_ISSUER;
         const realmName = process.env.OAUTH_REALM;
         const clientId = process.env.OAUTH_CLIENT_ID;
         const clientSecret = process.env.OAUTH_CLIENT_SECRET;
-        const redirectUri = process.env.OAUTH_REDIRECT_URI;
+        const redirectPath = process.env.OAUTH_REDIRECT_PATH;
 
         const response = await fetch(`${oauthUrl}/realms/${realmName}/protocol/openid-connect/token`, {
             method: 'POST',
@@ -27,16 +28,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
                 client_id: `${clientId}`,
                 client_secret: `${clientSecret}`,
                 code: code,
-                redirect_uri: `${redirectUri}`
+                redirect_uri: `${rootUrl}${redirectPath}`
             }),
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            const {access_token, refresh_token} = data;
+            const {access_token, refresh_token, id_token} = data;
 
-            const responseHeaders = buildResponseHeaders(access_token, refresh_token);
+            const responseHeaders = buildResponseHeaders(access_token, refresh_token, id_token);
 
             return NextResponse.redirect(new URL('/', request.url), {
                 headers: responseHeaders,
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 }
 
-function buildResponseHeaders(access_token: string, refresh_token: string): Headers {
+function buildResponseHeaders(access_token: string, refresh_token: string, id_token: string): Headers {
     const accessTokenCookie = serialize('access_token', access_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -66,9 +67,17 @@ function buildResponseHeaders(access_token: string, refresh_token: string): Head
         maxAge: 60 * 60 * 24 * 30,
     });
 
+    const idTokenCookie = serialize('id_token', id_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+    });
+
     const responseHeaders = new Headers();
     responseHeaders.append('Set-Cookie', accessTokenCookie);
     responseHeaders.append('Set-Cookie', refreshTokenCookie);
+    responseHeaders.append('Set-Cookie', idTokenCookie);
 
     return responseHeaders;
 }

@@ -1,3 +1,4 @@
+"use server"
 import {jwtDecode} from 'jwt-decode';
 import {cookies} from "next/headers";
 
@@ -58,9 +59,10 @@ export const refreshAccessToken = async (): Promise<string | null> => {
         const data = await response.json();
 
         if (response.ok) {
-            const {access_token, refresh_token} = data;
+            const {access_token, refresh_token, id_token} = data;
             cookies().set('access_token', access_token)
             cookies().set('refresh_token', refresh_token)
+            cookies().set('id_token', id_token)
 
             return access_token;
         } else {
@@ -78,4 +80,10 @@ function isAccessTokenValid(accessToken: string) {
     const currentTime = Math.floor(Date.now() / 1000);
 
     return decodedToken.exp > currentTime;
+}
+
+export async function getIdToken(): Promise<string|undefined> {
+    const cookieStore = cookies();
+
+    return cookieStore.get('id_token')?.value;
 }
