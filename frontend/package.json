@@ -17,7 +17,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -26,7 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "cd .. && husky ./frontend/.husky"
+    "prepare": "cd .. && husky ./frontend/.husky",
+    "watch-css": "tailwindcss -i ./src/index.css -o ./public/globals.css --watch"
   },
   "eslintConfig": {
     "extends": [
