@@ -34,7 +34,6 @@ export function Header() {
                 />
                 <span className={"pr-2"}>BeatGear</span>
             </div>
-            <span>{`${loggedIn}`}</span>
             <div className="flex items-center space-x-2 mt-4 md:mt-0 md:ml-auto md:pr-2 relative">
                 {
                     loggedIn ? (

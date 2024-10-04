@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {setAccessTokenByAuthorizationCode} from "./utils/auth";
+import {setAccessTokenByAuthorizationCode} from "../utils/auth";
 
 const LoginRedirect = () => {
     const navigate = useNavigate();

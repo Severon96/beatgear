@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './pages/app/App';
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import LoginRedirect from "./OAuthLoginRedirect";
-import LogoutRedirect from "./OAuthLogoutRedirect";
+import LoginRedirect from "./pages/OAuthLoginRedirect";
+import LogoutRedirect from "./pages/OAuthLogoutRedirect";
 
 const router = createBrowserRouter([
     {

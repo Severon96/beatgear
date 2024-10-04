@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {deleteTokens} from "./utils/auth";
+import {deleteTokens} from "../utils/auth";
 
 const LogoutRedirect = () => {
     const navigate = useNavigate();

@@ -1,7 +1,9 @@
-import {Header} from "./components/header";
-import React from "react";
+import React from 'react';
+import './App.css';
+import {Header} from "../../components/header";
+import {Dashboard} from "../Dashboard";
 
-export function Dashboard() {
+function App() {
     return (
         <div
             className="items-center justify-items-center min-h-screen pb-20 gap-16 font-[family-name:var(--font-geist-sans)] overflow-x-hidden relative"
@@ -10,7 +12,10 @@ export function Dashboard() {
                 <header className="w-full relative">
                     <Header/>
                 </header>
+                <Dashboard/>
             </main>
         </div>
     );
 }
+
+export default App;
