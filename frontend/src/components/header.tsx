@@ -2,11 +2,11 @@ import React, {useEffect, useState} from "react";
 import {getIdToken, isLoggedIn} from "../utils/auth";
 
 export function Header() {
-    const rootUrl = process.env.ROOT_URL;
-    const oauthUrl = process.env.OAUTH_ISSUER;
-    const realmName = process.env.OAUTH_REALM;
-    const clientId = process.env.OAUTH_CLIENT_ID;
-    const redirectPath = process.env.OAUTH_REDIRECT_PATH;
+    const rootUrl = process.env.REACT_APP_ROOT_URL;
+    const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
+    const realmName = process.env.REACT_APP_OAUTH_REALM;
+    const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
+    const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
     const idToken = getIdToken()
     const [loggedIn, setLoggedIn] = useState(false);
 

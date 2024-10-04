@@ -1,9 +1,9 @@
 import {jwtDecode} from 'jwt-decode';
 
-const oauthUrl = process.env.OAUTH_ISSUER;
-const realmName = process.env.OAUTH_REALM;
-const clientId = process.env.OAUTH_CLIENT_ID;
-const clientSecret = process.env.OAUTH_CLIENT_SECRET;
+const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
+const realmName = process.env.REACT_APP_OAUTH_REALM;
+const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
+const clientSecret = process.env.REACT_APP_OAUTH_CLIENT_SECRET;
 
 export const isLoggedIn = async (): Promise<boolean> => {
     const accessToken = localStorage.getItem('access_token');
@@ -86,13 +86,16 @@ export async function setAccessTokenByAuthorizationCode(authorizationCode: strin
     if (!authorizationCode) {
         console.error("Authorization code not found")
     }
+
+    console.log("authorization code", authorizationCode);
+
     try {
-        const rootUrl = process.env.ROOT_URL;
-        const oauthUrl = process.env.OAUTH_ISSUER;
-        const realmName = process.env.OAUTH_REALM;
-        const clientId = process.env.OAUTH_CLIENT_ID;
-        const clientSecret = process.env.OAUTH_CLIENT_SECRET;
-        const redirectPath = process.env.OAUTH_REDIRECT_PATH;
+        const rootUrl = process.env.REACT_APP_ROOT_URL;
+        const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
+        const realmName = process.env.REACT_APP_OAUTH_REALM;
+        const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
+        const clientSecret = process.env.REACT_APP_OAUTH_CLIENT_SECRET;
+        const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
 
         const response = await fetch(`${oauthUrl}/realms/${realmName}/protocol/openid-connect/token`, {
             method: 'POST',
@@ -103,7 +106,7 @@ export async function setAccessTokenByAuthorizationCode(authorizationCode: strin
                 grant_type: 'authorization_code',
                 client_id: `${clientId}`,
                 client_secret: `${clientSecret}`,
-                code: `${authorizationCode}`,
+                code: authorizationCode ?? '',
                 redirect_uri: `${rootUrl}${redirectPath}`
             }),
         });

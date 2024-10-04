@@ -4,12 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import Redirect from "./OAuthRedirect";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
     },
+    {
+        path: "/auth/callback",
+        element: <Redirect />
+    }
 ]);
 
 const root = ReactDOM.createRoot(
