@@ -1,3 +1,0 @@
-echo "Running pre-commit hooks"
-cd frontend
-npx eslint src
