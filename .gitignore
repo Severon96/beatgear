@@ -206,3 +206,4 @@ frontend/next-env.d.ts
 
 # jetbrains
 frontend/.idea
+frontend-react/.idea
