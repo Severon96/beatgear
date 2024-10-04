@@ -1,4 +1,3 @@
-"use server"
 import {jwtDecode} from 'jwt-decode';
 
 const oauthUrl = process.env.OAUTH_ISSUER;
@@ -79,8 +78,8 @@ function isAccessTokenValid(accessToken: string) {
     return decodedToken.exp > currentTime;
 }
 
-export function getIdToken(): string|undefined {
-    return localStorage.get('id_token')?.value;
+export function getIdToken(): string|null {
+    return localStorage.getItem('id_token');
 }
 
 export async function setAccessTokenByAuthorizationCode(authorizationCode: string | null): Promise<void> {
