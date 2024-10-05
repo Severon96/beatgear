@@ -1,6 +1,6 @@
 {
   "id": "803a1dd9-1128-41bd-82b4-97a70c03cc85",
-  "realm": "hm-test-realm",
+  "realm": "bg-test-realm",
   "displayName": "",
   "displayNameHtml": "",
   "notBefore": 0,
@@ -29,7 +29,7 @@
   "oauth2DevicePollingInterval": 5,
   "enabled": true,
   "sslRequired": "external",
-  "registrationAllowed": false,
+  "registrationAllowed": true,
   "registrationEmailAsUsername": false,
   "rememberMe": false,
   "verifyEmail": false,
@@ -611,13 +611,13 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/hm-test-realm/account/",
+      "baseUrl": "/realms/bg-test-realm/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/hm-test-realm/account/*"
+        "/realms/bg-test-realm/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -656,13 +656,13 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/hm-test-realm/account/",
+      "baseUrl": "/realms/bg-test-realm/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/realms/hm-test-realm/account/*"
+        "/realms/bg-test-realm/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -949,13 +949,13 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/hm-test-realm/console/",
+      "baseUrl": "/admin/bg-test-realm/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/admin/hm-test-realm/console/*"
+        "/admin/bg-test-realm/console/*"
       ],
       "webOrigins": [
         "+"
@@ -1024,10 +1024,11 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "nXuaXbAPEDGw5GcZNowdr2lXRyzaTNoh",
       "redirectUris": [
+        "http://localhost:3000/*",
         "/*"
       ],
       "webOrigins": [
-        "/*"
+        "+"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -1043,7 +1044,7 @@
         "oidc.ciba.grant.enabled": "false",
         "client.secret.creation.time": "1725465582",
         "backchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "+",
+        "post.logout.redirect.uris": "+##http://localhost:3000/*",
         "oauth2.device.authorization.grant.enabled": "false",
         "display.on.consent.screen": "false",
         "use.jwks.url": "false",

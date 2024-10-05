@@ -1,7 +1,7 @@
-CREATE DATABASE hardware_management;
+CREATE DATABASE beatgear;
 CREATE DATABASE testing;
 
-\c hardware_management;
+\c beatgear;
 
 CREATE TYPE hardwarecategory AS ENUM ('CONTROLLER', 'LIGHT', 'CABLE_XLR', 'PLUG_COLD_APPLIANCE', 'LAPTOP_STAND', 'OTHER');
 
