@@ -6,29 +6,33 @@ import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import LoginRedirect from "./pages/OAuthLoginRedirect";
 import LogoutRedirect from "./pages/OAuthLogoutRedirect";
+import {ThemeProvider} from "@mui/material";
+import theme from "./theme/theme";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />,
+        element: <App/>,
     },
     {
         path: "/auth/callback",
-        element: <LoginRedirect />
+        element: <LoginRedirect/>
     },
     {
         path: "/auth/logout",
-        element: <LogoutRedirect />
+        element: <LogoutRedirect/>
     }
 ]);
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    <React.StrictMode>
+        <ThemeProvider theme={theme}>
+            <RouterProvider router={router}/>
+        </ThemeProvider>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
