@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --background: #f2f2f2;
   --foreground: #222222;
@@ -32,10 +28,4 @@ body {
   background: var(--secondary-grey);
   color: var(--background);
   font-weight: bold;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
 }
