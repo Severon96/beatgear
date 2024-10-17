@@ -34,7 +34,7 @@ function MuiHeader() {
         <AppBar position="static" sx={{
             mb: 2
         }}>
-            <Container maxWidth="xl">
+            <Container maxWidth="lg">
                 <Toolbar disableGutters>
                     <Box
                         component="img"

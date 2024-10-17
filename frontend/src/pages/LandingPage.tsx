@@ -55,6 +55,7 @@ export function LandingPage() {
                     src="/images/hardware/controller_1_dominik_kempf.jpg"
                     sx={{
                         maxWidth: "100%",
+                        borderRadius: "35px"
                     }}
                     alt="DJ Controller by Dominik Kempf on Unsplash"
                 />
@@ -64,7 +65,7 @@ export function LandingPage() {
                     p: 2,
                 }}>
                     <Typography
-                        variant="subtitle1"
+                        variant="h5"
                         sx={{
                             color: "common.white",
                         }}
@@ -72,7 +73,7 @@ export function LandingPage() {
                         Dein Equipment, zu Geld gemacht
                     </Typography>
                     <Typography
-                        variant="subtitle2"
+                        variant="subtitle1"
                         sx={{
                             color: "common.white"
                         }}
@@ -83,7 +84,15 @@ export function LandingPage() {
                 </Stack>
             </Box>
             <Box>
-                <Typography variant="h1">Was kannst du anbieten?</Typography>
+                <Typography
+                    variant="h1"
+                    sx={{
+                        fontWeight: "600",
+                        mt: 6,
+                        mb: 4,
+                        wordSpacing: -5
+                    }}
+                >Was kannst du anbieten?</Typography>
                 <Grid2 container spacing={2}>
                     {
                         landingPageCards.map(({imageSrc, imageAlt, title, description}, index) =>
@@ -103,7 +112,8 @@ export function LandingPage() {
             </Box>
             <div>
                 <Typography variant={"h1"}>Bereit loszulegen?</Typography>
-                <Button variant="contained" href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}>
+                <Button variant="contained"
+                        href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}>
                     Anmelden
                 </Button>
             </div>
