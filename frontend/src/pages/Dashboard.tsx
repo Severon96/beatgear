@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {isLoggedIn} from "../utils/auth";
 import {UserLandingPage} from "./UserLandingPage";
 import {LandingPage} from "./LandingPage";
+import Container from "@mui/material/Container";
 
 export function Dashboard() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -17,10 +18,10 @@ export function Dashboard() {
     }, []);
 
     return (
-        <div>
+        <Container maxWidth={"lg"}>
             {
                 loggedIn ? <UserLandingPage/> : <LandingPage/>
             }
-        </div>
+        </Container>
     );
 }
