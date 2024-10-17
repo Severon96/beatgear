@@ -2,7 +2,7 @@ import React from "react";
 import {LandingPageCard} from "../components/landing-page-card";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Grid2, Stack} from "@mui/material";
+import {Button, Grid2, Stack} from "@mui/material";
 
 interface ILandingPageCard {
     imageSrc: string;
@@ -101,14 +101,11 @@ export function LandingPage() {
                     }
                 </Grid2>
             </Box>
-            <div className={"flex flex-col items-center gap-6 w-4/5"}>
-                <h1 className={"text-2xl md:text-4xl font-extrabold"}>Bereit loszulegen?</h1>
-                <a
-                    href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}
-                    className="button-secondary-blue text-2xl font-normal py-4 px-5 rounded-lg"
-                >
+            <div>
+                <Typography variant={"h1"}>Bereit loszulegen?</Typography>
+                <Button variant="contained" href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}>
                     Anmelden
-                </a>
+                </Button>
             </div>
         </Box>
     );

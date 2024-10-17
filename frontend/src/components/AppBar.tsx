@@ -6,9 +6,30 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import {getIdToken, isLoggedIn} from "../utils/auth";
+import {useEffect, useState} from "react";
 
 
 function MuiHeader() {
+    const rootUrl = process.env.REACT_APP_ROOT_URL;
+    const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
+    const realmName = process.env.REACT_APP_OAUTH_REALM;
+    const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
+    const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
+    const idToken = getIdToken()
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        async function getIsLoggedIn() {
+            const userIsLoggedIn = await isLoggedIn();
+
+            setLoggedIn(userIsLoggedIn)
+        }
+
+        getIsLoggedIn()
+    }, []);
+
     return (
         <AppBar position="static" sx={{
             mb: 2
@@ -74,11 +95,29 @@ function MuiHeader() {
                         flexGrow: 0,
                         ml: 'auto'
                     }}>
-                        <IconButton aria-label="login" sx={{
-                            color: "common.white"
-                        }}>
-                            <LoginIcon />
-                        </IconButton>
+                        {
+                            loggedIn ? (
+                                <IconButton
+                                    href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
+                                    aria-label="logout"
+                                    sx={{
+                                        color: "common.black"
+                                    }}
+                                >
+                                    <LogoutIcon/>
+                                </IconButton>
+                            ) : (
+                                <IconButton
+                                    href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}
+                                    aria-label="login"
+                                    sx={{
+                                        color: "common.black"
+                                    }}
+                                >
+                                    <LoginIcon/>
+                                </IconButton>
+                            )
+                        }
                     </Box>
                 </Toolbar>
             </Container>

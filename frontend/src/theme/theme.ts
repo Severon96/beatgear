@@ -1,4 +1,5 @@
 import {createTheme, responsiveFontSizes} from "@mui/material";
+import {common} from "@mui/material/colors";
 
 declare module '@mui/material/styles' {
     interface Theme {
@@ -6,6 +7,7 @@ declare module '@mui/material/styles' {
             danger: string;
         };
     }
+
     // allow configuration using `createTheme`
     interface ThemeOptions {
         status?: {
@@ -14,7 +16,19 @@ declare module '@mui/material/styles' {
     }
 }
 
-let theme = createTheme();
+let theme = createTheme({
+    palette: {
+        common: {
+            black: "#222",
+            white: "#F2F2F2"
+        },
+        primary: {
+            main: "#F2F2F2",
+            light: "#f9f9f9",
+            contrastText: common.black
+        }
+    }
+});
 theme = responsiveFontSizes(theme);
 
 export default theme;
