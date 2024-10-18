@@ -101,7 +101,7 @@ function MuiHeader() {
                                     href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
                                     aria-label="logout"
                                     sx={{
-                                        color: "common.black"
+                                        color: "common.white"
                                     }}
                                 >
                                     <LogoutIcon/>
@@ -111,7 +111,7 @@ function MuiHeader() {
                                     href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}
                                     aria-label="login"
                                     sx={{
-                                        color: "common.black"
+                                        color: "common.white"
                                     }}
                                 >
                                     <LoginIcon/>

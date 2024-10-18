@@ -23,35 +23,45 @@ let theme = createTheme({
             white: "#F2F2F2"
         },
         primary: {
-            main: "#F2F2F2",
+            main: "#3b7adf",
             light: "#f9f9f9",
-            contrastText: common.black
+            contrastText: common.white
         }
     },
     typography: {
         h1: {
             fontSize: "3rem",
+            fontWeight: "600",
+            wordSpacing: -5,
             letterSpacing: -1.5,
         },
         h2: {
             fontSize: "2.75rem",
+            fontWeight: "600",
+            wordSpacing: -5,
             letterSpacing: -1.5,
         },
         h3: {
             fontSize: "2.5rem",
+            fontWeight: "600",
+            wordSpacing: -5,
             letterSpacing: -1.5,
         },
         h4: {
             fontSize: "2.25rem",
+            fontWeight: "600",
+            wordSpacing: -5,
             letterSpacing: -1.5,
         },
         h5: {
             fontSize: "2rem",
-            letterSpacing: -1.5,
+            fontWeight: "600",
+            wordSpacing: -3,
         },
         h6: {
             fontSize: "1.75rem",
-            letterSpacing: -1.5,
+            fontWeight: "600",
+            wordSpacing: -4,
         },
         subtitle1: {
             letterSpacing: -0.5,

@@ -46,7 +46,7 @@ export function LandingPage() {
     const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
 
     return (
-        <Box>
+        <Box sx={{mb: 5}}>
             <Box sx={{
                 position: "relative"
             }}>
@@ -83,14 +83,12 @@ export function LandingPage() {
                     </Typography>
                 </Stack>
             </Box>
-            <Box>
+            <Box sx={{mb: 5}}>
                 <Typography
                     variant="h1"
                     sx={{
-                        fontWeight: "600",
                         mt: 6,
                         mb: 4,
-                        wordSpacing: -5
                     }}
                 >Was kannst du anbieten?</Typography>
                 <Grid2 container spacing={2}>
@@ -110,13 +108,13 @@ export function LandingPage() {
                     }
                 </Grid2>
             </Box>
-            <div>
+            <Grid2 container direction={"column"} alignItems={"center"} spacing={2}>
                 <Typography variant={"h1"}>Bereit loszulegen?</Typography>
                 <Button variant="contained"
                         href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}>
                     Anmelden
                 </Button>
-            </div>
+            </Grid2>
         </Box>
     );
 }

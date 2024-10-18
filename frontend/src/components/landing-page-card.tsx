@@ -18,7 +18,7 @@ export function LandingPageCard({imageSrc, imageAlt, title, description}: Landin
                 alt={imageAlt}
                 sx={{
                     width: "100%",
-                    borderRadius: "15%"
+                    borderRadius: "20px"
                 }}
             />
             <Box>
