@@ -7,7 +7,6 @@ import Box from "@mui/material/Box";
 
 
 function App() {
-
     return (
         <Box>
             <main>

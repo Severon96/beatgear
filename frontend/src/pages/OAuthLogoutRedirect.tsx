@@ -1,13 +1,18 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {LoginContext} from "../components/providers/LoginProvider";
+import {useDispatch} from "react-redux";
+import {logout, restoreSession} from "../redux/authSlice";
 
 const LogoutRedirect = () => {
     const navigate = useNavigate();
-    const context = useContext(LoginContext);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        context?.logOut();
+        dispatch(restoreSession());
+    }, [dispatch]);
+
+    useEffect(() => {
+        logout();
         navigate("/");
     }, [navigate]);
 

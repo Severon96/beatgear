@@ -1,27 +1,28 @@
-import React, {useContext} from 'react';
-import {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {getAccessTokenByAuthorizationCode} from "../utils/auth";
 import Box from "@mui/material/Box";
-import {LoginContext} from "../components/providers/LoginProvider";
 import {ErrorContext} from "../components/providers/ErrorProvider";
+import {login, restoreSession} from "../redux/authSlice";
+import {useDispatch} from "react-redux";
 
 const LoginRedirect = () => {
     const navigate = useNavigate();
-    const context = useContext(LoginContext);
+    const dispatch = useDispatch();
     const errorContext = useContext(ErrorContext);
 
     useEffect(() => {
+        dispatch(restoreSession());
         const {searchParams} = new URL(window.location.href);
         const code = searchParams.get('code');
         console.log("auth code", code);
-        getAccessTokenByAuthorizationCode(code).then(({accessToken, refreshToken, idToken}) => {
-            context?.logIn(accessToken, refreshToken, idToken);
+        getAccessTokenByAuthorizationCode(code).then((tokens) => {
+            dispatch(login(tokens));
             navigate('/');
         }).catch((error: Error) => {
             errorContext.addError({message: error.message});
         })
-    }, [navigate]);
+    }, [navigate, dispatch]);
 
     return <Box>Leite weiter...</Box>;
 };

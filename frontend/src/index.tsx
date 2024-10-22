@@ -9,7 +9,8 @@ import LogoutRedirect from "./pages/OAuthLogoutRedirect";
 import {ThemeProvider} from "@mui/material";
 import theme from "./theme/theme";
 import {ErrorProvider} from "./components/providers/ErrorProvider";
-import {LoginProvider} from "./components/providers/LoginProvider";
+import {Provider} from "react-redux";
+import store from "./store";
 
 const router = createBrowserRouter([
     {
@@ -33,9 +34,9 @@ root.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <ErrorProvider>
-                <LoginProvider>
+                <Provider store={store}>
                     <RouterProvider router={router}/>
-                </LoginProvider>
+                </Provider>
             </ErrorProvider>
         </ThemeProvider>
     </React.StrictMode>

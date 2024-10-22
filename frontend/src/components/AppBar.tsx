@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useContext} from 'react';
+import {useEffect} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,7 +9,9 @@ import Container from '@mui/material/Container';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {isLoggedIn} from "../utils/auth";
-import {LoginContext} from "./providers/LoginProvider";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../store";
+import {restoreSession} from "../redux/authSlice";
 
 const rootUrl = process.env.REACT_APP_ROOT_URL;
 const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
@@ -18,7 +20,12 @@ const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
 const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
 
 function MuiHeader() {
-    const context = useContext(LoginContext);
+    const dispatch = useDispatch();
+    const {accessToken, idToken} = useSelector((state: RootState) => state.auth);
+
+    useEffect(() => {
+        dispatch(restoreSession());
+    }, [dispatch]);
 
     return (
         <AppBar position="static" sx={{
@@ -86,9 +93,9 @@ function MuiHeader() {
                         ml: 'auto'
                     }}>
                         {
-                            isLoggedIn(context?.accessToken) ?? false ? (
+                            isLoggedIn(accessToken) ?? false ? (
                                 <IconButton
-                                    href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${context?.idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
+                                    href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
                                     aria-label="logout"
                                     sx={{
                                         color: "common.white"
