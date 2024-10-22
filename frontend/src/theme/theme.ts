@@ -17,6 +17,24 @@ declare module '@mui/material/styles' {
 }
 
 let theme = createTheme({
+    components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    padding: "1rem",
+                    marginBottom: "1rem",
+                }
+            },
+        },
+        MuiCardHeader: {
+            defaultProps: {
+                titleTypographyProps: {
+                    variant: "h5",
+                    align: "center"
+                }
+            }
+        }
+    },
     palette: {
         common: {
             black: "#222",

@@ -2,6 +2,9 @@ import React, {useEffect, useState} from "react";
 import {isLoggedIn} from "../utils/auth";
 import {getActiveUserBookings} from "../clients/booking-client";
 import {Booking} from "../models/Booking";
+import Box from "@mui/material/Box";
+import {Card, CardHeader} from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 export function ActiveBookings() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -9,19 +12,20 @@ export function ActiveBookings() {
 
     function displayBookings() {
         return (
-            <div>
+            <Card>
+                <CardHeader title={"Buchungen"}/>
                 {
                     activeBookings.length > 0 ? (
-                        <div>
+                        <Box>
                             <p>{`Bookings of user`}</p>
                             <p>Current active bookings</p>
-                        </div>
+                        </Box>
                     ) : (
-                        <p>If there are none, why don&#39;t you book something?</p>
+                        <Typography variant={'body1'}>You have no bookings, feel free to create one!</Typography>
                     )
                 }
 
-            </div>
+            </Card>
         )
     }
 
@@ -33,9 +37,13 @@ export function ActiveBookings() {
         }
 
         async function setBookings() {
-            const bookings = await getActiveUserBookings();
+            try {
+                const bookings = await getActiveUserBookings();
 
-            setActiveBookings(bookings);
+                setActiveBookings(bookings);
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         getIsLoggedIn();
@@ -43,14 +51,12 @@ export function ActiveBookings() {
     }, []);
 
     return (
-        <div
-            className="w-1/2 flex flex-col md:flex-row justify-between items-center py-1 px-2 md:mt-0 relative"
-        >
+        <Box>
             {
                 loggedIn ? displayBookings() : (
                     <p>{`You aren't logged in`}</p>
                 )
             }
-        </div>
+        </Box>
     );
 }
