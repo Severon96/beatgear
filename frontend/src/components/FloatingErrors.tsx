@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import Box from "@mui/material/Box";
-import {ErrorContext} from "./ErrorProvider";
+import {ErrorContext} from "./providers/ErrorProvider";
 import {ErrorSnackbar} from "./ErrorSnackbar";
 
 export function FloatingErrors() {

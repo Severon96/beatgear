@@ -1,27 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext} from "react";
 import {isLoggedIn} from "../utils/auth";
 import {UserLandingPage} from "./UserLandingPage";
 import {LandingPage} from "./LandingPage";
 import Container from "@mui/material/Container";
 import {FloatingErrors} from "../components/FloatingErrors";
+import {LoginContext} from "../components/providers/LoginProvider";
 
 export function Dashboard() {
-    const [loggedIn, setLoggedIn] = useState(false);
-
-    useEffect(() => {
-        async function getIsLoggedIn() {
-            const userIsLoggedIn = await isLoggedIn();
-
-            setLoggedIn(userIsLoggedIn)
-        }
-
-        getIsLoggedIn()
-    }, []);
-
+    const context = useContext(LoginContext);
+    console.log("login context", context);
+    console.log("isLoggedIn:", isLoggedIn(context?.accessToken));
     return (
         <Container maxWidth={"lg"}>
             {
-                loggedIn ? <UserLandingPage/> : <LandingPage/>
+                isLoggedIn(context?.accessToken) ? <UserLandingPage/> : <LandingPage/>
             }
             <FloatingErrors />
         </Container>

@@ -8,6 +8,8 @@ import LoginRedirect from "./pages/OAuthLoginRedirect";
 import LogoutRedirect from "./pages/OAuthLogoutRedirect";
 import {ThemeProvider} from "@mui/material";
 import theme from "./theme/theme";
+import {ErrorProvider} from "./components/providers/ErrorProvider";
+import {LoginProvider} from "./components/providers/LoginProvider";
 
 const router = createBrowserRouter([
     {
@@ -30,7 +32,11 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
-            <RouterProvider router={router}/>
+            <ErrorProvider>
+                <LoginProvider>
+                    <RouterProvider router={router}/>
+                </LoginProvider>
+            </ErrorProvider>
         </ThemeProvider>
     </React.StrictMode>
 );

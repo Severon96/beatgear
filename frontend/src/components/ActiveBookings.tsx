@@ -1,14 +1,12 @@
 import React, {useContext, useEffect, useState} from "react";
-import {isLoggedIn} from "../utils/auth";
 import {getActiveUserBookings} from "../clients/booking-client";
 import {Booking} from "../models/Booking";
 import Box from "@mui/material/Box";
 import {Card, CardHeader} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import {ErrorContext} from "./ErrorProvider";
+import {ErrorContext} from "./providers/ErrorProvider";
 
 export function ActiveBookings() {
-    const [loggedIn, setLoggedIn] = useState(false);
     const [activeBookings, setActiveBookings] = useState<Booking[]>([]);
     const errorContext = useContext(ErrorContext);
 
@@ -32,33 +30,24 @@ export function ActiveBookings() {
     }
 
     useEffect(() => {
-        async function getIsLoggedIn() {
-            const userIsLoggedIn = await isLoggedIn();
-
-            setLoggedIn(userIsLoggedIn);
-        }
-
         async function setBookings() {
             try {
                 const bookings = await getActiveUserBookings();
 
                 setActiveBookings(bookings);
             } catch (e) {
-                errorContext.addError({message: "Couldn't load bookings."})
+                const error = e as Error;
+
+                errorContext.addError({message: error.message})
             }
         }
 
-        getIsLoggedIn();
         setBookings();
     }, []);
 
     return (
         <Box>
-            {
-                loggedIn ? displayBookings() : (
-                    <p>{`You aren't logged in`}</p>
-                )
-            }
+            { displayBookings() }
         </Box>
     );
 }

@@ -1,12 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {deleteTokens} from "../utils/auth";
+import {LoginContext} from "../components/providers/LoginProvider";
 
 const LogoutRedirect = () => {
     const navigate = useNavigate();
+    const context = useContext(LoginContext);
 
     useEffect(() => {
-        deleteTokens();
+        context?.logOut();
         navigate("/");
     }, [navigate]);
 

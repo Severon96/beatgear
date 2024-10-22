@@ -1,5 +1,11 @@
 import {Booking} from "../models/Booking";
 
+export class BookingLoadError extends Error {
+    constructor(message: string) {
+        super(message);
+    }
+}
+
 export async function getActiveUserBookings(): Promise<Booking[]> {
     const backendUrl = `${process.env.REACT_APP_BACKEND_URL}/api/bookings/active`
 
@@ -8,7 +14,7 @@ export async function getActiveUserBookings(): Promise<Booking[]> {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to get active bookings");
+        throw new BookingLoadError("Failed to get active bookings");
     }
 
     return await response.json() as Booking[];

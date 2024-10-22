@@ -1,5 +1,5 @@
 import React, {createContext, ReactNode, useState} from 'react';
-import {errorContextDefault, ErrorContextType, SnackbarError} from "../models/Error";
+import {errorContextDefault, ErrorContextType, SnackbarError} from "../../models/Error";
 
 export const ErrorContext = createContext<ErrorContextType>(errorContextDefault);
 

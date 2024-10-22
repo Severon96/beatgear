@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useContext} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,28 +8,17 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {getIdToken, isLoggedIn} from "../utils/auth";
-import {useEffect, useState} from "react";
+import {isLoggedIn} from "../utils/auth";
+import {LoginContext} from "./providers/LoginProvider";
 
+const rootUrl = process.env.REACT_APP_ROOT_URL;
+const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
+const realmName = process.env.REACT_APP_OAUTH_REALM;
+const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
+const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
 
 function MuiHeader() {
-    const rootUrl = process.env.REACT_APP_ROOT_URL;
-    const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
-    const realmName = process.env.REACT_APP_OAUTH_REALM;
-    const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
-    const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
-    const idToken = getIdToken()
-    const [loggedIn, setLoggedIn] = useState(false);
-
-    useEffect(() => {
-        async function getIsLoggedIn() {
-            const userIsLoggedIn = await isLoggedIn();
-
-            setLoggedIn(userIsLoggedIn)
-        }
-
-        getIsLoggedIn()
-    }, []);
+    const context = useContext(LoginContext);
 
     return (
         <AppBar position="static" sx={{
@@ -96,9 +86,9 @@ function MuiHeader() {
                         ml: 'auto'
                     }}>
                         {
-                            loggedIn ? (
+                            isLoggedIn(context?.accessToken) ?? false ? (
                                 <IconButton
-                                    href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
+                                    href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${context?.idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
                                     aria-label="logout"
                                     sx={{
                                         color: "common.white"
