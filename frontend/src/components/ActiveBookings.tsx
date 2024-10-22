@@ -1,14 +1,13 @@
-import React, {useContext, useEffect, useState} from "react";
-import {getActiveUserBookings} from "../clients/booking-client";
-import {Booking} from "../models/Booking";
+import React, {useEffect} from "react";
 import Box from "@mui/material/Box";
 import {Card, CardHeader} from "@mui/material";
+import {fetchActiveBookings} from "../redux-tk/slices/bookingSlice";
+import {useAppDispatch, useAppSelector} from "../store";
 import Typography from "@mui/material/Typography";
-import {ErrorContext} from "./providers/ErrorProvider";
 
 export function ActiveBookings() {
-    const [activeBookings, setActiveBookings] = useState<Booking[]>([]);
-    const errorContext = useContext(ErrorContext);
+    const dispatch = useAppDispatch();
+    const activeBookings = useAppSelector(state => state.bookings.activeBookings)
 
     function displayBookings() {
         return (
@@ -30,24 +29,12 @@ export function ActiveBookings() {
     }
 
     useEffect(() => {
-        async function setBookings() {
-            try {
-                const bookings = await getActiveUserBookings();
-
-                setActiveBookings(bookings);
-            } catch (e) {
-                const error = e as Error;
-
-                errorContext.addError({message: error.message})
-            }
-        }
-
-        setBookings();
-    }, []);
+        dispatch(fetchActiveBookings())
+    }, [dispatch]);
 
     return (
         <Box>
-            { displayBookings() }
+            {displayBookings()}
         </Box>
     );
 }

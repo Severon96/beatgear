@@ -6,21 +6,16 @@ interface ActiveBookingsState {
     activeBookings: Booking[]
 }
 
-const initialState = { activeBookings: [] } satisfies ActiveBookingsState as ActiveBookingsState
+const initialState = {activeBookings: []} satisfies ActiveBookingsState as ActiveBookingsState
 
-const fetchActiveBookings = createAsyncThunk(
+export const fetchActiveBookings = createAsyncThunk(
     'bookings/fetchActive',
-    async (accessToken: string) => {
+    async () => {
         const response = await axiosInstance.get(
-            `bookings/active`,
-            {
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`
-                }
-            }
+            `bookings/active`
         )
 
-        return response.data;
+        return {data: response.data};
     }
 )
 
@@ -30,7 +25,7 @@ const bookingsSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchActiveBookings.fulfilled, (state, action) => {
-            state.activeBookings = action.payload;
+            state.activeBookings = action.payload.data;
         })
     }
 })

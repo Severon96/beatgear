@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {useEffect} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,9 +8,8 @@ import Container from '@mui/material/Container';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {isLoggedIn} from "../utils/auth";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {RootState} from "../store";
-import {restoreSession} from "../redux-tk/slices/authSlice";
 
 const rootUrl = process.env.REACT_APP_ROOT_URL;
 const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
@@ -20,12 +18,7 @@ const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID;
 const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
 
 function MuiHeader() {
-    const dispatch = useDispatch();
     const {accessToken, idToken} = useSelector((state: RootState) => state.auth);
-
-    useEffect(() => {
-        dispatch(restoreSession());
-    }, [dispatch]);
 
     return (
         <AppBar position="static" sx={{

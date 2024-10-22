@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {getAccessTokenByAuthorizationCode} from "../utils/auth";
 import Box from "@mui/material/Box";
 import {ErrorContext} from "../components/providers/ErrorProvider";
-import {login, restoreSession} from "../redux-tk/slices/authSlice";
+import {login} from "../redux-tk/slices/authSlice";
 import {useDispatch} from "react-redux";
 
 const LoginRedirect = () => {
@@ -12,7 +12,6 @@ const LoginRedirect = () => {
     const errorContext = useContext(ErrorContext);
 
     useEffect(() => {
-        dispatch(restoreSession());
         const {searchParams} = new URL(window.location.href);
         const code = searchParams.get('code');
 
