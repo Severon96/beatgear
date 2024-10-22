@@ -4,7 +4,7 @@ import {LandingPage} from "./LandingPage";
 import Container from "@mui/material/Container";
 import {FloatingErrors} from "../components/FloatingErrors";
 import {useDispatch, useSelector} from "react-redux";
-import {restoreSession} from "../redux/authSlice";
+import {restoreSession} from "../redux-tk/slices/authSlice";
 import {RootState} from "../store";
 import {isLoggedIn} from "../utils/auth";
 

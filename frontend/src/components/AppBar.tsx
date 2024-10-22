@@ -11,7 +11,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import {isLoggedIn} from "../utils/auth";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../store";
-import {restoreSession} from "../redux/authSlice";
+import {restoreSession} from "../redux-tk/slices/authSlice";
 
 const rootUrl = process.env.REACT_APP_ROOT_URL;
 const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;

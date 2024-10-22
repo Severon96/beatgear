@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {getAccessTokenByAuthorizationCode} from "../utils/auth";
 import Box from "@mui/material/Box";
 import {ErrorContext} from "../components/providers/ErrorProvider";
-import {login, restoreSession} from "../redux/authSlice";
+import {login, restoreSession} from "../redux-tk/slices/authSlice";
 import {useDispatch} from "react-redux";
 
 const LoginRedirect = () => {
@@ -15,7 +15,7 @@ const LoginRedirect = () => {
         dispatch(restoreSession());
         const {searchParams} = new URL(window.location.href);
         const code = searchParams.get('code');
-        console.log("auth code", code);
+
         getAccessTokenByAuthorizationCode(code).then((tokens) => {
             dispatch(login(tokens));
             navigate('/');
