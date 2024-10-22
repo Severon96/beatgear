@@ -9,21 +9,25 @@ interface ErrorSnackbarProps {
 
 export const ErrorSnackbar: React.FC<ErrorSnackbarProps> = ({error, index}) => {
     const [errors, setErrors] = useState<SnackbarError[]>([]);
+    const [open, setOpen] = React.useState(true);
 
     function handleClose() {
         errors.splice(index, 1);
         setErrors(errors);
+        setOpen(false);
     }
 
     return (
         <Snackbar
             anchorOrigin={{vertical: "bottom", horizontal: "right"}}
-            open={true}
+            open={open}
             onClose={handleClose}
+            autoHideDuration={6000}
         >
             <Alert
                 severity={"error"}
                 variant={"filled"}
+                onClose={handleClose}
             >
                 {error.message}
             </Alert>
