@@ -3,6 +3,7 @@ import {isLoggedIn} from "../utils/auth";
 import {UserLandingPage} from "./UserLandingPage";
 import {LandingPage} from "./LandingPage";
 import Container from "@mui/material/Container";
+import {FloatingErrors} from "../components/FloatingErrors";
 
 export function Dashboard() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -22,6 +23,7 @@ export function Dashboard() {
             {
                 loggedIn ? <UserLandingPage/> : <LandingPage/>
             }
+            <FloatingErrors />
         </Container>
     );
 }

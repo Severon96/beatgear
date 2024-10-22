@@ -1,7 +1,7 @@
 import React, {createContext, ReactNode, useState} from 'react';
-import {ErrorContextType, SnackbarError} from "../models/Error";
+import {errorContextDefault, ErrorContextType, SnackbarError} from "../models/Error";
 
-export const ErrorContext = createContext<ErrorContextType | undefined>(undefined);
+export const ErrorContext = createContext<ErrorContextType>(errorContextDefault);
 
 interface ErrorProviderProps {
     children: ReactNode;

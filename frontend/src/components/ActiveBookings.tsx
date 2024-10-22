@@ -1,14 +1,16 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {isLoggedIn} from "../utils/auth";
 import {getActiveUserBookings} from "../clients/booking-client";
 import {Booking} from "../models/Booking";
 import Box from "@mui/material/Box";
 import {Card, CardHeader} from "@mui/material";
 import Typography from "@mui/material/Typography";
+import {ErrorContext} from "./ErrorProvider";
 
 export function ActiveBookings() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [activeBookings, setActiveBookings] = useState<Booking[]>([]);
+    const errorContext = useContext(ErrorContext);
 
     function displayBookings() {
         return (
@@ -42,7 +44,7 @@ export function ActiveBookings() {
 
                 setActiveBookings(bookings);
             } catch (e) {
-                console.error(e);
+                errorContext.addError({message: "Couldn't load bookings."})
             }
         }
 
