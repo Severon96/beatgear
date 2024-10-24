@@ -1,5 +1,6 @@
 import json
 import uuid
+from datetime import datetime, timedelta
 from http import HTTPStatus
 
 import pytest
@@ -44,6 +45,58 @@ class TestBookingApi:
         # expect
         assert result.status_code == HTTPStatus.OK
         assert len(result.json) == 2
+
+    def test_get_active_bookings_without_bookings(self, client, jwt):
+        # then
+        result = client.get(
+            "/api/bookings/active",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}"
+            }
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 0
+
+    def test_get_active_bookings_with_bookings(self, client, jwt):
+        # when
+        yesterday = datetime.now() - timedelta(days=1)
+        tomorrow = datetime.now() + timedelta(days=1)
+        create_booking(setup_booking())
+        create_booking(setup_booking(booking_start=yesterday, booking_end=tomorrow))
+
+        # then
+        result = client.get(
+            "/api/bookings/active",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}"
+            }
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 1
+
+    def test_get_active_booking_with_missing_jwt(self, client, jwt):
+        # when
+        yesterday = datetime.now() - timedelta(days=1)
+        tomorrow = datetime.now() + timedelta(days=1)
+        create_booking(setup_booking())
+        create_booking(setup_booking(booking_start=yesterday, booking_end=tomorrow))
+
+        # then
+        result = client.get(
+            "/api/bookings/active",
+            headers={
+                "Content-Type": "application/json",
+            }
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.UNAUTHORIZED
 
     def test_get_booking_by_id(self, client, jwt):
         # when

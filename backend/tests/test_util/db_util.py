@@ -36,6 +36,8 @@ def setup_booking(
         customer_id: uuid.UUID = None,
         hardware_ids: List[uuid.UUID] = None,
         author_id: uuid.UUID = None,
+        booking_start: datetime = datetime.now(),
+        booking_end: datetime = datetime.now()
 ) -> BookingRequest:
     if customer_id is None:
         customer_id = uuid.uuid4()
@@ -53,8 +55,8 @@ def setup_booking(
         name='test booking',
         customer_id=customer_id,
         hardware_ids=hardware_ids,
-        booking_start=datetime.now(),
-        booking_end=datetime.now(),
+        booking_start=booking_start,
+        booking_end=booking_end,
         author_id=author_id,
     )
 
