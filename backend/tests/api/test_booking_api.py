@@ -62,10 +62,16 @@ class TestBookingApi:
 
     def test_get_active_bookings_with_bookings(self, client, jwt):
         # when
+        user_id_from_token = get_user_id_from_jwt(jwt)
+
         yesterday = datetime.now() - timedelta(days=1)
         tomorrow = datetime.now() + timedelta(days=1)
         create_booking(setup_booking())
-        create_booking(setup_booking(booking_start=yesterday, booking_end=tomorrow))
+        create_booking(setup_booking(
+            customer_id=uuid.UUID(user_id_from_token),
+            booking_start=yesterday,
+            booking_end=tomorrow
+        ))
 
         # then
         result = client.get(
