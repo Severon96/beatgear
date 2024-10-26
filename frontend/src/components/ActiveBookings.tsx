@@ -4,7 +4,7 @@ import {Card, CardContent, CardHeader, Stack} from "@mui/material";
 import {fetchActiveBookings} from "../redux-tk/slices/bookingSlice";
 import {useAppDispatch, useAppSelector} from "../store";
 import Typography from "@mui/material/Typography";
-import {Popup} from "./Popup";
+import {DialogPopup} from "./DialogPopup";
 
 export function ActiveBookings() {
     const dispatch = useAppDispatch();
@@ -25,9 +25,9 @@ export function ActiveBookings() {
                             <Stack alignItems={"center"}>
                                 <Typography variant={'subtitle1'}>You have no bookings, feel free to create
                                     one!</Typography>
-                                <Popup buttonName={"Booking anlegen"}>
+                                <DialogPopup dialogTitle={"Booking anlegen"} buttonName={"Booking anlegen"}>
                                     <Typography>Popup Inhalt</Typography>
-                                </Popup>
+                                </DialogPopup>
                             </Stack>
                         )
                     }
