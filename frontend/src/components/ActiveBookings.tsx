@@ -5,6 +5,7 @@ import {fetchActiveBookings} from "../redux-tk/slices/bookingSlice";
 import {useAppDispatch, useAppSelector} from "../store";
 import Typography from "@mui/material/Typography";
 import {DialogPopup} from "./DialogPopup";
+import {BookingForm} from "./BookingForm";
 
 export function ActiveBookings() {
     const dispatch = useAppDispatch();
@@ -26,7 +27,7 @@ export function ActiveBookings() {
                                 <Typography variant={'subtitle1'}>You have no bookings, feel free to create
                                     one!</Typography>
                                 <DialogPopup dialogTitle={"Booking anlegen"} buttonName={"Booking anlegen"}>
-                                    <Typography>Popup Inhalt</Typography>
+                                    <BookingForm />
                                 </DialogPopup>
                             </Stack>
                         )
