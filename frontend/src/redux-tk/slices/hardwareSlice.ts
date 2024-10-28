@@ -11,7 +11,7 @@ interface FetchHardwareResponse {
     data: Hardware[];
 }
 
-interface HardwareState {
+export interface HardwareState {
     hardware: Hardware[]
 }
 
@@ -38,7 +38,7 @@ export const fetchHardware = createAsyncThunk<FetchHardwareResponse, FetchHardwa
 )
 
 const hardwareSlice = createSlice({
-    name: 'bookings',
+    name: 'hardware',
     initialState,
     reducers: {},
     extraReducers: (builder) => {

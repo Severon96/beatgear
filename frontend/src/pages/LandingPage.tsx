@@ -1,5 +1,5 @@
 import React from "react";
-import {LandingPageCard} from "../components/landing-page-card";
+import {LandingPageCard} from "../components/LandingPageCard";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {Button, Grid2, Stack} from "@mui/material";

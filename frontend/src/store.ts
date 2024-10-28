@@ -3,11 +3,13 @@ import authReducer from "./redux-tk/slices/authSlice";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {logger} from "redux-logger";
 import bookingReducer from "./redux-tk/slices/bookingSlice";
+import hardwareReducer from "./redux-tk/slices/hardwareSlice";
 
 const store = configureStore({
     reducer: {
         auth: authReducer,
-        bookings: bookingReducer
+        bookings: bookingReducer,
+        hardware: hardwareReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
 });
