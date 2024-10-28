@@ -5,9 +5,10 @@ from typing import Type, Sequence
 from uuid import UUID
 
 from flask import abort, make_response, jsonify
-from sqlalchemy import select
+from sqlalchemy import select, and_, or_, not_
 
-from models.db_models import Hardware
+from api.api_hardware import GetHardwareParams
+from models.db_models import Hardware, Booking, booking_to_hardware_table
 from util import util
 
 
@@ -26,6 +27,42 @@ def get_all_hardware() -> Sequence[Hardware]:
     session = util.get_db_session()
 
     stmt = select(Hardware)
+
+    return session.scalars(stmt).all()
+
+
+def get_available_hardware(params: GetHardwareParams) -> Sequence[Hardware]:
+    session = util.get_db_session()
+
+    conditions = []
+
+    if params.booking_start and params.booking_end:
+        conditions.append(
+            and_(
+                Booking.booking_start <= params.booking_end,
+                Booking.booking_end >= params.booking_start
+            )
+        )
+    elif params.booking_start:
+        conditions.append(Booking.booking_end >= params.booking_start)
+    elif params.booking_end:
+        conditions.append(Booking.booking_start <= params.booking_end)
+
+    if conditions:
+        booked_hardware_ids_subquery = (
+            select(booking_to_hardware_table.c.hardware_id)
+            .join(Booking, Booking.id == booking_to_hardware_table.c.booking_id)
+            .where(or_(*conditions))
+            .subquery()
+        )
+
+        stmt = (
+            select(Hardware)
+            .where(not_(Hardware.id.in_(booked_hardware_ids_subquery)))
+        )
+    else:
+        stmt = select(Hardware)
+
     return session.scalars(stmt).all()
 
 

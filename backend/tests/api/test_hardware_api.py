@@ -1,10 +1,15 @@
 import json
 import uuid
+from datetime import datetime, timedelta
 from http import HTTPStatus
 
 import pytest
+from sqlalchemy.testing.config import db_url
 
+from db.bookings_db import create_booking
 from models.db_models import Hardware, JSONEncoder
+from test_util import db_util
+from test_util.db_util import setup_booking
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_hardware, setup_hardware
 
@@ -41,6 +46,53 @@ class TestHardwareApi:
         # expect
         assert result.status_code == HTTPStatus.OK
         assert len(result.json) == 2
+
+    def test_get_all_hardware_available_in_timeframe_with_hardware(self, client, jwt):
+        # when
+        hardware_1 = create_hardware(setup_hardware())
+        hardware_2 = create_hardware(setup_hardware())
+        hardware_3 = create_hardware(setup_hardware())
+
+        now = datetime.now()
+        yesterday = now - timedelta(days=1)
+        tomorrow = now + timedelta(days=1)
+        day_after_tomorrow = tomorrow + timedelta(days=1)
+        in_three_days = day_after_tomorrow + timedelta(days=1)
+
+        booking_1 = db_util.create_booking(
+            setup_booking(
+                booking_start=yesterday,
+                booking_end=tomorrow,
+                hardware_ids=[hardware_1.id]
+            )
+        )
+
+        booking_2 = db_util.create_booking(
+            setup_booking(
+                booking_start=yesterday,
+                booking_end=now,
+                hardware_ids=[hardware_2.id]
+            )
+        )
+
+        # then
+        data = {
+            "booking_start": now,
+            "booking_end": in_three_days,
+        }
+
+        result = client.get("/api/hardware",
+                            headers={
+                                "Content-Type": "application/json",
+                                "Authorization": f"Bearer {jwt}"
+                            },
+                            query_string=data
+                            )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 1
+        assert uuid.UUID(result.json[0]["id"]) == hardware_3.id
 
     def test_get_hardware_by_id(self, client, jwt):
         # when

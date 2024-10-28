@@ -1,25 +1,35 @@
 import json
 import os
+from datetime import datetime
 from http import HTTPStatus
+from typing import Optional
 from uuid import UUID
 
 import dotenv
 from flask import Blueprint, Response, abort, request, make_response, jsonify
+from pydantic import BaseModel
 from pydantic_core import ValidationError
-
 
 from db import hardware_db
 from models.db_models import Hardware, JSONEncoder
 from models.request_models import AuthenticatedUser
 from util.auth_util import token_required, user, is_author_or_admin
+from util.util import parse_model
 
 api = Blueprint('hardware', __name__)
+
+
+class GetHardwareParams(BaseModel):
+    booking_start: Optional[datetime] = None
+    booking_end: Optional[datetime] = None
 
 
 @api.route("/hardware", methods=['GET'])
 @token_required
 def get_all_hardware():
-    all_hardware = hardware_db.get_all_hardware()
+    params = parse_model(GetHardwareParams, request.args.to_dict() or {})
+    all_hardware = hardware_db.get_available_hardware(params)
+
     body = [hardware.dict() for hardware in all_hardware]
     body_json = json.dumps(body, cls=JSONEncoder)
 
@@ -73,7 +83,6 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
         hardware_uuid = UUID(hardware_id)
     except ValueError:
         abort(make_response(jsonify(message=f"{hardware_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
-        abort(HTTPStatus.BAD_REQUEST, f"{hardware_id} is not a valid id")
 
     db_hardware = hardware_db.get_hardware(hardware_uuid)
 

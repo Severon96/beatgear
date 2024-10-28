@@ -3,8 +3,8 @@ import axiosInstance from "../../utils/apiConfig";
 import {Hardware} from "../../models/Hardware";
 
 interface FetchHardwareParams {
-    bookingStart?: string | null;
-    bookingEnd?: string | null;
+    booking_start?: string | null;
+    booking_end?: string | null;
 }
 
 interface FetchHardwareResponse {
@@ -19,14 +19,14 @@ const initialState = {hardware: []} satisfies HardwareState as HardwareState
 
 export const fetchHardware = createAsyncThunk<FetchHardwareResponse, FetchHardwareParams>(
     'hardware/fetchHardware',
-    async ({bookingStart = null, bookingEnd = null}) => {
+    async ({booking_start = null, booking_end = null}) => {
         const params: Record<string, string> = {};
 
-        if (bookingStart) {
-            params.bookingStart = bookingStart;
+        if (booking_start) {
+            params.bookingStart = booking_start;
         }
-        if (bookingEnd) {
-            params.bookingEnd = bookingEnd;
+        if (booking_end) {
+            params.bookingEnd = booking_end;
         }
         const response = await axiosInstance.get(
             `hardware`,
