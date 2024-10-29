@@ -26,9 +26,12 @@ class GetHardwareParams(BaseModel):
 
 @api.route("/hardware", methods=['GET'])
 @token_required
-def get_all_hardware():
+@user
+def get_all_hardware(authenticated_user: AuthenticatedUser):
     params = parse_model(GetHardwareParams, request.args.to_dict() or {})
-    all_hardware = hardware_db.get_available_hardware(params)
+    user_id = authenticated_user.id
+
+    all_hardware = hardware_db.get_available_hardware(user_id, params)
 
     body = [hardware.dict() for hardware in all_hardware]
     body_json = json.dumps(body, cls=JSONEncoder)
