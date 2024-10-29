@@ -5,11 +5,13 @@ import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFnsV3";
 import {useSelector} from "react-redux";
-import {RootState} from "../store";
+import {RootState, useAppDispatch} from "../store";
 import {de} from "date-fns/locale";
 import HardwareSelect from "./HardwareSelect";
+import {fetchHardware} from "../redux-tk/slices/hardwareSlice";
 
 export const BookingForm: React.FC = () => {
+    const dispatch = useAppDispatch();
     const {accessToken} = useSelector((state: RootState) => state.auth);
     const [booking, setBooking] = useState<BookingRequest>({
         id: null,
@@ -26,6 +28,15 @@ export const BookingForm: React.FC = () => {
             ...prev,
             [field]: value,
         }));
+
+        if (booking.bookingStart && (field == 'bookingEnd' && value)) {
+            const date = value as Date;
+
+            dispatch(fetchHardware({
+                "booking_start": booking.bookingStart.toISOString(),
+                "booking_end": date.toISOString()
+            }))
+        }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -52,7 +63,7 @@ export const BookingForm: React.FC = () => {
                         slotProps={{textField: {fullWidth: true, required: true}}}
                         minDate={booking.bookingStart ?? new Date()}
                     />
-                    <HardwareSelect disabled={booking.bookingStart === null && booking.bookingEnd === null} />
+                    <HardwareSelect disabled={booking.bookingStart === null || booking.bookingEnd === null}/>
                     <Button variant="contained" color="primary" type="submit">
                         Submit
                     </Button>
