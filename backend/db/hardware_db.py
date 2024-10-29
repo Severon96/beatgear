@@ -31,7 +31,7 @@ def get_all_hardware() -> Sequence[Hardware]:
     return session.scalars(stmt).all()
 
 
-def get_available_hardware(params: GetHardwareParams) -> Sequence[Hardware]:
+def get_available_hardware(user_id: UUID, params: GetHardwareParams) -> Sequence[Hardware]:
     session = util.get_db_session()
 
     conditions = []
@@ -58,10 +58,16 @@ def get_available_hardware(params: GetHardwareParams) -> Sequence[Hardware]:
 
         stmt = (
             select(Hardware)
-            .where(not_(Hardware.id.in_(booked_hardware_ids_subquery)))
+            .where(
+                not_(Hardware.id.in_(booked_hardware_ids_subquery)),
+                Hardware.owner_id != user_id
+            )
         )
     else:
-        stmt = select(Hardware)
+        stmt = (
+            select(Hardware)
+            .where(Hardware.owner_id != user_id)
+        )
 
     return session.scalars(stmt).all()
 

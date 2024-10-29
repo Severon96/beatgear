@@ -7,6 +7,7 @@ import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFnsV3";
 import {useSelector} from "react-redux";
 import {RootState} from "../store";
 import {de} from "date-fns/locale";
+import HardwareSelect from "./HardwareSelect";
 
 export const BookingForm: React.FC = () => {
     const {accessToken} = useSelector((state: RootState) => state.auth);
@@ -20,7 +21,7 @@ export const BookingForm: React.FC = () => {
         authorId: accessToken,
     });
 
-    const handleChange = (field: keyof BookingRequest, value: any) => {
+    const handleChange = (field: keyof BookingRequest, value: string | number | Date | null) => {
         setBooking((prev) => ({
             ...prev,
             [field]: value,
@@ -51,6 +52,7 @@ export const BookingForm: React.FC = () => {
                         slotProps={{textField: {fullWidth: true, required: true}}}
                         minDate={booking.bookingStart ?? new Date()}
                     />
+                    <HardwareSelect disabled={booking.bookingStart === null && booking.bookingEnd === null} />
                     <Button variant="contained" color="primary" type="submit">
                         Submit
                     </Button>

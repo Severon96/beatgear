@@ -4,14 +4,14 @@ from datetime import datetime, timedelta
 from http import HTTPStatus
 
 import pytest
-from sqlalchemy.testing.config import db_url
 
-from db.bookings_db import create_booking
 from models.db_models import Hardware, JSONEncoder
+from models.request_models import HardwareRequest
 from test_util import db_util
 from test_util.db_util import setup_booking
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_hardware, setup_hardware
+from util.util import parse_model_list
 
 
 @pytest.mark.usefixtures("postgres")
@@ -32,8 +32,11 @@ class TestHardwareApi:
 
     def test_get_all_hardware_with_hardware(self, client, jwt):
         # when
-        create_hardware(setup_hardware())
-        create_hardware(setup_hardware())
+        user_id = get_user_id_from_jwt(jwt)
+
+        create_hardware()
+        create_hardware()
+        create_hardware(setup_hardware(user_uuid=user_id))
 
         # then
         result = client.get("/api/hardware",
@@ -47,11 +50,18 @@ class TestHardwareApi:
         assert result.status_code == HTTPStatus.OK
         assert len(result.json) == 2
 
+        hardware = parse_model_list(HardwareRequest, result.json)
+        hardware_owner_ids = list(map(lambda hw: hw.owner_id, hardware))
+        assert user_id not in hardware_owner_ids
+
     def test_get_all_hardware_available_in_timeframe_with_hardware(self, client, jwt):
         # when
-        hardware_1 = create_hardware(setup_hardware())
-        hardware_2 = create_hardware(setup_hardware())
-        hardware_3 = create_hardware(setup_hardware())
+        user_id = get_user_id_from_jwt(jwt)
+
+        hardware_1 = create_hardware()
+        hardware_2 = create_hardware()
+        hardware_3 = create_hardware()
+        hardware_4 = create_hardware(setup_hardware(user_uuid=user_id))
 
         now = datetime.now()
         yesterday = now - timedelta(days=1)
@@ -59,7 +69,7 @@ class TestHardwareApi:
         day_after_tomorrow = tomorrow + timedelta(days=1)
         in_three_days = day_after_tomorrow + timedelta(days=1)
 
-        booking_1 = db_util.create_booking(
+        db_util.create_booking(
             setup_booking(
                 booking_start=yesterday,
                 booking_end=tomorrow,
@@ -67,7 +77,7 @@ class TestHardwareApi:
             )
         )
 
-        booking_2 = db_util.create_booking(
+        db_util.create_booking(
             setup_booking(
                 booking_start=yesterday,
                 booking_end=now,
@@ -96,7 +106,7 @@ class TestHardwareApi:
 
     def test_get_hardware_by_id(self, client, jwt):
         # when
-        hardware = create_hardware(setup_hardware())
+        hardware = create_hardware()
 
         # then
         result = client.get(f"/api/hardware/{hardware.id}",
@@ -142,7 +152,7 @@ class TestHardwareApi:
         hardware = setup_hardware()
 
         # then
-        json = hardware.json()
+        request = hardware.json()
 
         result = client.post(
             "/api/hardware",
@@ -150,11 +160,10 @@ class TestHardwareApi:
                 'Content-Type': 'application/json',
                 'Authorization': f"Bearer {jwt}",
             },
-            data=json
+            data=request
         )
 
         # expect
-        print('json body', result.json)
         assert result.status_code == HTTPStatus.CREATED
         body = result.json
         api_hardware = Hardware(**body)

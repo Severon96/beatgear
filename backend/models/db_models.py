@@ -31,12 +31,13 @@ class Base(DeclarativeBase):
 
 
 class HardwareCategory(enum.Enum):
-    CONTROLLER = 'controller'
-    LIGHT = 'light'
-    CABLE_XLR = 'cable_xlr'
-    PLUG_COLD_APPLIANCE = 'plug_cold_appliance'
-    LAPTOP_STAND = 'laptop_stand'
-    OTHER = 'other'
+    CONTROLLER = 'CONTROLLER'
+    LIGHT = 'LIGHT'
+    CABLE_XLR = 'CABLE_XLR'
+    PLUG_COLD_APPLIANCE = 'PLUG_COLD_APPLIANCE'
+    LAPTOP_STAND = 'LAPTOP_STAND'
+    OTHER = 'OTHER'
+
 
 booking_to_hardware_table = Table(
     "bookings_to_hardware",

@@ -3,11 +3,16 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import {useAppSelector} from "../store";
 
-const HardwareSelect: React.FC = () => {
+interface HardwareSelectProps {
+    disabled?: boolean
+}
+
+const HardwareSelect: React.FC<HardwareSelectProps> = ({ disabled = false }) => {
     const hardware = useAppSelector((state) => state.hardware.hardware);
 
     return (
         <Autocomplete
+            disabled={disabled}
             multiple
             options={hardware}
             getOptionLabel={(option) => option.name}

@@ -28,8 +28,7 @@ def postgres(request):
 @pytest.fixture(scope='function')
 def flask_app():
     flask_app = app.create_app()
-    print('current dir', os.getcwd())
-    print('current files in dir', os.listdir(os.getcwd()))
+
     dotenv_values = dotenv.dotenv_values('.env')
     flask_app.config.update(dotenv_values)
 
@@ -97,7 +96,6 @@ def jwt_admin():
 
     if response.status_code == 200:
         token = response.json().get('access_token')
-        print('admin token: ', token)
         yield token
     else:
         print(response.text)
