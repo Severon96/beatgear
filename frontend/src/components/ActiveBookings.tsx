@@ -1,6 +1,16 @@
 import React, {useContext, useEffect, useState} from "react";
 import Box from "@mui/material/Box";
-import {Card, CardContent, CardHeader, Stack} from "@mui/material";
+import {
+    Avatar,
+    Card,
+    CardContent,
+    CardHeader,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Stack
+} from "@mui/material";
 import {createBooking, fetchActiveBookings} from "../redux-tk/slices/bookingSlice";
 import {useAppDispatch, useAppSelector} from "../store";
 import Typography from "@mui/material/Typography";
@@ -8,6 +18,7 @@ import {DialogPopup} from "./DialogPopup";
 import {BookingForm} from "./BookingForm";
 import {BookingRequest} from "../models/Booking";
 import {ErrorContext} from "./providers/ErrorProvider";
+import ImageIcon from '@mui/icons-material/Image';
 
 export function ActiveBookings() {
     const dispatch = useAppDispatch();
@@ -28,8 +39,21 @@ export function ActiveBookings() {
                     {
                         activeBookings.length > 0 ? (
                             <Box>
-                                <p>{`Bookings of user`}</p>
-                                <p>Current active bookings</p>
+                                <Typography variant={"h6"}>{`Bookings of user`}</Typography>
+                                <Typography>Current active bookings</Typography>
+                                <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+                                    {activeBookings.map((booking) => (
+                                        <ListItem key={booking.id}>
+                                            <ListItemAvatar>
+                                                <Avatar>
+                                                    <ImageIcon/>
+                                                </Avatar>
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary={`${booking.booking_start} - ${booking.booking_end}`}/>
+                                        </ListItem>
+                                    ))}
+                                </List>
                             </Box>
                         ) : (
                             <Stack alignItems={"center"}>
@@ -51,10 +75,10 @@ export function ActiveBookings() {
     useEffect(() => {
         dispatch(fetchActiveBookings())
 
-        if(createBookingStatus == "succeeded") {
+        if (createBookingStatus == "succeeded") {
             setBookingCreated(true)
         }
-        if(createBookingStatus == "failed") {
+        if (createBookingStatus == "failed") {
             errorContext.addError({"message": "Booking creation failed"})
         }
     }, [createBookingStatus, dispatch]);
