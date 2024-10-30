@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {Booking} from "../../models/Booking";
+import {Booking, BookingRequest} from "../../models/Booking";
 import axiosInstance from "../../utils/apiConfig";
 
 interface ActiveBookingsState {
@@ -19,12 +19,26 @@ export const fetchActiveBookings = createAsyncThunk(
     }
 )
 
+export const createBooking = createAsyncThunk(
+    'bookings/create',
+    async (bookingRequest: BookingRequest) => {
+        const response = await axiosInstance.post(
+            `bookings`, bookingRequest
+        )
+
+        return {data: response.data};
+    }
+)
+
 const bookingsSlice = createSlice({
     name: 'bookings',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchActiveBookings.fulfilled, (state, action) => {
+            state.activeBookings = action.payload.data;
+        })
+        builder.addCase(createBooking.fulfilled, (state, action) => {
             state.activeBookings = action.payload.data;
         })
     }

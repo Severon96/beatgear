@@ -9,6 +9,7 @@ import {RootState, useAppDispatch} from "../store";
 import {de} from "date-fns/locale";
 import HardwareSelect from "./HardwareSelect";
 import {fetchHardware} from "../redux-tk/slices/hardwareSlice";
+import {createBooking} from "../redux-tk/slices/bookingSlice";
 
 export const BookingForm: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -23,7 +24,7 @@ export const BookingForm: React.FC = () => {
         authorId: accessToken,
     });
 
-    const handleChange = (field: keyof BookingRequest, value: string | number | Date | null) => {
+    const handleChange = (field: keyof BookingRequest, value: string | string[] | number | Date | null) => {
         setBooking((prev) => ({
             ...prev,
             [field]: value,
@@ -41,7 +42,7 @@ export const BookingForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Submitted booking:', booking);
+        dispatch(createBooking(booking))
     };
 
     return (
@@ -63,7 +64,12 @@ export const BookingForm: React.FC = () => {
                         slotProps={{textField: {fullWidth: true, required: true}}}
                         minDate={booking.bookingStart ?? new Date()}
                     />
-                    <HardwareSelect disabled={booking.bookingStart === null || booking.bookingEnd === null}/>
+                    <HardwareSelect
+                        disabled={booking.bookingStart === null || booking.bookingEnd === null}
+                        handleChange={(selectedHardware) => {
+                            handleChange('hardwareIds', selectedHardware.target.value);
+                        }}
+                    />
                     <Button variant="contained" color="primary" type="submit">
                         Submit
                     </Button>
