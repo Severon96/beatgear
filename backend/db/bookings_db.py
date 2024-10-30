@@ -34,9 +34,9 @@ def get_active_bookings_for_user(user_id: UUID) -> Sequence[Booking]:
     session = util.get_db_session()
     now = datetime.now()
 
-    stmt = session.query(Booking).filter(Booking.booking_start <= now,
-                                         Booking.booking_end >= now,
-                                         Booking.customer_id == user_id)
+    stmt = session.query(Booking).filter(
+        Booking.booking_end >= now,
+        Booking.customer_id == user_id)
     return session.scalars(stmt).all()
 
 

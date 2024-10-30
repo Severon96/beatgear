@@ -18,7 +18,7 @@ import {DialogPopup} from "./DialogPopup";
 import {BookingForm} from "./BookingForm";
 import {BookingRequest} from "../models/Booking";
 import {ErrorContext} from "./providers/ErrorProvider";
-import SurroundSoundIcon from '@mui/icons-material/SurroundSound';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {formatDate} from "../utils/generalUtils";
 
 export function ActiveBookings() {
@@ -47,7 +47,7 @@ export function ActiveBookings() {
                                             <ListItem key={booking.id}>
                                                 <ListItemAvatar>
                                                     <Avatar>
-                                                        <SurroundSoundIcon/>
+                                                        <CalendarMonthIcon/>
                                                     </Avatar>
                                                 </ListItemAvatar>
                                                 <ListItemText
@@ -60,12 +60,12 @@ export function ActiveBookings() {
                                 }
                             </List>
                         ) : (
-                            <Stack alignItems={"center"}>
+                            <Stack alignItems={"center"} spacing={2}>
                                 <Typography variant={'subtitle1'}>Du hast noch keine Buchungen. Erstell doch
                                     eine!</Typography>
                                 <DialogPopup dialogTitle={"Booking anlegen"} buttonName={"Booking anlegen"}>
                                     {
-                                        bookingCreated ? <Typography>Booking created</Typography> :
+                                        bookingCreated ? <Typography>Buchung erstellt</Typography> :
                                             <BookingForm onFormSubmit={onNewBookingSubmitted}/>}
                                 </DialogPopup>
                             </Stack>
