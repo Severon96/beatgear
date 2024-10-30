@@ -18,7 +18,8 @@ import {DialogPopup} from "./DialogPopup";
 import {BookingForm} from "./BookingForm";
 import {BookingRequest} from "../models/Booking";
 import {ErrorContext} from "./providers/ErrorProvider";
-import ImageIcon from '@mui/icons-material/Image';
+import SurroundSoundIcon from '@mui/icons-material/SurroundSound';
+import {formatDate} from "../utils/generalUtils";
 
 export function ActiveBookings() {
     const dispatch = useAppDispatch();
@@ -38,27 +39,30 @@ export function ActiveBookings() {
                 <CardContent>
                     {
                         activeBookings.length > 0 ? (
-                            <Box>
-                                <Typography variant={"h6"}>{`Bookings of user`}</Typography>
-                                <Typography>Current active bookings</Typography>
-                                <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
-                                    {activeBookings.map((booking) => (
-                                        <ListItem key={booking.id}>
-                                            <ListItemAvatar>
-                                                <Avatar>
-                                                    <ImageIcon/>
-                                                </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText
-                                                primary={`${booking.booking_start} - ${booking.booking_end}`}/>
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Box>
+                            <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+                                {activeBookings.map((booking) => {
+                                        const hardwareNames = booking.hardware.map((hardware) => hardware.name);
+
+                                        return (
+                                            <ListItem key={booking.id}>
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        <SurroundSoundIcon/>
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={`${formatDate(booking.booking_start)} - ${formatDate(booking.booking_end)}`}
+                                                    secondary={`${hardwareNames.join(", ")}`}/>
+                                            </ListItem>
+                                        );
+                                    }
+                                )
+                                }
+                            </List>
                         ) : (
                             <Stack alignItems={"center"}>
-                                <Typography variant={'subtitle1'}>You have no bookings, feel free to create
-                                    one!</Typography>
+                                <Typography variant={'subtitle1'}>Du hast noch keine Buchungen. Erstell doch
+                                    eine!</Typography>
                                 <DialogPopup dialogTitle={"Booking anlegen"} buttonName={"Booking anlegen"}>
                                     {
                                         bookingCreated ? <Typography>Booking created</Typography> :

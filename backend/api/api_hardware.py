@@ -1,5 +1,7 @@
+import base64
 import json
 import os
+import re
 from datetime import datetime
 from http import HTTPStatus
 from typing import Optional
@@ -65,6 +67,14 @@ def get_hardware(hardware_id: str):
 def create_hardware():
     try:
         json_body = request.json
+
+        if 'image' in json_body:
+            image_data = json_body['image']
+            data_uri_pattern = re.compile(r'^data:image/[^;]+;base64,[A-Za-z0-9+/=]+$')
+            if not data_uri_pattern.match(image_data):
+                abort(make_response(jsonify(message="image must be a valid data URI in base64 format"),
+                                    HTTPStatus.BAD_REQUEST))
+
         request_hardware = Hardware(**json_body)
 
         hardware_db.create_hardware(request_hardware)

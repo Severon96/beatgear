@@ -20,7 +20,7 @@ CREATE TABLE hardware (
     id UUID PRIMARY KEY,
     name VARCHAR(250) NOT NULL,
     serial VARCHAR(50) NOT NULL,
-    image BYTEA,
+    image VARCHAR,
     category hardwarecategory NOT NULL,
     owner_id UUID NOT NULL,
     created_at TIMESTAMP NOT NULL,

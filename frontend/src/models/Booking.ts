@@ -1,3 +1,5 @@
+import {Hardware} from "./Hardware";
+
 export type BookingsStatus = "succeeded" | "loading" | "failed";
 
 export type Booking = {
@@ -7,6 +9,7 @@ export type Booking = {
     booking_start: Date | null;
     booking_end: Date | null;
     author_id: string | null;
+    hardware: Hardware[];
     created_at: Date;
     updated_at: Date;
 }

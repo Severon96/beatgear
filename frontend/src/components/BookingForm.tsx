@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import {Box, Button, Stack} from '@mui/material';
 import {BookingRequest} from "../models/Booking";
-import {DatePicker} from "@mui/x-date-pickers/DatePicker";
-import {LocalizationProvider} from "@mui/x-date-pickers";
+import {DateTimePicker, LocalizationProvider, renderTimeViewClock} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFnsV3";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../store";
@@ -58,14 +57,24 @@ export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialVa
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
             <Box component="form" onSubmit={handleSubmit} sx={{maxWidth: 400, mx: 'auto', p: 2}}>
                 <Stack spacing={2}>
-                    <DatePicker
+                    <DateTimePicker
+                        viewRenderers={{
+                            hours: renderTimeViewClock,
+                            minutes: renderTimeViewClock,
+                            seconds: renderTimeViewClock,
+                        }}
                         label="Booking Start"
                         value={booking.booking_start}
                         onChange={(date: Date | null) => handleChange('booking_start', date || new Date())}
                         slotProps={{textField: {fullWidth: true, required: true}}}
                         minDate={new Date()}
                     />
-                    <DatePicker
+                    <DateTimePicker
+                        viewRenderers={{
+                            hours: renderTimeViewClock,
+                            minutes: renderTimeViewClock,
+                            seconds: renderTimeViewClock,
+                        }}
                         label="Booking End"
                         value={booking.booking_end}
                         disabled={booking.booking_start === null}

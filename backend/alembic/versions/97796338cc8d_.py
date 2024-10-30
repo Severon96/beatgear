@@ -35,7 +35,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('name', sa.String(length=250), nullable=False),
     sa.Column('serial', sa.String(length=50), nullable=False),
-    sa.Column('image', sa.LargeBinary(), nullable=True),
+    sa.Column('image', sa.String(), nullable=True),
     sa.Column('category', sa.Enum('CONTROLLER', 'LIGHT', 'CABLE_XLR', 'PLUG_COLD_APPLIANCE', 'LAPTOP_STAND', 'OTHER', name='hardwarecategory'), nullable=False),
     sa.Column('owner_id', sa.Uuid(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
