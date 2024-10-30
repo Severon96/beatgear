@@ -1,3 +1,5 @@
+export type BookingsStatus = "succeeded" | "loading" | "failed";
+
 export type Booking = {
     id: string | null;
     name: string;
@@ -12,9 +14,9 @@ export type Booking = {
 export type BookingRequest = {
     id: string | null;
     name: string | null;
-    customerId: string | null;
-    hardwareIds: string[];
-    bookingStart: Date | null;
-    bookingEnd: Date | null;
-    authorId: string | null;
+    customer_id: string | null;
+    hardware_ids: string[];
+    booking_start: Date | null;
+    booking_end: Date | null;
+    author_id: string | null;
 };

@@ -9,20 +9,29 @@ import {RootState, useAppDispatch} from "../store";
 import {de} from "date-fns/locale";
 import HardwareSelect from "./HardwareSelect";
 import {fetchHardware} from "../redux-tk/slices/hardwareSlice";
-import {createBooking} from "../redux-tk/slices/bookingSlice";
+import {v4 as uuid} from "uuid";
+import {jwtDecode} from "jwt-decode";
 
-export const BookingForm: React.FC = () => {
+interface BookingFormProps {
+    initialValues?: BookingRequest;
+    onFormSubmit: (booking: BookingRequest) => void;
+}
+
+export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialValues = undefined}) => {
     const dispatch = useAppDispatch();
     const {accessToken} = useSelector((state: RootState) => state.auth);
-    const [booking, setBooking] = useState<BookingRequest>({
-        id: null,
+    const decodedToken: { sub: string } = jwtDecode(accessToken ?? "");
+
+    const initialState: BookingRequest = {
+        id: uuid(),
         name: '',
-        customerId: accessToken,
-        hardwareIds: [],
-        bookingStart: null,
-        bookingEnd: null,
-        authorId: accessToken,
-    });
+        customer_id: decodedToken.sub,
+        hardware_ids: [],
+        booking_start: null,
+        booking_end: null,
+        author_id: decodedToken.sub,
+    };
+    const [booking, setBooking] = useState<BookingRequest>(initialValues ? initialValues : initialState);
 
     const handleChange = (field: keyof BookingRequest, value: string | string[] | number | Date | null) => {
         setBooking((prev) => ({
@@ -30,11 +39,11 @@ export const BookingForm: React.FC = () => {
             [field]: value,
         }));
 
-        if (booking.bookingStart && (field == 'bookingEnd' && value)) {
+        if (booking.booking_start && (field == 'booking_end' && value)) {
             const date = value as Date;
 
             dispatch(fetchHardware({
-                "booking_start": booking.bookingStart.toISOString(),
+                "booking_start": booking.booking_start.toISOString(),
                 "booking_end": date.toISOString()
             }))
         }
@@ -42,7 +51,7 @@ export const BookingForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        dispatch(createBooking(booking))
+        onFormSubmit(booking)
     };
 
     return (
@@ -51,23 +60,23 @@ export const BookingForm: React.FC = () => {
                 <Stack spacing={2}>
                     <DatePicker
                         label="Booking Start"
-                        value={booking.bookingStart}
-                        onChange={(date: Date | null) => handleChange('bookingStart', date || new Date())}
+                        value={booking.booking_start}
+                        onChange={(date: Date | null) => handleChange('booking_start', date || new Date())}
                         slotProps={{textField: {fullWidth: true, required: true}}}
                         minDate={new Date()}
                     />
                     <DatePicker
                         label="Booking End"
-                        value={booking.bookingEnd}
-                        disabled={booking.bookingStart === null}
-                        onChange={(date: Date | null) => handleChange('bookingEnd', date || new Date())}
+                        value={booking.booking_end}
+                        disabled={booking.booking_start === null}
+                        onChange={(date: Date | null) => handleChange('booking_end', date || new Date())}
                         slotProps={{textField: {fullWidth: true, required: true}}}
-                        minDate={booking.bookingStart ?? new Date()}
+                        minDate={booking.booking_start ?? new Date()}
                     />
                     <HardwareSelect
-                        disabled={booking.bookingStart === null || booking.bookingEnd === null}
+                        disabled={booking.booking_start === null || booking.booking_end === null}
                         handleChange={(selectedHardware) => {
-                            handleChange('hardwareIds', selectedHardware.target.value);
+                            handleChange('hardware_ids', selectedHardware.target.value);
                         }}
                     />
                     <Button variant="contained" color="primary" type="submit">

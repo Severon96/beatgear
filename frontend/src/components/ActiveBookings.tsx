@@ -1,15 +1,24 @@
-import React, {useEffect} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import {Card, CardContent, CardHeader, Stack} from "@mui/material";
-import {fetchActiveBookings} from "../redux-tk/slices/bookingSlice";
+import {createBooking, fetchActiveBookings} from "../redux-tk/slices/bookingSlice";
 import {useAppDispatch, useAppSelector} from "../store";
 import Typography from "@mui/material/Typography";
 import {DialogPopup} from "./DialogPopup";
 import {BookingForm} from "./BookingForm";
+import {BookingRequest} from "../models/Booking";
+import {ErrorContext} from "./providers/ErrorProvider";
 
 export function ActiveBookings() {
     const dispatch = useAppDispatch();
     const activeBookings = useAppSelector(state => state.bookings.activeBookings)
+    const createBookingStatus = useAppSelector(state => state.bookings.createBookingStatus);
+    const [bookingCreated, setBookingCreated] = useState(false)
+    const errorContext = useContext(ErrorContext);
+
+    function onNewBookingSubmitted(booking: BookingRequest) {
+        dispatch(createBooking(booking));
+    }
 
     function displayBookings() {
         return (
@@ -27,7 +36,9 @@ export function ActiveBookings() {
                                 <Typography variant={'subtitle1'}>You have no bookings, feel free to create
                                     one!</Typography>
                                 <DialogPopup dialogTitle={"Booking anlegen"} buttonName={"Booking anlegen"}>
-                                    <BookingForm />
+                                    {
+                                        bookingCreated ? <Typography>Booking created</Typography> :
+                                            <BookingForm onFormSubmit={onNewBookingSubmitted}/>}
                                 </DialogPopup>
                             </Stack>
                         )
@@ -39,7 +50,14 @@ export function ActiveBookings() {
 
     useEffect(() => {
         dispatch(fetchActiveBookings())
-    }, [dispatch]);
+
+        if(createBookingStatus == "succeeded") {
+            setBookingCreated(true)
+        }
+        if(createBookingStatus == "failed") {
+            errorContext.addError({"message": "Booking creation failed"})
+        }
+    }, [createBookingStatus, dispatch]);
 
     return (
         <Box>
