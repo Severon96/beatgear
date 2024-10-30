@@ -23,7 +23,7 @@ export const BookingForm: React.FC = () => {
         authorId: accessToken,
     });
 
-    const handleChange = (field: keyof BookingRequest, value: string | number | Date | null) => {
+    const handleChange = (field: keyof BookingRequest, value: string | string[] | number | Date | null) => {
         setBooking((prev) => ({
             ...prev,
             [field]: value,
@@ -63,7 +63,12 @@ export const BookingForm: React.FC = () => {
                         slotProps={{textField: {fullWidth: true, required: true}}}
                         minDate={booking.bookingStart ?? new Date()}
                     />
-                    <HardwareSelect disabled={booking.bookingStart === null || booking.bookingEnd === null}/>
+                    <HardwareSelect
+                        disabled={booking.bookingStart === null || booking.bookingEnd === null}
+                        handleChange={(selectedHardware) => {
+                            handleChange('hardwareIds', selectedHardware.target.value);
+                        }}
+                    />
                     <Button variant="contained" color="primary" type="submit">
                         Submit
                     </Button>
