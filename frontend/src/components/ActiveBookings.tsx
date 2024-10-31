@@ -51,8 +51,8 @@ export function ActiveBookings() {
                                                     </Avatar>
                                                 </ListItemAvatar>
                                                 <ListItemText
-                                                    primary={`${formatDate(booking.booking_start)} - ${formatDate(booking.booking_end)}`}
-                                                    secondary={`${hardwareNames.join(", ")}`}/>
+                                                    primary={booking.name}
+                                                    secondary={`${formatDate(booking.booking_start)} - ${formatDate(booking.booking_end)} | ${hardwareNames.join(", ")}`}/>
                                             </ListItem>
                                         );
                                     }

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Box, Button, Stack} from '@mui/material';
+import {Box, Button, Stack, TextField} from '@mui/material';
 import {BookingRequest} from "../models/Booking";
 import {DateTimePicker, LocalizationProvider, renderTimeViewClock} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -57,6 +57,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialVa
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
             <Box component="form" onSubmit={handleSubmit} sx={{maxWidth: 400, mx: 'auto', p: 2}}>
                 <Stack spacing={2}>
+                    <TextField
+                        id="booking-name"
+                        label="Name"
+                        variant="outlined"
+                        value={booking.name}
+                        required={true}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            handleChange('name', event.target.value || "")
+                        }}
+                    />
                     <DateTimePicker
                         viewRenderers={{
                             hours: renderTimeViewClock,
