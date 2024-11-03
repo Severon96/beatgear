@@ -75,17 +75,24 @@ def create_hardware():
                 abort(make_response(jsonify(message="image must be a valid data URI in base64 format"),
                                     HTTPStatus.BAD_REQUEST))
 
-        request_hardware = Hardware(**json_body)
+        try:
+            request_hardware = Hardware(**json_body)
 
-        hardware_db.create_hardware(request_hardware)
+            hardware_db.create_hardware(request_hardware)
 
-        return Response(
-            status=HTTPStatus.CREATED,
-            content_type='application/json',
-            response=request_hardware.json()
-        )
+            return Response(
+                status=HTTPStatus.CREATED,
+                content_type='application/json',
+                response=request_hardware.json()
+            )
+        except ValidationError as e:
+            raise e
+        except Exception as e:
+            print("Error occured for Hardware: ", e)
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
+    except Exception as e:
+        print("Error occured for Hardware: ", e)
 
 
 @api.route("/hardware/<hardware_id>", methods=['PATCH'])

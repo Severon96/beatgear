@@ -49,7 +49,7 @@ class TestBookingApi:
     def test_get_active_bookings_without_bookings(self, client, jwt):
         # then
         result = client.get(
-            "/api/bookings/active",
+            "/api/bookings/current",
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {jwt}"
@@ -75,7 +75,7 @@ class TestBookingApi:
 
         # then
         result = client.get(
-            "/api/bookings/active",
+            "/api/bookings/current",
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {jwt}"
@@ -95,7 +95,7 @@ class TestBookingApi:
 
         # then
         result = client.get(
-            "/api/bookings/active",
+            "/api/bookings/current",
             headers={
                 "Content-Type": "application/json",
             }

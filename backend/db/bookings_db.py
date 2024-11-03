@@ -30,7 +30,7 @@ def get_all_bookings() -> Sequence[Booking]:
     return session.scalars(stmt).all()
 
 
-def get_active_bookings_for_user(user_id: UUID) -> Sequence[Booking]:
+def get_current_bookings_for_user(user_id: UUID) -> Sequence[Booking]:
     session = util.get_db_session()
     now = datetime.now()
 

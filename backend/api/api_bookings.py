@@ -29,11 +29,11 @@ def get_all_bookings():
     )
 
 
-@api.route("/bookings/active", methods=['GET'])
+@api.route("/bookings/current", methods=['GET'])
 @token_required
 @user
 def get_active_bookings(authenticated_user: AuthenticatedUser):
-    bookings = bookings_db.get_active_bookings_for_user(authenticated_user.id)
+    bookings = bookings_db.get_current_bookings_for_user(authenticated_user.id)
     body = [booking.dict() for booking in bookings]
     body_json = json.dumps(body, cls=JSONEncoder)
 
