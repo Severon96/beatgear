@@ -53,7 +53,7 @@ class Hardware(Base):
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     name: Mapped[str] = mapped_column(String(250))
     serial: Mapped[str] = mapped_column(String(50))
-    image: Mapped[Optional[bytes]] = mapped_column(String)
+    image: Mapped[Optional[str]] = mapped_column(String)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
     owner_id: Mapped[UUID] = mapped_column(Uuid)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
