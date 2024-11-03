@@ -7,10 +7,8 @@ import pytest
 
 from models.db_models import Hardware, JSONEncoder
 from models.request_models import HardwareRequest
-from test_util import db_util
-from test_util.db_util import setup_booking
 from tests.test_util.auth_util import get_user_id_from_jwt
-from tests.test_util.db_util import create_hardware, setup_hardware
+from tests.test_util.db_util import create_hardware, setup_hardware, create_booking, setup_booking
 from util.util import parse_model_list
 
 
@@ -61,7 +59,7 @@ class TestHardwareApi:
         hardware_1 = create_hardware()
         hardware_2 = create_hardware()
         hardware_3 = create_hardware()
-        hardware_4 = create_hardware(setup_hardware(user_uuid=user_id))
+        create_hardware(setup_hardware(user_uuid=user_id))
 
         now = datetime.now()
         yesterday = now - timedelta(days=1)
@@ -69,7 +67,7 @@ class TestHardwareApi:
         day_after_tomorrow = tomorrow + timedelta(days=1)
         in_three_days = day_after_tomorrow + timedelta(days=1)
 
-        db_util.create_booking(
+        create_booking(
             setup_booking(
                 booking_start=yesterday,
                 booking_end=tomorrow,
@@ -77,7 +75,7 @@ class TestHardwareApi:
             )
         )
 
-        db_util.create_booking(
+        create_booking(
             setup_booking(
                 booking_start=yesterday,
                 booking_end=now,
