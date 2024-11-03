@@ -29,6 +29,21 @@ def get_all_bookings():
     )
 
 
+@api.route("/bookings/current", methods=['GET'])
+@token_required
+@user
+def get_active_bookings(authenticated_user: AuthenticatedUser):
+    bookings = bookings_db.get_current_bookings_for_user(authenticated_user.id)
+    body = [booking.dict() for booking in bookings]
+    body_json = json.dumps(body, cls=JSONEncoder)
+
+    return Response(
+        status=HTTPStatus.OK,
+        content_type='application/json',
+        response=body_json
+    )
+
+
 @api.route("/bookings/<booking_id>", methods=['GET'])
 @token_required
 def get_booking(booking_id: str):

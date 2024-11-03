@@ -20,6 +20,7 @@ flask = "^3.0.3"
 flask-cors = "^5.0.0"
 flask-jwt-extended = "^4.6.0"
 cryptography = "^43.0.1"
+alembic = "^1.13.3"
 
 [tool.poetry.dev-dependencies]
 

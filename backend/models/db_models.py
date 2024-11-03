@@ -31,12 +31,13 @@ class Base(DeclarativeBase):
 
 
 class HardwareCategory(enum.Enum):
-    CONTROLLER = 'controller'
-    LIGHT = 'light'
-    CABLE_XLR = 'cable_xlr'
-    PLUG_COLD_APPLIANCE = 'plug_cold_appliance'
-    LAPTOP_STAND = 'laptop_stand'
-    OTHER = 'other'
+    CONTROLLER = 'CONTROLLER'
+    LIGHT = 'LIGHT'
+    CABLE_XLR = 'CABLE_XLR'
+    PLUG_COLD_APPLIANCE = 'PLUG_COLD_APPLIANCE'
+    LAPTOP_STAND = 'LAPTOP_STAND'
+    OTHER = 'OTHER'
+
 
 booking_to_hardware_table = Table(
     "bookings_to_hardware",
@@ -52,7 +53,7 @@ class Hardware(Base):
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     name: Mapped[str] = mapped_column(String(250))
     serial: Mapped[str] = mapped_column(String(50))
-    image: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
+    image: Mapped[Optional[str]] = mapped_column(String)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
     owner_id: Mapped[UUID] = mapped_column(Uuid)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())

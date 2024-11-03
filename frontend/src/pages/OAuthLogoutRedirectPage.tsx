@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {deleteTokens} from "../utils/auth";
+import {logout} from "../redux-tk/slices/authSlice";
 
 const LogoutRedirect = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        deleteTokens();
+        logout();
         navigate("/");
     }, [navigate]);
 

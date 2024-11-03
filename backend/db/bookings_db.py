@@ -8,7 +8,7 @@ import dateutil.parser
 from flask import abort, make_response, jsonify
 from sqlalchemy import select
 
-from models.db_models import Booking
+from models.db_models import Booking, booking_to_hardware_table
 from util import util
 
 
@@ -27,6 +27,16 @@ def get_all_bookings() -> Sequence[Booking]:
     session = util.get_db_session()
 
     stmt = select(Booking)
+    return session.scalars(stmt).all()
+
+
+def get_current_bookings_for_user(user_id: UUID) -> Sequence[Booking]:
+    session = util.get_db_session()
+    now = datetime.now()
+
+    stmt = session.query(Booking).filter(
+        Booking.booking_end >= now,
+        Booking.customer_id == user_id)
     return session.scalars(stmt).all()
 
 

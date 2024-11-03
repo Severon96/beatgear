@@ -4,31 +4,42 @@ import './index.css';
 import App from './pages/app/App';
 import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import LoginRedirect from "./pages/OAuthLoginRedirect";
-import LogoutRedirect from "./pages/OAuthLogoutRedirect";
+import LoginRedirect from "./pages/OAuthLoginRedirectPage";
+import LogoutRedirect from "./pages/OAuthLogoutRedirectPage";
+import {ThemeProvider} from "@mui/material";
+import theme from "./theme/theme";
+import {ErrorProvider} from "./components/providers/ErrorProvider";
+import {Provider} from "react-redux";
+import store from "./store";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />,
+        element: <App/>,
     },
     {
         path: "/auth/callback",
-        element: <LoginRedirect />
+        element: <LoginRedirect/>
     },
     {
         path: "/auth/logout",
-        element: <LogoutRedirect />
+        element: <LogoutRedirect/>
     }
 ]);
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    <React.StrictMode>
+        <ThemeProvider theme={theme}>
+            <ErrorProvider>
+                <Provider store={store}>
+                    <RouterProvider router={router}/>
+                </Provider>
+            </ErrorProvider>
+        </ThemeProvider>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
