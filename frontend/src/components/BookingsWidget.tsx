@@ -21,7 +21,7 @@ import {ErrorContext} from "./providers/ErrorProvider";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {formatDate} from "../utils/generalUtils";
 
-export function ActiveBookings() {
+export function BookingsWidget() {
     const dispatch = useAppDispatch();
     const activeBookings = useAppSelector(state => state.bookings.activeBookings)
     const createBookingStatus = useAppSelector(state => state.bookings.createBookingStatus);
