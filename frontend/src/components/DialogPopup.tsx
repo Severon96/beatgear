@@ -1,4 +1,4 @@
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide} from "@mui/material";
+import {Button, Dialog, DialogContent, DialogTitle, Slide} from "@mui/material";
 import React from "react";
 import {TransitionProps} from "@mui/material/transitions";
 
@@ -44,10 +44,6 @@ export const DialogPopup: React.FC<PopupProps> = ({children, buttonName, dialogT
                 <DialogContent>
                     {children}
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose}>Agree</Button>
-                </DialogActions>
             </Dialog>
         </React.Fragment>
     );

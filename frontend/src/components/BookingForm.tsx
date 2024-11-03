@@ -99,7 +99,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialVa
                         }}
                     />
                     <Button variant="contained" color="primary" type="submit">
-                        Submit
+                        Jetzt buchen
                     </Button>
                 </Stack>
             </Box>

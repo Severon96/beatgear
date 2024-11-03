@@ -96,7 +96,10 @@ export function ActiveBookings() {
                             <Stack alignItems={"center"} spacing={2}>
                                 <Typography variant={'subtitle1'}>Du hast noch keine Buchungen. Erstell doch
                                     eine!</Typography>
-                                <DialogPopup dialogTitle={"Booking anlegen"} buttonName={"Booking anlegen"}>
+                                <DialogPopup
+                                    dialogTitle={"Booking anlegen"}
+                                    buttonName={"Booking anlegen"}
+                                >
                                     {
                                         bookingCreated ? <Typography>Buchung erstellt</Typography> :
                                             <BookingForm onFormSubmit={onNewBookingSubmitted}/>}
