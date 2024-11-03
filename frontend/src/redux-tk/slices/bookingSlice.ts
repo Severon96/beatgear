@@ -1,28 +1,26 @@
 import {ActionReducerMapBuilder, createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {Booking, BookingRequest} from "../../models/Booking";
+import {Booking, BookingRequest, BookingsStatus} from "../../models/Booking";
 import axiosInstance from "../../utils/apiConfig";
-
-type BookingsStatus = "succeeded" | "loading" | "failed";
 
 interface ActiveBookingsState {
     activeBookings: Booking[]
     createdBooking?: Booking
-    fetchActiveBookingsStatus?: BookingsStatus
+    fetchBookingsStatus?: BookingsStatus
     createBookingStatus?: BookingsStatus
 }
 
 const initialState = {
     activeBookings: [],
     createdBooking: undefined,
-    fetchActiveBookingsStatus: undefined,
+    fetchBookingsStatus: undefined,
     createBookingStatus: undefined
 } satisfies ActiveBookingsState as ActiveBookingsState
 
-export const fetchActiveBookings = createAsyncThunk(
-    'bookings/fetchActive',
+export const fetchBookings = createAsyncThunk(
+    'bookings/fetchCurrent',
     async () => {
         const response = await axiosInstance.get(
-            `bookings/active`
+            `bookings/current`
         )
 
         return {data: response.data};
@@ -51,15 +49,15 @@ const bookingsSlice = createSlice({
 })
 
 function setupActiveBookingsCases(builder: ActionReducerMapBuilder<ActiveBookingsState>) {
-    builder.addCase(fetchActiveBookings.fulfilled, (state, action) => {
+    builder.addCase(fetchBookings.fulfilled, (state, action) => {
         state.activeBookings = action.payload.data;
-        state.fetchActiveBookingsStatus = "succeeded";
+        state.fetchBookingsStatus = "succeeded";
     })
-    builder.addCase(fetchActiveBookings.pending, (state) => {
-        state.fetchActiveBookingsStatus = "loading";
+    builder.addCase(fetchBookings.pending, (state) => {
+        state.fetchBookingsStatus = "loading";
     })
-    builder.addCase(fetchActiveBookings.rejected, (state) => {
-        state.fetchActiveBookingsStatus = "failed";
+    builder.addCase(fetchBookings.rejected, (state) => {
+        state.fetchBookingsStatus = "failed";
     })
 }
 
