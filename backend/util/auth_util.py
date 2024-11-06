@@ -10,7 +10,7 @@ from flask import jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt
 from jwt.algorithms import RSAAlgorithm
 
-from models.request_models import AuthenticatedUser
+from models.models import AuthenticatedUser
 
 
 def fetch_public_key(oauth_issuer: str, realm_name: str, retries: int = 1) -> str:

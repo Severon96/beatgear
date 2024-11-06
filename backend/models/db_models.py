@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional, List, Any
 from uuid import UUID
 
-from sqlalchemy import Uuid, String, LargeBinary, Enum, ForeignKey, Table, Column, DateTime
+from sqlalchemy import Uuid, String, LargeBinary, Enum, ForeignKey, Table, Column, DateTime, Float
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
 
 
@@ -47,7 +47,7 @@ booking_to_hardware_table = Table(
 )
 
 
-class Hardware(Base):
+class HardwareDb(Base):
     __tablename__ = "hardware"
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
@@ -56,10 +56,11 @@ class Hardware(Base):
     image: Mapped[Optional[str]] = mapped_column(String)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
     owner_id: Mapped[UUID] = mapped_column(Uuid)
+    price_per_hour: Mapped[float] = mapped_column(Float, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
-    bookings: Mapped[List["Booking"]] = relationship(secondary=booking_to_hardware_table, back_populates="hardware")
+    bookings: Mapped[List["BookingDb"]] = relationship(secondary=booking_to_hardware_table, back_populates="hardware")
 
     @validates("name", "serial", "category", "owner_id", include_removes=True)
     def validates_hardware(self, key, value, is_remove) -> str:
@@ -76,7 +77,7 @@ class Hardware(Base):
                 f"updated_at={self.updated_at})")
 
 
-class Booking(Base):
+class BookingDb(Base):
     __tablename__ = "bookings"
 
     def __init__(self, **kw: Any):
@@ -88,10 +89,11 @@ class Booking(Base):
     booking_start: Mapped[datetime] = mapped_column(DateTime)
     booking_end: Mapped[datetime] = mapped_column(DateTime)
     author_id: Mapped[UUID] = mapped_column(Uuid)
+    total_amount: Mapped[float] = mapped_column(Float, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
 
-    hardware: Mapped[List[Hardware]] = relationship(secondary=booking_to_hardware_table)
+    hardware: Mapped[List[HardwareDb]] = relationship(secondary=booking_to_hardware_table)
 
     def dict(self) -> dict[Any, Any]:
         booking_dict = super().dict()

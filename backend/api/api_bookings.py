@@ -1,16 +1,14 @@
-import json
 from http import HTTPStatus
 from uuid import UUID
 
-from flask import Blueprint, Response, abort, request, make_response, jsonify
+from flask import Blueprint, abort, request, make_response, jsonify
 from pydantic_core import ValidationError
 
 from db import bookings_db
-from models.db_models import JSONEncoder
-from models.request_models import BookingRequest, AuthenticatedUser
+from models.models import AuthenticatedUser, BookingRequest, Booking
 from util.auth_util import token_required, user, is_author_or_admin
 from util.model_util import convert_to_db_booking
-from util.util import parse_model
+from util.util import parse_model, parse_model_list
 
 api = Blueprint('bookings', __name__)
 
@@ -18,30 +16,22 @@ api = Blueprint('bookings', __name__)
 @api.route("/bookings", methods=['GET'])
 @token_required
 def get_all_bookings():
-    bookings = bookings_db.get_all_bookings()
-    body = [booking.dict() for booking in bookings]
-    body_json = json.dumps(body, cls=JSONEncoder)
+    db_bookings = bookings_db.get_all_bookings()
+    bookings = parse_model_list(Booking, [booking.dict() for booking in db_bookings])
+    response_payload = [booking.model_dump_json() for booking in bookings]
 
-    return Response(
-        status=HTTPStatus.OK,
-        content_type='application/json',
-        response=body_json
-    )
+    return jsonify(response_payload), HTTPStatus.OK
 
 
 @api.route("/bookings/current", methods=['GET'])
 @token_required
 @user
 def get_active_bookings(authenticated_user: AuthenticatedUser):
-    bookings = bookings_db.get_current_bookings_for_user(authenticated_user.id)
-    body = [booking.dict() for booking in bookings]
-    body_json = json.dumps(body, cls=JSONEncoder)
+    db_bookings = bookings_db.get_current_bookings_for_user(authenticated_user.id)
+    bookings = parse_model_list(Booking, [booking.dict() for booking in db_bookings])
+    response_payload = [booking.model_dump_json() for booking in bookings]
 
-    return Response(
-        status=HTTPStatus.OK,
-        content_type='application/json',
-        response=body_json
-    )
+    return jsonify(response_payload), HTTPStatus.OK
 
 
 @api.route("/bookings/<booking_id>", methods=['GET'])
@@ -52,13 +42,10 @@ def get_booking(booking_id: str):
     except ValueError:
         abort(make_response(jsonify(message=f"{booking_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
 
-    booking = bookings_db.get_booking(uuid)
+    db_booking = bookings_db.get_booking(uuid)
+    booking = parse_model(Booking, db_booking.dict())
 
-    return Response(
-        status=HTTPStatus.OK,
-        content_type='application/json',
-        response=booking.json()
-    )
+    return jsonify(booking.model_dump_json()), HTTPStatus.OK
 
 
 @api.route("/bookings", methods=['POST'])
@@ -69,13 +56,11 @@ def create_booking():
         request_booking = parse_model(BookingRequest, json_body)
 
         db_booking = convert_to_db_booking(request_booking)
-        bookings_db.create_booking(db_booking)
+        db_booking = bookings_db.create_booking(db_booking)
 
-        return Response(
-            status=HTTPStatus.CREATED,
-            content_type='application/json',
-            response=db_booking.json()
-        )
+        booking = parse_model(Booking, db_booking.dict())
+
+        return jsonify(booking.model_dump_json()), HTTPStatus.CREATED
     except (ValidationError, ValueError) as e:
         abort(HTTPStatus.BAD_REQUEST, str(e))
 
@@ -101,12 +86,10 @@ def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
 
         db_booking = convert_to_db_booking(request_booking)
 
-        updated_user = bookings_db.update_booking(booking_uuid, db_booking)
+        updated_booking = bookings_db.update_booking(booking_uuid, db_booking)
 
-        return Response(
-            status=HTTPStatus.OK,
-            content_type='application/json',
-            response=updated_user.json()
-        )
+        booking = parse_model(Booking, updated_booking.dict())
+
+        return jsonify(booking.model_dump_json()), HTTPStatus.OK
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))

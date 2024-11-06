@@ -18,7 +18,7 @@ const HardwareSelect: React.FC<HardwareSelectProps> = ({ disabled = false, handl
     };
 
     return (
-        <FormControl sx={{ m: 1, width: 300 }} disabled={disabled}>
+        <FormControl sx={{ width: "100%" }} disabled={disabled}>
             <InputLabel id="hardware-select-label">Hardware</InputLabel>
             <Select
                 labelId="hardware-select-label"
