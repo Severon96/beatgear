@@ -5,11 +5,11 @@ from http import HTTPStatus
 
 import pytest
 
-from models.db_models import Hardware, JSONEncoder
-from models.request_models import HardwareRequest
+from models.db_models import JSONEncoder
+from models.models import Hardware
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_hardware, setup_hardware, create_booking, setup_booking
-from util.util import parse_model_list
+from util.util import parse_model
 
 
 @pytest.mark.usefixtures("postgres")
@@ -48,7 +48,7 @@ class TestHardwareApi:
         assert result.status_code == HTTPStatus.OK
         assert len(result.json) == 2
 
-        hardware = parse_model_list(HardwareRequest, result.json)
+        hardware = [parse_model(Hardware, json.loads(hardware_json)) for hardware_json in result.json]
         hardware_owner_ids = list(map(lambda hw: hw.owner_id, hardware))
         assert user_id not in hardware_owner_ids
 
@@ -99,8 +99,9 @@ class TestHardwareApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        assert len(result.json) == 1
-        assert uuid.UUID(result.json[0]["id"]) == hardware_3.id
+        hardware = [parse_model(Hardware, json.loads(hardware_json)) for hardware_json in result.json]
+        assert len(hardware) == 1
+        assert hardware[0].id == hardware_3.id
 
     def test_get_hardware_by_id(self, client, jwt):
         # when
@@ -118,8 +119,8 @@ class TestHardwareApi:
         assert result.status_code == HTTPStatus.OK
         body = result.json
         assert body is not None
-        api_hardware = Hardware(**body)
-        assert uuid.UUID(api_hardware.id) == hardware.id
+        api_hardware = parse_model(Hardware, json.loads(body))
+        assert api_hardware.id == hardware.id
 
     def test_get_missing_hardware_by_id(self, client, jwt):
         # then
@@ -150,7 +151,7 @@ class TestHardwareApi:
         hardware = setup_hardware()
 
         # then
-        request = hardware.json()
+        request = hardware.model_dump_json()
 
         result = client.post(
             "/api/hardware",
@@ -164,13 +165,13 @@ class TestHardwareApi:
         # expect
         assert result.status_code == HTTPStatus.CREATED
         body = result.json
-        api_hardware = Hardware(**body)
+        api_hardware = parse_model(Hardware, json.loads(body))
         assert api_hardware.name == hardware.name
 
     def test_create_hardware_with_missing_hardware_name(self, client, jwt):
         # when
         hardware = setup_hardware()
-        hardware_dict = hardware.dict()
+        hardware_dict = hardware.model_dump()
         hardware_dict['name'] = None
 
         # then
@@ -189,7 +190,7 @@ class TestHardwareApi:
     def test_create_hardware_with_missing_jwt(self, client):
         # when
         hardware = setup_hardware()
-        hardware_dict = hardware.dict()
+        hardware_dict = hardware.model_dump()
         hardware_dict['name'] = None
 
         # then
@@ -224,7 +225,7 @@ class TestHardwareApi:
         # expect
         assert result.status_code == HTTPStatus.OK
         body = result.json
-        api_hardware = Hardware(**body)
+        api_hardware = parse_model(Hardware, json.loads(body))
         assert api_hardware.name == hardware.name
 
     def test_update_hardware_as_admin(self, client, jwt_admin):
@@ -245,7 +246,7 @@ class TestHardwareApi:
         # expect
         assert result.status_code == HTTPStatus.OK
         body = result.json
-        api_hardware = Hardware(**body)
+        api_hardware = parse_model(Hardware, json.loads(body))
         assert api_hardware.name == hardware.name
 
     def test_update_hardware_without_being_admin_or_author(self, client, jwt):
@@ -278,7 +279,7 @@ class TestHardwareApi:
                 'Content-Type': 'application/json',
                 'Authorization': f"Bearer {jwt}",
             },
-            data=hardware.json()
+            data=hardware.model_dump()
         )
 
         # expect
@@ -295,7 +296,7 @@ class TestHardwareApi:
             headers={
                 'Content-Type': 'application/json',
             },
-            data=hardware.json()
+            data=hardware.model_dump()
         )
 
         # expect

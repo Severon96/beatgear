@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional, List
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -13,20 +13,18 @@ class AuthenticatedUser(BaseModel):
     roles: list[str]
 
 
-class User(BaseModel):
-    id: UUID
-    username: str
-    first_name: Optional[str]
-    last_name: Optional[str]
-
-
-class HardwareRequest(BaseModel):
+class HardwareBase(BaseModel):
     id: UUID
     name: str
     serial: str
     image: Optional[bytes]
     category: HardwareCategory
     owner_id: UUID
+    price_per_hour: float = 0.00
+
+
+class Hardware(HardwareBase):
+    bookings: list['Booking'] = []
 
 
 class BookingRequest(BaseModel):
@@ -37,3 +35,16 @@ class BookingRequest(BaseModel):
     booking_start: datetime
     booking_end: datetime
     author_id: UUID
+
+
+class Booking(BaseModel):
+    id: UUID
+    name: str
+    customer_id: UUID
+    booking_start: datetime
+    booking_end: datetime
+    author_id: UUID
+    total_amount: float = 0
+    created_at: datetime
+    updated_at: datetime
+    hardware: list[Hardware]

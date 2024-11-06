@@ -3,8 +3,8 @@ from datetime import datetime
 from typing import List
 
 from db import bookings_db, hardware_db
-from models.db_models import Booking, Hardware, HardwareCategory
-from models.request_models import BookingRequest
+from models.db_models import HardwareDb, HardwareCategory, BookingDb
+from models.models import BookingRequest, Hardware, Booking
 from util.model_util import convert_to_db_booking
 
 
@@ -25,7 +25,7 @@ def setup_hardware(user_uuid = None) -> Hardware:
     )
 
 
-def create_hardware(hardware: Hardware = None) -> Hardware:
+def create_hardware(hardware: Hardware = None) -> HardwareDb:
     if hardware is None:
         hardware = setup_hardware()
 
@@ -61,7 +61,7 @@ def setup_booking(
     )
 
 
-def create_booking(booking: BookingRequest) -> Booking:
+def create_booking(booking: BookingRequest) -> BookingDb:
     if booking is None:
         booking = setup_booking()
 
