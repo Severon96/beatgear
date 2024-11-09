@@ -16,7 +16,7 @@ from util.auth_util import fetch_public_key
 
 @pytest.fixture(scope='function')
 def postgres(request):
-    with PostgresContainer("postgres:16") as postgres:
+    with PostgresContainer("postgres:16-alpine") as postgres:
         db_url = postgres.get_connection_url()
         engine = create_engine(db_url, echo=True)
         Base.metadata.create_all(engine)
