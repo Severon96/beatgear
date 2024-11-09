@@ -21,6 +21,7 @@ flask-cors = "^5.0.0"
 flask-jwt-extended = "^4.6.0"
 cryptography = "^43.0.1"
 alembic = "^1.13.3"
+pytest-xdist = "^3.6.1"
 
 [tool.poetry.dev-dependencies]
 

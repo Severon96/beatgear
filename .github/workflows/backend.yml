@@ -55,4 +55,4 @@ jobs:
     - name: Test with pytest and keycloak test container
       working-directory: ./backend/tests
       run: |
-        pytest
+        pytest -n 8
