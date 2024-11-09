@@ -9,6 +9,8 @@ def convert_to_db_booking(booking_request: BookingRequest) -> BookingDb:
         request_hardware = get_hardware(hardware_id)
         hardware.append(request_hardware)
 
+    total_amount = sum(db_hardware.price_per_hour for db_hardware in hardware if db_hardware.price_per_hour is not None)
+
     return BookingDb(
         id=booking_request.id,
         name=booking_request.name,
@@ -17,6 +19,7 @@ def convert_to_db_booking(booking_request: BookingRequest) -> BookingDb:
         booking_start=booking_request.booking_start,
         booking_end=booking_request.booking_end,
         author_id=booking_request.author_id,
+        total_amount=total_amount
     )
 
 

@@ -4,7 +4,7 @@ from http import HTTPStatus
 from typing import Optional
 from uuid import UUID
 
-from flask import Blueprint, Response, abort, request, make_response, jsonify
+from flask import Blueprint, abort, request, make_response, jsonify
 from pydantic import BaseModel
 from pydantic_core import ValidationError
 

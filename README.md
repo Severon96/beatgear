@@ -1,7 +1,8 @@
 # BeatGear
 ![main](https://github.com/Severon96/beatgear/actions/workflows/backend.yml/badge.svg?branch=main)
+![main](https://github.com/Severon96/beatgear/actions/workflows/frontend.yml/badge.svg?branch=main)
 
-Hardware Management for use in between multiple Persons.
+Equipment Management for use in between multiple Persons.
 
 ## Table of Contents
 
