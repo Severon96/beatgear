@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: caf21fcd331f
+Revision ID: b8056d237b63
 Revises: 
-Create Date: 2024-11-03 19:58:25.873383
+Create Date: 2024-11-13 17:52:52.597753
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'caf21fcd331f'
+revision: str = 'b8056d237b63'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,19 +27,21 @@ def upgrade() -> None:
     sa.Column('booking_start', sa.DateTime(), nullable=False),
     sa.Column('booking_end', sa.DateTime(), nullable=False),
     sa.Column('author_id', sa.Uuid(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('total_amount', sa.Float(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('hardware',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('name', sa.String(length=250), nullable=False),
-    sa.Column('serial', sa.String(length=50), nullable=False),
+    sa.Column('serial', sa.String(length=50), nullable=True),
     sa.Column('image', sa.String(), nullable=True),
     sa.Column('category', sa.Enum('CONTROLLER', 'LIGHT', 'CABLE_XLR', 'PLUG_COLD_APPLIANCE', 'LAPTOP_STAND', 'OTHER', name='hardwarecategory'), nullable=False),
     sa.Column('owner_id', sa.Uuid(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('price_per_hour', sa.Float(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('bookings_to_hardware',

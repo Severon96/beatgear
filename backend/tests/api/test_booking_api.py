@@ -121,9 +121,7 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        assert body is not None
-        api_booking = parse_model(Booking, json.loads(body))
+        api_booking = parse_model(Booking, result.json)
         assert api_booking.id == booking.id
 
     def test_get_missing_booking_by_id(self, client, jwt):
@@ -168,8 +166,7 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.CREATED
-        body = result.json
-        api_booking = parse_model(Booking, json.loads(body))
+        api_booking = parse_model(Booking, result.json)
         assert api_booking.name == booking.name
         assert len(api_booking.hardware) == 2
 
@@ -233,8 +230,7 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        api_booking = parse_model(Booking, json.loads(body))
+        api_booking = parse_model(Booking, result.json)
         assert api_booking.name == booking.name
 
     def test_update_booking_as_admin(self, client, jwt_admin):
@@ -256,8 +252,7 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        api_booking = parse_model(Booking, json.loads(body))
+        api_booking = parse_model(Booking, result.json)
         assert api_booking.name == booking.name
 
     def test_update_no_author_or_admin(self, client, jwt):

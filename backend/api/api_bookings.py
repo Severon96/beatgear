@@ -29,7 +29,7 @@ def get_all_bookings():
 def get_active_bookings(authenticated_user: AuthenticatedUser):
     db_bookings = bookings_db.get_current_bookings_for_user(authenticated_user.id)
     bookings = parse_model_list(Booking, [booking.dict() for booking in db_bookings])
-    response_payload = [booking.model_dump_json() for booking in bookings]
+    response_payload = [booking.model_dump() for booking in bookings]
 
     return jsonify(response_payload), HTTPStatus.OK
 
@@ -45,7 +45,7 @@ def get_booking(booking_id: str):
     db_booking = bookings_db.get_booking(uuid)
     booking = parse_model(Booking, db_booking.dict())
 
-    return jsonify(booking.model_dump_json()), HTTPStatus.OK
+    return jsonify(booking.model_dump()), HTTPStatus.OK
 
 
 @api.route("/bookings", methods=['POST'])
@@ -60,7 +60,7 @@ def create_booking():
 
         booking = parse_model(Booking, db_booking.dict())
 
-        return jsonify(booking.model_dump_json()), HTTPStatus.CREATED
+        return jsonify(booking.model_dump()), HTTPStatus.CREATED
     except (ValidationError, ValueError) as e:
         abort(HTTPStatus.BAD_REQUEST, str(e))
 
@@ -90,6 +90,6 @@ def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
 
         booking = parse_model(Booking, updated_booking.dict())
 
-        return jsonify(booking.model_dump_json()), HTTPStatus.OK
+        return jsonify(booking.model_dump()), HTTPStatus.OK
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
