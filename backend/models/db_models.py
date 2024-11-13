@@ -4,7 +4,8 @@ from datetime import datetime
 from typing import Optional, List, Any
 from uuid import UUID
 
-from sqlalchemy import Uuid, String, LargeBinary, Enum, ForeignKey, Table, Column, DateTime, Float
+from flask.json.provider import JSONProvider
+from sqlalchemy import Uuid, String, Enum, ForeignKey, Table, Column, DateTime, Float, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
 
 
@@ -18,6 +19,14 @@ class JSONEncoder(json.JSONEncoder):
         if isinstance(obj, HardwareCategory):
             return obj.name
         return json.JSONEncoder.default(self, obj)
+
+
+class CustomJSONProvider(JSONProvider):
+    def dumps(self, obj, **kwargs):
+        return json.dumps(obj, **kwargs, cls=JSONEncoder)
+
+    def loads(self, s: str | bytes, **kwargs):
+        return json.loads(s, **kwargs)
 
 
 class Base(DeclarativeBase):
@@ -52,13 +61,14 @@ class HardwareDb(Base):
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     name: Mapped[str] = mapped_column(String(250))
-    serial: Mapped[str] = mapped_column(String(50))
+    serial: Mapped[str] = mapped_column(String(50), nullable=True)
     image: Mapped[Optional[str]] = mapped_column(String)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
     owner_id: Mapped[UUID] = mapped_column(Uuid)
     price_per_hour: Mapped[float] = mapped_column(Float, default=0)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), onupdate=func.now(),
+                                                 server_default=func.now())
 
     bookings: Mapped[List["BookingDb"]] = relationship(secondary=booking_to_hardware_table, back_populates="hardware")
 
@@ -90,8 +100,8 @@ class BookingDb(Base):
     booking_end: Mapped[datetime] = mapped_column(DateTime)
     author_id: Mapped[UUID] = mapped_column(Uuid)
     total_amount: Mapped[float] = mapped_column(Float, default=0)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, onupdate=func.now(), server_default=func.now())
 
     hardware: Mapped[List[HardwareDb]] = relationship(secondary=booking_to_hardware_table)
 

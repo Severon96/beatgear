@@ -1,3 +1,4 @@
+import json
 import os
 
 import psycopg2.extras
@@ -8,13 +9,20 @@ from flask_jwt_extended import JWTManager
 import config
 from api.api_bookings import api as api_bookings
 from api.api_hardware import api as api_hardware
+from models.db_models import JSONEncoder, CustomJSONProvider
 from util.auth_util import fetch_public_key
 from util.util import setup_db_engine
+
+
+def custom_jsonify(*args, **kwargs):
+    response_data = json.dumps(*args, **kwargs, cls=JSONEncoder)
+    return response_data
 
 
 def create_app() -> Flask:
     flask_app = Flask("backend")
     flask_app.config.from_object(config.Config)
+    flask_app.json = CustomJSONProvider(flask_app)
 
     CORS(flask_app)
 

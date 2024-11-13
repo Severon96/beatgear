@@ -22,9 +22,15 @@ class HardwareBase(BaseModel):
     owner_id: UUID
     price_per_hour: float = 0.00
 
+    class Config:
+        use_enum_values = True
+
 
 class Hardware(HardwareBase):
     bookings: list['Booking'] = []
+
+    class Config:
+        use_enum_values = True
 
 
 class BookingRequest(BaseModel):

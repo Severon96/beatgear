@@ -29,7 +29,6 @@ const HardwareSelect: React.FC<HardwareSelectProps> = ({ disabled = false, handl
                 onChange={handleSelectChange}
                 input={<OutlinedInput id="hardware-select-multiple-chip" label="Hardware" />}
                 renderValue={(selected) => {
-                    console.log("selected values: ", selected);
                     return (
                         <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
                             {selected.map((userSelectedHardwareId) => {

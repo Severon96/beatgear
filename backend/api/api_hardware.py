@@ -9,7 +9,7 @@ from pydantic import BaseModel
 from pydantic_core import ValidationError
 
 from db import hardware_db
-from models.models import Hardware, AuthenticatedUser
+from models.models import Hardware, AuthenticatedUser, HardwareBase
 from util.auth_util import token_required, user, is_author_or_admin
 from util.util import parse_model, parse_model_list
 
@@ -29,8 +29,8 @@ def get_all_hardware(authenticated_user: AuthenticatedUser):
     user_id = authenticated_user.id
 
     all_hardware = hardware_db.get_available_hardware(user_id, params)
-    hardware = parse_model_list(Hardware, [hardware.dict() for hardware in all_hardware])
-    response_payload = [hardware.model_dump_json() for hardware in hardware]
+    hardware = parse_model_list(HardwareBase, [hardware.dict() for hardware in all_hardware])
+    response_payload = [hardware.model_dump() for hardware in hardware]
 
     return jsonify(response_payload), HTTPStatus.OK
 
@@ -44,9 +44,9 @@ def get_hardware(hardware_id: str):
         abort(make_response(jsonify(message=f"{hardware_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
 
     db_hardware = hardware_db.get_hardware(uuid)
-    hardware = parse_model(Hardware, db_hardware.dict())
+    hardware = parse_model(HardwareBase, db_hardware.dict())
 
-    return jsonify(hardware.model_dump_json()), HTTPStatus.OK
+    return jsonify(hardware.model_dump()), HTTPStatus.OK
 
 
 @api.route("/hardware", methods=['POST'])
@@ -67,7 +67,7 @@ def create_hardware():
         db_hardware = hardware_db.create_hardware(request_hardware)
         hardware = parse_model(Hardware, db_hardware.dict())
 
-        return jsonify(hardware.model_dump_json()), HTTPStatus.CREATED
+        return jsonify(hardware.model_dump()), HTTPStatus.CREATED
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
 
@@ -94,6 +94,6 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
         updated_hardware = hardware_db.update_hardware(hardware_uuid, request_hardware)
         hardware = parse_model(Hardware, updated_hardware.dict())
 
-        return jsonify(hardware.model_dump_json()), HTTPStatus.OK
+        return jsonify(hardware.model_dump()), HTTPStatus.OK
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))

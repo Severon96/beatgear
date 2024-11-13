@@ -9,7 +9,7 @@ from models.db_models import JSONEncoder
 from models.models import Hardware
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_hardware, setup_hardware, create_booking, setup_booking
-from util.util import parse_model
+from util.util import parse_model, parse_model_list
 
 
 @pytest.mark.usefixtures("postgres")
@@ -48,7 +48,7 @@ class TestHardwareApi:
         assert result.status_code == HTTPStatus.OK
         assert len(result.json) == 2
 
-        hardware = [parse_model(Hardware, json.loads(hardware_json)) for hardware_json in result.json]
+        hardware = parse_model_list(Hardware, result.json)
         hardware_owner_ids = list(map(lambda hw: hw.owner_id, hardware))
         assert user_id not in hardware_owner_ids
 
@@ -99,7 +99,7 @@ class TestHardwareApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        hardware = [parse_model(Hardware, json.loads(hardware_json)) for hardware_json in result.json]
+        hardware = parse_model_list(Hardware, result.json)
         assert len(hardware) == 1
         assert hardware[0].id == hardware_3.id
 
@@ -117,9 +117,7 @@ class TestHardwareApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        assert body is not None
-        api_hardware = parse_model(Hardware, json.loads(body))
+        api_hardware = parse_model(Hardware, result.json)
         assert api_hardware.id == hardware.id
 
     def test_get_missing_hardware_by_id(self, client, jwt):
@@ -164,8 +162,7 @@ class TestHardwareApi:
 
         # expect
         assert result.status_code == HTTPStatus.CREATED
-        body = result.json
-        api_hardware = parse_model(Hardware, json.loads(body))
+        api_hardware = parse_model(Hardware, result.json)
         assert api_hardware.name == hardware.name
 
     def test_create_hardware_with_missing_hardware_name(self, client, jwt):
@@ -224,8 +221,7 @@ class TestHardwareApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        api_hardware = parse_model(Hardware, json.loads(body))
+        api_hardware = parse_model(Hardware, result.json)
         assert api_hardware.name == hardware.name
 
     def test_update_hardware_as_admin(self, client, jwt_admin):
@@ -245,8 +241,7 @@ class TestHardwareApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        api_hardware = parse_model(Hardware, json.loads(body))
+        api_hardware = parse_model(Hardware, result.json)
         assert api_hardware.name == hardware.name
 
     def test_update_hardware_without_being_admin_or_author(self, client, jwt):
