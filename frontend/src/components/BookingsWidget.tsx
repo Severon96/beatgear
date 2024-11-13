@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import Box from "@mui/material/Box";
 import {
     Avatar,
@@ -11,26 +11,15 @@ import {
     ListItemText,
     Stack
 } from "@mui/material";
-import {createBooking, fetchBookings} from "../redux-tk/slices/bookingSlice";
+import {fetchBookings} from "../redux-tk/slices/bookingSlice";
 import {useAppDispatch, useAppSelector} from "../store";
 import Typography from "@mui/material/Typography";
-import {DialogPopup} from "./DialogPopup";
-import {BookingForm} from "./BookingForm";
-import {BookingRequest} from "../models/Booking";
-import {ErrorContext} from "./providers/ErrorProvider";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import {formatDate} from "../utils/generalUtils";
 
 export function BookingsWidget() {
     const dispatch = useAppDispatch();
     const activeBookings = useAppSelector(state => state.bookings.activeBookings)
-    const createBookingStatus = useAppSelector(state => state.bookings.createBookingStatus);
-    const [bookingCreated, setBookingCreated] = useState(false)
-    const errorContext = useContext(ErrorContext);
-
-    function onNewBookingSubmitted(booking: BookingRequest) {
-        dispatch(createBooking(booking));
-    }
 
     function displayBookings() {
         return (
@@ -94,16 +83,7 @@ export function BookingsWidget() {
                             </List>
                         ) : (
                             <Stack alignItems={"center"} spacing={2}>
-                                <Typography variant={'subtitle1'}>Du hast noch keine Buchungen. Erstell doch
-                                    eine!</Typography>
-                                <DialogPopup
-                                    dialogTitle={"Booking anlegen"}
-                                    buttonName={"Booking anlegen"}
-                                >
-                                    {
-                                        bookingCreated ? <Typography>Buchung erstellt</Typography> :
-                                            <BookingForm onFormSubmit={onNewBookingSubmitted}/>}
-                                </DialogPopup>
+                                <Typography variant={'subtitle1'}>Du hast noch keine Buchungen.</Typography>
                             </Stack>
                         )
                     }
@@ -114,14 +94,7 @@ export function BookingsWidget() {
 
     useEffect(() => {
         dispatch(fetchBookings())
-
-        if (createBookingStatus == "succeeded") {
-            setBookingCreated(true)
-        }
-        if (createBookingStatus == "failed") {
-            errorContext.addError({"message": "Booking creation failed"})
-        }
-    }, [createBookingStatus, dispatch]);
+    }, [dispatch]);
 
     return (
         <Box>

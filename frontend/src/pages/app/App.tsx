@@ -1,20 +1,45 @@
 import React from 'react';
 import './App.css';
-import {Dashboard} from "../Dashboard";
-import MuiHeader from "../../components/AppBar";
+import Header from "../../components/AppBar";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import InitContainer from "../../components/InitContainer";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {BrowseHardwarePage} from "../BrowseHardwarePage";
+import LoginRedirect from "../OAuthLoginRedirectPage";
+import LogoutRedirect from "../OAuthLogoutRedirectPage";
+import {Dashboard} from "../Dashboard";
 
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Dashboard/>,
+        children: [
+            {
+                path: "/browse-hardware",
+                element: <BrowseHardwarePage/>
+            }
+        ]
+    },
+    {
+        path: "/auth/callback",
+        element: <LoginRedirect/>
+    },
+    {
+        path: "/auth/logout",
+        element: <LogoutRedirect/>
+    }
+]);
 
 function App() {
     return (
         <Box>
             <InitContainer>
                 <main>
-                    <MuiHeader/>
+                    <Header/>
                     <Container maxWidth="xl">
-                        <Dashboard/>
+                        <RouterProvider router={router}/>
                     </Container>
                 </main>
             </InitContainer>

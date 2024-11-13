@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useContext} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,9 +8,12 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import {isLoggedIn} from "../utils/auth";
 import {useSelector} from "react-redux";
 import {RootState} from "../store";
+import {CartContext} from "./providers/CartProvider";
+import {Badge} from "@mui/material";
 
 const rootUrl = process.env.REACT_APP_ROOT_URL;
 const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
@@ -19,6 +23,7 @@ const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
 
 function MuiHeader() {
     const {accessToken, idToken} = useSelector((state: RootState) => state.auth);
+    const cartContext = useContext(CartContext);
 
     return (
         <AppBar position="static" sx={{
@@ -85,6 +90,19 @@ function MuiHeader() {
                         flexGrow: 0,
                         ml: 'auto'
                     }}>
+                        {
+                            isLoggedIn(accessToken) ??
+                            <Badge badgeContent={cartContext.items.length}>
+                                <IconButton
+                                    aria-label="shopping-cart"
+                                    sx={{
+                                        color: "common.white"
+                                    }}
+                                >
+                                    <ShoppingCartIcon/>
+                                </IconButton>
+                            </Badge>
+                        }
                         {
                             isLoggedIn(accessToken) ?? false ? (
                                 <IconButton
