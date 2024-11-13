@@ -1,15 +1,15 @@
 from db.hardware_db import get_hardware
-from models.db_models import Booking
-from models.request_models import BookingRequest
+from models.db_models import BookingDb
+from models.models import BookingRequest
 
 
-def convert_to_db_booking(booking_request: BookingRequest) -> Booking:
+def convert_to_db_booking(booking_request: BookingRequest) -> BookingDb:
     hardware = []
     for hardware_id in booking_request.hardware_ids:
         request_hardware = get_hardware(hardware_id)
         hardware.append(request_hardware)
 
-    return Booking(
+    return BookingDb(
         id=booking_request.id,
         name=booking_request.name,
         customer_id=booking_request.customer_id,
@@ -17,10 +17,11 @@ def convert_to_db_booking(booking_request: BookingRequest) -> Booking:
         booking_start=booking_request.booking_start,
         booking_end=booking_request.booking_end,
         author_id=booking_request.author_id,
+        total_amount=0 # needs to be finally set by the rental
     )
 
 
-def convert_to_booking_request(booking: Booking) -> BookingRequest:
+def convert_to_booking_request(booking: BookingDb) -> BookingRequest:
     return BookingRequest(
         id=booking.id,
         name=booking.name,

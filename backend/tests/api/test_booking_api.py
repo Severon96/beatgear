@@ -5,10 +5,12 @@ from http import HTTPStatus
 
 import pytest
 
-from models.db_models import Booking, JSONEncoder
+from models.db_models import BookingDb, JSONEncoder
+from models.models import Booking
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
+from util.util import parse_model
 
 
 @pytest.mark.usefixtures("postgres")
@@ -119,10 +121,8 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        assert body is not None
-        api_booking = Booking(**body)
-        assert uuid.UUID(api_booking.id) == booking.id
+        api_booking = parse_model(Booking, result.json)
+        assert api_booking.id == booking.id
 
     def test_get_missing_booking_by_id(self, client, jwt):
         # then
@@ -166,8 +166,7 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.CREATED
-        body = result.json
-        api_booking = Booking(**body)
+        api_booking = parse_model(Booking, result.json)
         assert api_booking.name == booking.name
         assert len(api_booking.hardware) == 2
 
@@ -231,8 +230,7 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        api_booking = Booking(**body)
+        api_booking = parse_model(Booking, result.json)
         assert api_booking.name == booking.name
 
     def test_update_booking_as_admin(self, client, jwt_admin):
@@ -254,8 +252,7 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.OK
-        body = result.json
-        api_booking = Booking(**body)
+        api_booking = parse_model(Booking, result.json)
         assert api_booking.name == booking.name
 
     def test_update_no_author_or_admin(self, client, jwt):

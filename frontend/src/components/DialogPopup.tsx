@@ -37,6 +37,7 @@ export const DialogPopup: React.FC<PopupProps> = ({children, buttonName, dialogT
                 open={open}
                 TransitionComponent={Transition}
                 keepMounted
+                fullWidth
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >

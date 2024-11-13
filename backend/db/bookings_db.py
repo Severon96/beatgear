@@ -1,21 +1,22 @@
 import uuid
 from datetime import datetime
 from http import HTTPStatus
-from typing import Sequence, Type
+from typing import Sequence, Type, Any
 from uuid import UUID
 
 import dateutil.parser
 from flask import abort, make_response, jsonify
-from sqlalchemy import select
+from sqlalchemy import select, Row, RowMapping
 
-from models.db_models import Booking, booking_to_hardware_table
+from models.db_models import BookingDb
+from models.models import Booking
 from util import util
 
 
-def get_booking(booking_id: UUID) -> Type[Booking]:
+def get_booking(booking_id: UUID) -> Type[BookingDb]:
     session = util.get_db_session()
 
-    booking = session.get(Booking, booking_id)
+    booking = session.get(BookingDb, booking_id)
 
     if booking is None:
         abort(make_response(jsonify(message=f"Booking with id {booking_id} not found"), HTTPStatus.NOT_FOUND))
@@ -23,24 +24,27 @@ def get_booking(booking_id: UUID) -> Type[Booking]:
     return booking
 
 
-def get_all_bookings() -> Sequence[Booking]:
+def get_all_bookings() -> Sequence[BookingDb]:
     session = util.get_db_session()
 
-    stmt = select(Booking)
-    return session.scalars(stmt).all()
+    stmt = select(BookingDb)
+    bookings = session.scalars(stmt).all()
+
+    return bookings
 
 
-def get_current_bookings_for_user(user_id: UUID) -> Sequence[Booking]:
+def get_current_bookings_for_user(user_id: UUID) -> Sequence[Row[Any] | RowMapping | Any]:
     session = util.get_db_session()
     now = datetime.now()
 
-    stmt = session.query(Booking).filter(
-        Booking.booking_end >= now,
-        Booking.customer_id == user_id)
+    stmt = session.query(BookingDb).filter(
+        BookingDb.booking_end >= now,
+        BookingDb.customer_id == user_id)
+
     return session.scalars(stmt).all()
 
 
-def create_booking(booking: Booking) -> Booking:
+def create_booking(booking: BookingDb) -> BookingDb:
     now = datetime.now()
 
     booking.id = uuid.uuid4()
@@ -60,12 +64,12 @@ def create_booking(booking: Booking) -> Booking:
     return booking
 
 
-def update_booking(booking_id: UUID, booking: Booking) -> Type[Booking] | None:
+def update_booking(booking_id: UUID, booking: BookingDb) -> Type[BookingDb]:
     now = datetime.now()
 
     session = util.get_db_session()
 
-    db_booking = session.get(Booking, booking_id)
+    db_booking = session.get(BookingDb, booking_id)
 
     if db_booking is None:
         abort(make_response(jsonify(message=f"Booking with id {booking_id} not found"), HTTPStatus.NOT_FOUND))

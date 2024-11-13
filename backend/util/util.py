@@ -12,7 +12,7 @@ T = TypeVar('T', bound=BaseModel)
 
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=None))
 
-def parse_model_list(model: type[T], values: dict) -> list[T]:
+def parse_model_list(model: type[T], values: list[dict]) -> list[T]:
     return [parse_model(model, value) for value in values]
 
 

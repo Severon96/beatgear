@@ -18,7 +18,7 @@ const HardwareSelect: React.FC<HardwareSelectProps> = ({ disabled = false, handl
     };
 
     return (
-        <FormControl sx={{ m: 1, width: 300 }} disabled={disabled}>
+        <FormControl sx={{ width: "100%" }} disabled={disabled}>
             <InputLabel id="hardware-select-label">Hardware</InputLabel>
             <Select
                 labelId="hardware-select-label"
@@ -29,7 +29,6 @@ const HardwareSelect: React.FC<HardwareSelectProps> = ({ disabled = false, handl
                 onChange={handleSelectChange}
                 input={<OutlinedInput id="hardware-select-multiple-chip" label="Hardware" />}
                 renderValue={(selected) => {
-                    console.log("selected values: ", selected);
                     return (
                         <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
                             {selected.map((userSelectedHardwareId) => {

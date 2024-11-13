@@ -1,22 +1,17 @@
-import base64
-import json
-import os
 import re
 from datetime import datetime
 from http import HTTPStatus
 from typing import Optional
 from uuid import UUID
 
-import dotenv
-from flask import Blueprint, Response, abort, request, make_response, jsonify
+from flask import Blueprint, abort, request, make_response, jsonify
 from pydantic import BaseModel
 from pydantic_core import ValidationError
 
 from db import hardware_db
-from models.db_models import Hardware, JSONEncoder
-from models.request_models import AuthenticatedUser
+from models.models import Hardware, AuthenticatedUser, HardwareBase
 from util.auth_util import token_required, user, is_author_or_admin
-from util.util import parse_model
+from util.util import parse_model, parse_model_list
 
 api = Blueprint('hardware', __name__)
 
@@ -34,15 +29,10 @@ def get_all_hardware(authenticated_user: AuthenticatedUser):
     user_id = authenticated_user.id
 
     all_hardware = hardware_db.get_available_hardware(user_id, params)
+    hardware = parse_model_list(HardwareBase, [hardware.dict() for hardware in all_hardware])
+    response_payload = [hardware.model_dump() for hardware in hardware]
 
-    body = [hardware.dict() for hardware in all_hardware]
-    body_json = json.dumps(body, cls=JSONEncoder)
-
-    return Response(
-        status=HTTPStatus.OK,
-        content_type='application/json',
-        response=body_json
-    )
+    return jsonify(response_payload), HTTPStatus.OK
 
 
 @api.route("/hardware/<hardware_id>", methods=['GET'])
@@ -53,13 +43,10 @@ def get_hardware(hardware_id: str):
     except ValueError:
         abort(make_response(jsonify(message=f"{hardware_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
 
-    hardware = hardware_db.get_hardware(uuid)
+    db_hardware = hardware_db.get_hardware(uuid)
+    hardware = parse_model(HardwareBase, db_hardware.dict())
 
-    return Response(
-        status=HTTPStatus.OK,
-        content_type='application/json',
-        response=hardware.json()
-    )
+    return jsonify(hardware.model_dump()), HTTPStatus.OK
 
 
 @api.route("/hardware", methods=['POST'])
@@ -75,15 +62,12 @@ def create_hardware():
                 abort(make_response(jsonify(message="image must be a valid data URI in base64 format"),
                                     HTTPStatus.BAD_REQUEST))
 
-        request_hardware = Hardware(**json_body)
+        request_hardware = parse_model(Hardware, json_body)
 
-        hardware_db.create_hardware(request_hardware)
+        db_hardware = hardware_db.create_hardware(request_hardware)
+        hardware = parse_model(Hardware, db_hardware.dict())
 
-        return Response(
-            status=HTTPStatus.CREATED,
-            content_type='application/json',
-            response=request_hardware.json()
-        )
+        return jsonify(hardware.model_dump()), HTTPStatus.CREATED
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
 
@@ -105,14 +89,11 @@ def update_hardware(authenticated_user: AuthenticatedUser, hardware_id: str):
 
     try:
         json_body = request.json
-        parsed_hardware = Hardware(**json_body)
+        request_hardware = parse_model(Hardware, json_body)
 
-        updated_hardware = hardware_db.update_hardware(hardware_uuid, parsed_hardware)
+        updated_hardware = hardware_db.update_hardware(hardware_uuid, request_hardware)
+        hardware = parse_model(Hardware, updated_hardware.dict())
 
-        return Response(
-            status=HTTPStatus.OK,
-            content_type='application/json',
-            response=updated_hardware.json()
-        )
+        return jsonify(hardware.model_dump()), HTTPStatus.OK
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
