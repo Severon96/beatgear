@@ -23,7 +23,7 @@ CREATE TABLE hardware (
     image VARCHAR,
     category hardwarecategory NOT NULL,
     owner_id UUID NOT NULL,
-    price_per_hour REAL NOT NULL DEFAULT 0.0,
+    price_per_day REAL NOT NULL DEFAULT 0.0,
     created_at TIMESTAMP DEFAULT now(),
     updated_at TIMESTAMP DEFAULT now()
 );

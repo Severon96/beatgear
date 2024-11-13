@@ -65,7 +65,7 @@ class HardwareDb(Base):
     image: Mapped[Optional[str]] = mapped_column(String)
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
     owner_id: Mapped[UUID] = mapped_column(Uuid)
-    price_per_hour: Mapped[float] = mapped_column(Float, default=0)
+    price_per_day: Mapped[float] = mapped_column(Float, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), onupdate=func.now(),
                                                  server_default=func.now())

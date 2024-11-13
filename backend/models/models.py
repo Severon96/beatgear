@@ -20,7 +20,7 @@ class HardwareBase(BaseModel):
     image: Optional[bytes]
     category: HardwareCategory
     owner_id: UUID
-    price_per_hour: float = 0.00
+    price_per_day: float = 0.00
 
     class Config:
         use_enum_values = True
