@@ -15,12 +15,10 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <Dashboard/>,
-        children: [
-            {
-                path: "/browse-hardware",
-                element: <BrowseHardwarePage/>
-            }
-        ]
+    },
+    {
+        path: "/browse-hardware",
+        element: <BrowseHardwarePage/>
     },
     {
         path: "/auth/callback",
@@ -38,7 +36,7 @@ function App() {
             <InitContainer>
                 <main>
                     <Header/>
-                    <Container maxWidth="xl">
+                    <Container maxWidth="xl" sx={{ marginTop: 2}}>
                         <RouterProvider router={router}/>
                     </Container>
                 </main>
