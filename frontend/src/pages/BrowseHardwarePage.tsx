@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Container from "@mui/material/Container";
 import {FloatingErrors} from "../components/FloatingErrors";
 import Typography from "@mui/material/Typography";
-import {Box, Paper} from "@mui/material";
+import {Box, CircularProgress, Paper} from "@mui/material";
 import HardwareSearch from "../components/HardwareSearch";
 import {useAppDispatch, useAppSelector} from "../store";
 import {fetchHardware} from "../redux-tk/slices/hardwareSlice";
@@ -20,13 +20,13 @@ export function BrowseHardwarePage() {
 
     useEffect(() => {
         console.log("Hardware values: ", hardware);
-        if (bookingStart && bookingEnd) {
+        if (bookingStart && bookingEnd && !hardwareStatus) {
             dispatch(fetchHardware({
                 "booking_start": bookingStart.toISOString(),
                 "booking_end": bookingEnd.toISOString()
             }))
         }
-    }, [dispatch, bookingStart, bookingEnd, hardware, hardwareStatus]);
+    }, [dispatch, bookingStart, bookingEnd, hardwareStatus]);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
@@ -63,7 +63,13 @@ export function BrowseHardwarePage() {
                             />
                         </Box>
                     </Box>
-                    <HardwareSearch hardwareList={hardware} errorMessage={errorMessage}/>
+                    {hardwareStatus === 'loading' ? (
+                        <Box display={"flex"} width={"100%"} justifyContent={"center"}>
+                            <CircularProgress/>
+                        </Box>
+                    ) : (
+                        <HardwareSearch hardwareList={hardware} errorMessage={errorMessage}/>
+                    )}
                 </Paper>
             </Container>
         </LocalizationProvider>
