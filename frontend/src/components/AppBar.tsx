@@ -18,7 +18,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import {isLoggedIn} from "../utils/auth";
-import {Badge, Stack} from "@mui/material";
+import {Badge, Link, Stack} from "@mui/material";
 import {useSelector} from "react-redux";
 import {RootState} from "../store";
 import {CartContext} from "./providers/CartProvider";
@@ -45,7 +45,13 @@ export default function MuiHeader() {
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{textAlign: 'center'}}>
-            <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" padding={1}>
+            <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                justifyContent="center"
+                padding={1}
+            >
                 <Box
                     component="img"
                     src={"/images/logo.png"}
@@ -98,19 +104,21 @@ export default function MuiHeader() {
             }}
         >
             <CssBaseline/>
-            <AppBar component="nav" sx={{ position: 'sticky', top: 0, zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <AppBar component="nav" sx={{position: 'sticky', top: 0, zIndex: (theme) => theme.zIndex.drawer + 1}}>
                 <Toolbar>
-                    <Box
-                        component="img"
-                        src={"/images/logo.png"}
-                        alt="BeatGear Logo"
-                        sx={{
-                            height: 50,
-                            width: 50,
-                            display: {xs: 'none', sm: 'flex'},
-                            mr: 1
-                        }}
-                    />
+                    <Link href="/">
+                        <Box
+                            component="img"
+                            src={"/images/logo.png"}
+                            alt="BeatGear Logo"
+                            sx={{
+                                height: 50,
+                                width: 50,
+                                display: {xs: 'none', sm: 'flex'},
+                                mr: 1
+                            }}
+                        />
+                    </Link>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -124,7 +132,7 @@ export default function MuiHeader() {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mx: 2,
                             display: {xs: 'none', sm: 'flex'},
@@ -141,14 +149,14 @@ export default function MuiHeader() {
                             <Button
                                 key={link}
                                 href={link}
+                                color={"inherit"}
                                 sx={{
-                                    color: '#fff',
                                     letterSpacing: '0.05em',
                                     fontWeight: 550,
                                     transition: 'transform 0.2s ease-in-out',
                                     '&:hover': {
                                         transform: 'scale(1.05)',
-                                        backgroundColor: '#003366'
+                                        backgroundColor: 'colors.white'
                                     }
                                 }}>
                                 {label}
@@ -158,14 +166,15 @@ export default function MuiHeader() {
                     <Box sx={{
                         flexGrow: 0,
                         ml: 'auto'
-                    }}>
+                    }}
+                         color={"colors.common.black"}>
                         {
                             isLoggedIn(accessToken) && (
                                 <Badge badgeContent={cartContext.items.length}>
                                     <IconButton
                                         aria-label="shopping-cart"
                                         sx={{
-                                            color: "common.white"
+                                            color: "common.black"
                                         }}
                                     >
                                         <ShoppingCartIcon/>
@@ -179,7 +188,7 @@ export default function MuiHeader() {
                                     href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
                                     aria-label="logout"
                                     sx={{
-                                        color: "common.white"
+                                        color: "common.black"
                                     }}
                                 >
                                     <LogoutIcon/>
@@ -189,7 +198,7 @@ export default function MuiHeader() {
                                     href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}
                                     aria-label="login"
                                     sx={{
-                                        color: "common.white"
+                                        color: "common.black"
                                     }}
                                 >
                                     <LoginIcon/>

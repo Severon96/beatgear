@@ -28,16 +28,7 @@ export function BookingsWidget() {
                 <CardContent>
                     {
                         activeBookings.length > 0 ? (
-                            <List
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    width: '100vw',
-                                    maxWidth: "100%",
-                                    bgcolor: 'background.paper',
-                                }}
-                            >
+                            <List>
                                 {activeBookings.map((booking) => {
                                         const hardwareNames = booking.hardware.map((hardware) => hardware.name);
 
@@ -45,19 +36,10 @@ export function BookingsWidget() {
                                             <ListItem
                                                 key={booking.id}
                                                 sx={{
-                                                    width: {
-                                                        xs: '100%',
-                                                        sm: '90%',
-                                                        md: '80%',
-                                                        lg: '70%',
-                                                    },
                                                     border: "1px solid #ddd",
                                                     borderRadius: "8px",
                                                     backgroundColor: "#f9f9f9",
                                                     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-                                                    margin: "8px 0",
-                                                    display: "flex",
-                                                    alignItems: "center",
                                                     transition: "background-color 0.2s",
                                                     "&:hover": {
                                                         backgroundColor: "#e0e0e0",
