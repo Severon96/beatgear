@@ -1,3 +1,5 @@
+export type HardwareStatus = "succeeded" | "loading" | "failed";
+
 export enum HardwareCategory {
     CONTROLLER = 'controller',
     LIGHT = 'light',

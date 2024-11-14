@@ -35,7 +35,7 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
             <Box display={"flex"} flexDirection={"row"} gap={2}>
                 {/* Filter für den Hardware Namen */}
                 <TextField
-                    label="Suche nach Name"
+                    label="Name"
                     variant="outlined"
                     fullWidth
                     value={searchName}
