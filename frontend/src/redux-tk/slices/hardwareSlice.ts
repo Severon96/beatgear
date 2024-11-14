@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import axiosInstance from "../../utils/apiConfig";
-import {Hardware} from "../../models/Hardware";
+import {Hardware, HardwareStatus} from "../../models/Hardware";
 
 interface FetchHardwareParams {
     booking_start?: string | null;
@@ -12,7 +12,8 @@ interface FetchHardwareResponse {
 }
 
 export interface HardwareState {
-    hardware: Hardware[]
+    fetchHardwareStatus?: HardwareStatus;
+    hardware: Hardware[];
 }
 
 const initialState = {hardware: []} satisfies HardwareState as HardwareState
@@ -44,6 +45,13 @@ const hardwareSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchHardware.fulfilled, (state, action) => {
             state.hardware = action.payload.data;
+            state.fetchHardwareStatus = "succeeded"
+        })
+        builder.addCase(fetchHardware.pending, (state) => {
+            state.fetchHardwareStatus = "loading"
+        })
+        builder.addCase(fetchHardware.rejected, (state) => {
+            state.fetchHardwareStatus = "failed"
         })
     }
 })

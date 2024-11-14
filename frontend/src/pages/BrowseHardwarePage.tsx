@@ -2,9 +2,9 @@ import React, {useEffect, useState} from "react";
 import Container from "@mui/material/Container";
 import {FloatingErrors} from "../components/FloatingErrors";
 import Typography from "@mui/material/Typography";
-import {Box, Paper} from "@mui/material";
+import {Box, CircularProgress, Paper} from "@mui/material";
 import HardwareSearch from "../components/HardwareSearch";
-import {useAppDispatch} from "../store";
+import {useAppDispatch, useAppSelector} from "../store";
 import {fetchHardware} from "../redux-tk/slices/hardwareSlice";
 import {DateTimePicker, LocalizationProvider, renderTimeViewClock} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -14,19 +14,20 @@ export function BrowseHardwarePage() {
     const dispatch = useAppDispatch();
     const [bookingStart, setBookingStart] = useState<Date | null>(null)
     const [bookingEnd, setBookingEnd] = useState<Date | null>(null)
+    const hardware = useAppSelector((state) => state.hardware.hardware);
+    const hardwareStatus = useAppSelector((state) => state.hardware.fetchHardwareStatus);
     const errorMessage = bookingStart && bookingEnd ? null : "Bitte Start- und Enddatum für die Buchung auswählen."
 
     // const cartContext = useContext(CartContext);
 
     useEffect(() => {
-        console.log(`Change detected: ${bookingStart} ${bookingEnd}`);
         if (bookingStart && bookingEnd) {
             dispatch(fetchHardware({
                 "booking_start": bookingStart.toISOString(),
                 "booking_end": bookingEnd.toISOString()
             }))
         }
-    }, [dispatch, bookingStart, bookingEnd]);
+    }, [dispatch, bookingStart, bookingEnd, hardware, hardwareStatus]);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
@@ -42,7 +43,7 @@ export function BrowseHardwarePage() {
                                     minutes: renderTimeViewClock,
                                     seconds: renderTimeViewClock,
                                 }}
-                                label="Booking Start"
+                                label="Von"
                                 value={bookingStart}
                                 onChange={(date: Date | null) => setBookingStart(date)}
                                 slotProps={{textField: {fullWidth: true, required: true}}}
@@ -54,7 +55,7 @@ export function BrowseHardwarePage() {
                                     minutes: renderTimeViewClock,
                                     seconds: renderTimeViewClock,
                                 }}
-                                label="Booking End"
+                                label="Bis"
                                 value={bookingEnd}
                                 disabled={bookingStart === null}
                                 onChange={(date: Date | null) => setBookingEnd(date)}
@@ -63,7 +64,13 @@ export function BrowseHardwarePage() {
                             />
                         </Box>
                     </Box>
-                    <HardwareSearch hardwareList={[]} errorMessage={errorMessage}/>
+                    {hardwareStatus === 'loading' ? (
+                        <Box display={"flex"} width={"100%"} justifyContent={"center"}>
+                            <CircularProgress/>
+                        </Box>
+                    ) : (
+                        <HardwareSearch hardwareList={hardware} errorMessage={errorMessage}/>
+                    )}
                 </Paper>
             </Container>
         </LocalizationProvider>
