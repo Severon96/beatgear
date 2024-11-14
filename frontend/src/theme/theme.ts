@@ -75,11 +75,8 @@ theme = createTheme(theme, {
             styleOverrides: {
                 root: {
                     backgroundColor: 'background.paper',
-                    maxWidth: '100%',
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'center',
-                    width: '100vw',
                 }
             }
         },
@@ -98,7 +95,13 @@ theme = createTheme(theme, {
                     },
                     margin: "8px 0",
                     display: "flex",
-                    alignItems: "center",
+                }
+            }
+        },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    padding: 10
                 }
             }
         }
