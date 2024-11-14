@@ -25,8 +25,8 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
     const [selectedCategories, setSelectedCategories] = useState<HardwareCategory[]>([]);
 
     const filteredHardware = hardwareList.filter((hardware) => {
-        const matchesName = hardware.name.toLowerCase().includes(searchName.toLowerCase());
-        const matchesCategory = selectedCategories ? selectedCategories.includes(hardware.category) : true;
+        const matchesName = searchName.length > 0 ? hardware.name.toLowerCase().includes(searchName.toLowerCase()) : true;
+        const matchesCategory = selectedCategories.length > 0 ? selectedCategories.includes(hardware.category) : true;
         return matchesName && matchesCategory;
     });
 

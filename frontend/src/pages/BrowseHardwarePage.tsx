@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import Container from "@mui/material/Container";
 import {FloatingErrors} from "../components/FloatingErrors";
 import Typography from "@mui/material/Typography";
-import {Box, CircularProgress, Paper} from "@mui/material";
+import {Box, Paper} from "@mui/material";
 import HardwareSearch from "../components/HardwareSearch";
 import {useAppDispatch, useAppSelector} from "../store";
 import {fetchHardware} from "../redux-tk/slices/hardwareSlice";
@@ -19,6 +19,7 @@ export function BrowseHardwarePage() {
     const errorMessage = bookingStart && bookingEnd ? null : "Bitte Start- und Enddatum für die Buchung auswählen."
 
     useEffect(() => {
+        console.log("Hardware values: ", hardware);
         if (bookingStart && bookingEnd) {
             dispatch(fetchHardware({
                 "booking_start": bookingStart.toISOString(),
@@ -62,13 +63,7 @@ export function BrowseHardwarePage() {
                             />
                         </Box>
                     </Box>
-                    {hardwareStatus === 'loading' ? (
-                        <Box display={"flex"} width={"100%"} justifyContent={"center"}>
-                            <CircularProgress/>
-                        </Box>
-                    ) : (
-                        <HardwareSearch hardwareList={hardware} errorMessage={errorMessage}/>
-                    )}
+                    <HardwareSearch hardwareList={hardware} errorMessage={errorMessage}/>
                 </Paper>
             </Container>
         </LocalizationProvider>
