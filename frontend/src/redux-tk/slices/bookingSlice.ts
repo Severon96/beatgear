@@ -1,20 +1,22 @@
 import {ActionReducerMapBuilder, createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {Booking, BookingRequest, BookingsStatus} from "../../models/Booking";
+import {Booking, BookingInquiry, BookingRequest, BookingsStatus} from "../../models/Booking";
 import axiosInstance from "../../utils/apiConfig";
 
-interface ActiveBookingsState {
+interface BookingsState {
     activeBookings: Booking[]
     createdBooking?: Booking
     fetchBookingsStatus?: BookingsStatus
     createBookingStatus?: BookingsStatus
+    inquireBookingStatus?: BookingsStatus
 }
 
 const initialState = {
     activeBookings: [],
     createdBooking: undefined,
     fetchBookingsStatus: undefined,
-    createBookingStatus: undefined
-} satisfies ActiveBookingsState as ActiveBookingsState
+    createBookingStatus: undefined,
+    inquireBookingStatus: undefined
+} satisfies BookingsState as BookingsState
 
 export const fetchBookings = createAsyncThunk(
     'bookings/fetchCurrent',
@@ -38,6 +40,17 @@ export const createBooking = createAsyncThunk(
     }
 )
 
+export const inquireBooking = createAsyncThunk(
+    'bookings/inquire',
+    async (bookingRequest: BookingInquiry) => {
+        const response = await axiosInstance.post(
+            `bookings/inquire`, bookingRequest
+        )
+
+        return {data: response.data};
+    }
+)
+
 const bookingsSlice = createSlice({
     name: 'bookings',
     initialState,
@@ -45,10 +58,11 @@ const bookingsSlice = createSlice({
     extraReducers: (builder) => {
         setupActiveBookingsCases(builder);
         setupCreateBookingCases(builder);
+        setupInquireBookingCases(builder);
     }
 })
 
-function setupActiveBookingsCases(builder: ActionReducerMapBuilder<ActiveBookingsState>) {
+function setupActiveBookingsCases(builder: ActionReducerMapBuilder<BookingsState>) {
     builder.addCase(fetchBookings.fulfilled, (state, action) => {
         state.activeBookings = action.payload.data;
         state.fetchBookingsStatus = "succeeded";
@@ -61,7 +75,7 @@ function setupActiveBookingsCases(builder: ActionReducerMapBuilder<ActiveBooking
     })
 }
 
-function setupCreateBookingCases(builder: ActionReducerMapBuilder<ActiveBookingsState>) {
+function setupCreateBookingCases(builder: ActionReducerMapBuilder<BookingsState>) {
     builder.addCase(createBooking.fulfilled, (state, action) => {
         state.createdBooking = action.payload.data;
         state.createBookingStatus = "succeeded";
@@ -72,6 +86,19 @@ function setupCreateBookingCases(builder: ActionReducerMapBuilder<ActiveBookings
     builder.addCase(createBooking.rejected, (state) => {
         console.log("failed booking creation");
         state.createBookingStatus = "failed";
+    })
+}
+
+function setupInquireBookingCases(builder: ActionReducerMapBuilder<BookingsState>) {
+    builder.addCase(inquireBooking.fulfilled, (state) => {
+        state.inquireBookingStatus = "succeeded";
+    })
+    builder.addCase(inquireBooking.pending, (state) => {
+        state.inquireBookingStatus = "loading";
+    })
+    builder.addCase(inquireBooking.rejected, (state) => {
+        console.log("failed booking inquiry");
+        state.inquireBookingStatus = "failed";
     })
 }
 

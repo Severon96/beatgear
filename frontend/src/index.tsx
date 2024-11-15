@@ -19,7 +19,7 @@ root.render(
             <ErrorProvider>
                 <CartProvider>
                     <Provider store={store}>
-                        <App />
+                        <App/>
                     </Provider>
                 </CartProvider>
             </ErrorProvider>

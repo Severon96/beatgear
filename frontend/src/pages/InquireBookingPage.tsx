@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useContext} from 'react';
+import {useContext, useEffect} from 'react';
 import {Alert, Box, Button, Card, CardMedia, Paper, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {CartContext} from "../components/providers/CartProvider";
@@ -16,14 +16,57 @@ import {
     getRoundedDaysDifference,
     groupByOwnerId
 } from "../utils/generalUtils";
+import {ErrorContext} from "../components/providers/ErrorProvider";
+import {RootState, useAppDispatch, useAppSelector} from "../store";
+import {inquireBooking} from "../redux-tk/slices/bookingSlice";
+import {v4 as uuid} from "uuid";
+import {jwtDecode} from "jwt-decode";
+import {useSelector} from "react-redux";
 
 export default function InquireBookingPage() {
+    const inquiryStatus = useAppSelector((state) => state.bookings.inquireBookingStatus);
+
+    const dispatch = useAppDispatch();
     const cartContext = useContext(CartContext);
+    const errorContext = useContext(ErrorContext);
+    const {accessToken} = useSelector((state: RootState) => state.auth);
+    console.log("accessToken", accessToken);
+    const decodedToken: { sub: string } = jwtDecode(accessToken ?? "");
 
     const roundedDays = getRoundedDaysDifference(cartContext.bookingStart, cartContext.bookingEnd);
 
     const rawItemPrice = cartContext.items.reduce((sum, item) => sum + item.price_per_day, 0);
     const totalAmount = roundedDays * rawItemPrice;
+
+    useEffect(() => {
+        if(inquiryStatus === "failed") {
+            errorContext.addError({
+                message: "Anfrage konnte nicht erstellt werden."
+            })
+        }
+    }, [inquiryStatus])
+
+    function createBookingInquiry() {
+        if (cartContext.bookingStart && cartContext.bookingEnd) {
+            const hardwareIds = cartContext.items.map((hardware) => hardware.id);
+            dispatch(inquireBooking(
+                {
+                    id: uuid(),
+                    customer_id: decodedToken.sub,
+                    hardware_ids: hardwareIds,
+                    booking_start: cartContext.bookingStart,
+                    booking_end: cartContext.bookingEnd,
+                    total_booking_days: roundedDays,
+                    total_amount: totalAmount,
+                    author_id: decodedToken.sub
+                }
+            ))
+        } else {
+            errorContext.addError({
+                message: "Keine Buchungsdaten ausgewählt, Buchung kann nicht angefragt werden."
+            })
+        }
+    }
 
     function renderCart() {
         return (
@@ -52,7 +95,7 @@ export default function InquireBookingPage() {
                                                                                 component="img"
                                                                                 image={byteArrayToDataUrl(hardware.image)}
                                                                                 alt="Image"
-                                                                                sx={{ width: '100%', height: 'auto' }}
+                                                                                sx={{width: '100%', height: 'auto'}}
                                                                             />
                                                                         ) :
                                                                         <Box sx={{paddingY: 2}} display={"flex"}
@@ -82,7 +125,7 @@ export default function InquireBookingPage() {
                                                                 </IconButton>
                                                             </Stack>
                                                         </Stack>
-                                                        {index < hardwareArray.length - 1 && <Divider />}
+                                                        {index < hardwareArray.length - 1 && <Divider/>}
                                                     </Stack>
                                                 )
                                             })
@@ -103,13 +146,13 @@ export default function InquireBookingPage() {
                                     <Typography fontWeight={"500"}>Von</Typography>
                                     <Typography
                                         fontWeight={"800"}>{formatDate(cartContext.bookingStart)}</Typography>
-                                    <Typography>{formatTime(cartContext.bookingStart)}</Typography>
+                                    <Typography>{`${formatTime(cartContext.bookingStart)} Uhr`}</Typography>
                                 </Stack>
                                 <Divider/>
                                 <Stack>
                                     <Typography fontWeight={"500"}>Bis</Typography>
                                     <Typography fontWeight={"800"}>{formatDate(cartContext.bookingEnd)}</Typography>
-                                    <Typography>{formatTime(cartContext.bookingEnd)}</Typography>
+                                    <Typography>{`${formatTime(cartContext.bookingEnd)} Uhr`}</Typography>
                                 </Stack>
                             </Stack>
                             <Alert severity={"info"}>
@@ -137,7 +180,7 @@ export default function InquireBookingPage() {
                                     <Typography variant={"subtitle2"}>Sollte es ein Gegenangebot geben, wirst du
                                         informiert.</Typography>
                                 </Alert>
-                                <Button variant="contained" color="primary">
+                                <Button variant="contained" color="primary" onClick={createBookingInquiry}>
                                     <Typography fontWeight={700} color={"common.white"}>Buchung anfragen</Typography>
                                 </Button>
                             </Stack>

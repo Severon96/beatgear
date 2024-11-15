@@ -41,6 +41,7 @@ const authSlice = createSlice({
         restoreSession(state) {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             if (isLoggedIn) {
+                console.log("user is logged in")
                 state.isLoggedIn = true;
                 state.accessToken = localStorage.getItem('accessToken');
                 state.refreshToken = localStorage.getItem('refreshToken');

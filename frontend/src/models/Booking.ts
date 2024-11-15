@@ -23,3 +23,14 @@ export type BookingRequest = {
     booking_end: Date | null;
     author_id: string | null;
 };
+
+export type BookingInquiry = {
+    id: string | null;
+    customer_id: string | null;
+    hardware_ids: string[];
+    booking_start: Date | null;
+    booking_end: Date | null;
+    total_booking_days: number;
+    total_amount: number;
+    author_id: string | null;
+};
