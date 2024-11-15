@@ -84,15 +84,6 @@ theme = createTheme(theme, {
             styleOverrides: {
                 root: {
                     width: '100%',
-                    [theme.breakpoints.up('sm')]: {
-                        width: '90%',
-                    },
-                    [theme.breakpoints.up('md')]: {
-                        width: '80%',
-                    },
-                    [theme.breakpoints.up('lg')]: {
-                        width: '70%',
-                    },
                     margin: "8px 0",
                     display: "flex",
                 }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     Box,
     Checkbox,
@@ -14,6 +14,10 @@ import {
 } from '@mui/material';
 import {Hardware, HardwareCategory} from "../models/Hardware";
 import Typography from "@mui/material/Typography";
+import {CartContext} from "./providers/CartProvider";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import IconButton from "@mui/material/IconButton";
 
 interface HardwareSearchProps {
     hardwareList: Hardware[];
@@ -21,6 +25,7 @@ interface HardwareSearchProps {
 }
 
 const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessage}) => {
+    const cartContext = useContext(CartContext);
     const [searchName, setSearchName] = useState<string>('');
     const [selectedCategories, setSelectedCategories] = useState<HardwareCategory[]>([]);
 
@@ -33,7 +38,6 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
     return (
         <Box>
             <Box display={"flex"} flexDirection={"row"} gap={2}>
-                {/* Filter für den Hardware Namen */}
                 <TextField
                     label="Name"
                     variant="outlined"
@@ -41,7 +45,6 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
                     value={searchName}
                     onChange={(e) => setSearchName(e.target.value)}
                 />
-                {/* Filter by hardware category */}
                 <FormControl fullWidth>
                     <InputLabel id="demo-multiple-checkbox-label">Kategorie</InputLabel>
                     <Select
@@ -74,16 +77,37 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
                     <List>
                         {filteredHardware.length > 0 ? (
                             filteredHardware.map((hardware) => (
-                                <ListItem key={hardware.id}>
+                                <ListItem key={hardware.id} sx={{width: '100%'}}>
                                     <ListItemText
                                         primary={hardware.name}
-                                        secondary={`Category: ${hardware.category} | Price per Hour: $${hardware.price_per_hour}`}
+                                        secondary={`Kategorie: ${hardware.category} | Preis pro Stunde: ${hardware.price_per_day}€`}
                                     />
+                                    {
+                                        cartContext.isItemInCart(hardware) ? (
+                                            <IconButton
+                                                color="inherit"
+                                                aria-label="open drawer"
+                                                edge="start"
+                                                onClick={() => cartContext.removeCartItem(hardware)}
+                                            >
+                                                <RemoveShoppingCartIcon/>
+                                            </IconButton>
+                                        ) : (
+                                            <IconButton
+                                                color="inherit"
+                                                aria-label="open drawer"
+                                                edge="start"
+                                                onClick={() => cartContext.addCartItem(hardware)}
+                                            >
+                                                <AddShoppingCartIcon />
+                                            </IconButton>
+                                        )
+                                    }
                                 </ListItem>
                             ))
                         ) : (
                             <ListItem>
-                                <ListItemText primary="No hardware found"/>
+                                <ListItemText primary="Keine Hardware gefunden."/>
                             </ListItem>
                         )}
                     </List>

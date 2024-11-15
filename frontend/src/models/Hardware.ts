@@ -18,5 +18,5 @@ export type Hardware = {
     ownerId: string;
     createdAt: Date;
     updatedAt: Date;
-    price_per_hour: number;
+    price_per_day: number;
 };

@@ -15,8 +15,19 @@ export const CartProvider: React.FC<CartProvider> = ({children}) => {
         setItems((prevItems) => [...prevItems, item]);
     };
 
+    const removeCartItem = (item: Hardware) => {
+        const filteredItems = items.filter(hardware => hardware.id !== item.id);
+        setItems(filteredItems);
+    };
+
+    const isItemInCart = (hardware: Hardware) => {
+        const cartIds = items.map((hardware) => hardware.id);
+
+        return cartIds.includes(hardware.id);
+    }
+
     return (
-        <CartContext.Provider value={{items, addCartItem}}>
+        <CartContext.Provider value={{items, addCartItem, removeCartItem, isItemInCart}}>
             {children}
         </CartContext.Provider>
     );
