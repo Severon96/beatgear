@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {useContext} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,12 +15,11 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import {isLoggedIn} from "../utils/auth";
-import {Badge, Link, Stack} from "@mui/material";
+import {Link, Stack} from "@mui/material";
 import {useSelector} from "react-redux";
 import {RootState} from "../store";
-import {CartContext} from "./providers/CartProvider";
+import HeaderCartIcon from "./HeaderCartIcon";
 
 const rootUrl = process.env.REACT_APP_ROOT_URL;
 const oauthUrl = process.env.REACT_APP_OAUTH_ISSUER;
@@ -36,7 +34,6 @@ const navItems = new Map<string, string>([
 
 export default function MuiHeader() {
     const {accessToken, idToken} = useSelector((state: RootState) => state.auth);
-    const cartContext = useContext(CartContext);
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
     const handleDrawerToggle = () => {
@@ -168,20 +165,7 @@ export default function MuiHeader() {
                         ml: 'auto'
                     }}
                          color={"colors.common.black"}>
-                        {
-                            isLoggedIn(accessToken) && (
-                                <Badge badgeContent={cartContext.items.length}>
-                                    <IconButton
-                                        aria-label="shopping-cart"
-                                        sx={{
-                                            color: "common.black"
-                                        }}
-                                    >
-                                        <ShoppingCartIcon/>
-                                    </IconButton>
-                                </Badge>
-                            )
-                        }
+                        <HeaderCartIcon/>
                         {
                             isLoggedIn(accessToken) ?? false ? (
                                 <IconButton
