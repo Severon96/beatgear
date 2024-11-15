@@ -64,7 +64,7 @@ export default function MuiHeader() {
                     }}
                 />
                 <Typography
-                    variant="h5"
+                    variant="h1"
                     noWrap
                     component="a"
                     href="#app-bar-with-responsive-menu"
@@ -129,7 +129,7 @@ export default function MuiHeader() {
                         <MenuIcon/>
                     </IconButton>
                     <Typography
-                        variant="h6"
+                        variant="h1"
                         noWrap
                         component="a"
                         href="/"
