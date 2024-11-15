@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useContext} from 'react';
-import {Alert, Box, Button, Card, Paper, Stack} from "@mui/material";
+import {Alert, Box, Button, Card, CardMedia, Paper, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {CartContext} from "../components/providers/CartProvider";
 import {getReadableCategory, Hardware} from "../models/Hardware";
@@ -69,6 +69,11 @@ export default function InquireBookingPage() {
         }).format(num);
     };
 
+    const byteArrayToDataUrl = (byteArray: Uint8Array) => {
+        const blob = new Blob([byteArray], { type: 'image/png' });
+        return URL.createObjectURL(blob);
+    };
+
     function renderCart() {
         return (
             <Stack direction={{md: "row", xs: "column"}} gap={2}>
@@ -92,7 +97,12 @@ export default function InquireBookingPage() {
                                                             <Stack direction={"row"} alignItems={"center"} gap={2}>
                                                                 {
                                                                     hardware.image ? (
-                                                                            <Typography>Test</Typography>
+                                                                            <CardMedia
+                                                                                component="img"
+                                                                                image={byteArrayToDataUrl(hardware.image)}
+                                                                                alt="Image"
+                                                                                sx={{ width: '100%', height: 'auto' }}
+                                                                            />
                                                                         ) :
                                                                         <Box sx={{paddingY: 2}} display={"flex"}
                                                                              justifyContent={"center"} height={"100%"}
