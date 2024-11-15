@@ -187,7 +187,7 @@ export default function InquireBookingPage() {
                                         informiert.</Typography>
                                 </Alert>
                                 <Button variant="contained" color="primary">
-                                    <Typography fontWeight={700} color={"common.white"}>Jetzt buchen</Typography>
+                                    <Typography fontWeight={700} color={"common.white"}>Buchung anfragen</Typography>
                                 </Button>
                             </Stack>
                         </Stack>
