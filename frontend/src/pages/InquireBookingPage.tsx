@@ -3,76 +3,27 @@ import {useContext} from 'react';
 import {Alert, Box, Button, Card, CardMedia, Paper, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {CartContext} from "../components/providers/CartProvider";
-import {getReadableCategory, Hardware} from "../models/Hardware";
+import {getReadableCategory} from "../models/Hardware";
 import Divider from "@mui/material/Divider";
 import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
 import IconButton from "@mui/material/IconButton";
 import HideImageOutlinedIcon from '@mui/icons-material/HideImageOutlined';
+import {
+    byteArrayToDataUrl,
+    formatDate,
+    formatPrice,
+    formatTime,
+    getRoundedDaysDifference,
+    groupByOwnerId
+} from "../utils/generalUtils";
 
 export default function InquireBookingPage() {
     const cartContext = useContext(CartContext);
 
-    const getRoundedDaysDifference = () => {
-        if (cartContext.bookingStart && cartContext.bookingEnd) {
-            const diffInMillis = Math.abs(cartContext.bookingEnd.getTime() - cartContext.bookingStart.getTime());
-            const oneDayInMillis = 24 * 60 * 60 * 1000;
-            const diffInDays = diffInMillis / oneDayInMillis;
-
-            return Math.ceil(diffInDays);
-        }
-
-        return 1;
-    };
-
-    const roundedDays = getRoundedDaysDifference();
+    const roundedDays = getRoundedDaysDifference(cartContext.bookingStart, cartContext.bookingEnd);
 
     const rawItemPrice = cartContext.items.reduce((sum, item) => sum + item.price_per_day, 0);
     const totalAmount = roundedDays * rawItemPrice;
-
-    function groupByOwnerId(hardwareArray: Hardware[]): Map<string, Hardware[]> {
-        return hardwareArray.reduce((result, item) => {
-            const ownerId = item.ownerId;
-
-            if (!result.has(ownerId)) {
-                result.set(ownerId, []);
-            }
-
-            result.get(ownerId)?.push(item);
-
-            return result;
-        }, new Map<string, Hardware[]>());
-    }
-
-    function formatDate(date: Date | null): string {
-        const options: Intl.DateTimeFormatOptions = {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-        };
-
-        return date ? new Intl.DateTimeFormat("de-DE", options).format(date) : "";
-    }
-
-    function formatTime(date: Date | null): string {
-        const options: Intl.DateTimeFormatOptions = {
-            hour: "2-digit",
-            minute: "2-digit",
-        };
-
-        return date ? new Intl.DateTimeFormat("de-DE", options).format(date) : "";
-    }
-
-    const formatPrice = (num: number): string => {
-        return new Intl.NumberFormat("de-DE", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        }).format(num);
-    };
-
-    const byteArrayToDataUrl = (byteArray: Uint8Array) => {
-        const blob = new Blob([byteArray], { type: 'image/png' });
-        return URL.createObjectURL(blob);
-    };
 
     function renderCart() {
         return (

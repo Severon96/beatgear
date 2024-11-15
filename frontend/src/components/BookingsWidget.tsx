@@ -15,7 +15,7 @@ import {fetchBookings} from "../redux-tk/slices/bookingSlice";
 import {useAppDispatch, useAppSelector} from "../store";
 import Typography from "@mui/material/Typography";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import {formatDate} from "../utils/generalUtils";
+import {formatDateTime} from "../utils/generalUtils";
 
 export function BookingsWidget() {
     const dispatch = useAppDispatch();
@@ -54,7 +54,7 @@ export function BookingsWidget() {
                                                 <Stack spacing={"0"}>
                                                     <ListItemText
                                                         primary={booking.name}
-                                                        secondary={`${formatDate(booking.booking_start)} - ${formatDate(booking.booking_end)}`}/>
+                                                        secondary={`${formatDateTime(booking.booking_start)} - ${formatDateTime(booking.booking_end)}`}/>
                                                     <ListItemText secondary={`${hardwareNames.join(", ")}`}/>
                                                 </Stack>
                                             </ListItem>
