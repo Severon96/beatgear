@@ -116,14 +116,14 @@ theme = createTheme(theme, {
             fontSize: "1.5rem",
             fontWeight: "600",
             fontFamily: "monospace",
-            wordSpacing: -10,
+            wordSpacing: -5,
             letterSpacing: -1.5,
         },
         h4: {
             fontSize: "1.25rem",
             fontWeight: "600",
             fontFamily: "monospace",
-            wordSpacing: -10,
+            wordSpacing: -5,
             letterSpacing: -1.5,
         },
         h5: {

@@ -15,9 +15,13 @@ export const CartProvider: React.FC<CartProvider> = ({children}) => {
 
     useEffect(() => {
         const localStorageCartJson = localStorage.getItem('cart');
+        const localStorageBookingStart = localStorage.getItem('bookingStart');
+        const localStorageBookingEnd = localStorage.getItem('bookingEnd');
+
         const localStorageItems: Hardware[] = localStorageCartJson ? JSON.parse(localStorageCartJson) : [];
-        const bookingStart: Date = JSON.parse(localStorage.getItem('bookingStart') ?? "[]");
-        const bookingEnd: Date = JSON.parse(localStorage.getItem('bookingEnd') ?? "[]");
+        const bookingStart: Date | null = localStorageBookingStart ? new Date(localStorageBookingStart) : null;
+        const bookingEnd: Date | null = localStorageBookingEnd ? new Date(localStorageBookingEnd) : null;
+
         setItems(localStorageItems);
         setBookingStart(bookingStart);
         setBookingEnd(bookingEnd);
@@ -43,12 +47,12 @@ export const CartProvider: React.FC<CartProvider> = ({children}) => {
 
     const setBookingStartInCart = (date: Date | null) => {
         setBookingStart(date);
-        localStorage.setItem('bookingStart', JSON.stringify(date));
+        localStorage.setItem('bookingStart', date?.toString() ?? "");
     }
 
     const setBookingEndInCart = (date: Date | null) => {
         setBookingEnd(date);
-        localStorage.setItem('bookingEnd', JSON.stringify(date));
+        localStorage.setItem('bookingEnd', date?.toString() ?? "");
     }
 
     return (
