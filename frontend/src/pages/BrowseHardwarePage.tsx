@@ -67,7 +67,8 @@ export function BrowseHardwarePage() {
                             <CircularProgress/>
                         </Box>
                     ) : (
-                        <HardwareSearch hardwareList={hardware} errorMessage={errorMessage}/>
+                        <HardwareSearch hardwareList={hardware} bookingStart={bookingStart} bookingEnd={bookingEnd}
+                                        errorMessage={errorMessage}/>
                     )}
                 </Paper>
             </Container>

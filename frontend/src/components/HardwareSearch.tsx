@@ -22,10 +22,12 @@ import Divider from "@mui/material/Divider";
 
 interface HardwareSearchProps {
     hardwareList: Hardware[];
+    bookingStart: Date | null;
+    bookingEnd: Date | null;
     errorMessage: string | null;
 }
 
-const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessage}) => {
+const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingStart, bookingEnd, errorMessage}) => {
     const cartContext = useContext(CartContext);
     const [searchName, setSearchName] = useState<string>('');
     const [selectedCategories, setSelectedCategories] = useState<HardwareCategory[]>([]);
@@ -103,7 +105,11 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
                                                         <IconButton
                                                             color="inherit"
                                                             aria-label="add to cart"
-                                                            onClick={() => cartContext.addCartItem(hardware)}
+                                                            onClick={() => {
+                                                                cartContext.addCartItem(hardware);
+                                                                cartContext.setBookingStartInCart(bookingStart);
+                                                                cartContext.setBookingEndInCart(bookingEnd);
+                                                            }}
                                                             sx={{width: 60, borderRadius: "20%"}}
                                                         >
                                                             <AddShoppingCartIcon/>

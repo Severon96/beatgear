@@ -10,10 +10,17 @@ interface CartProvider {
 
 export const CartProvider: React.FC<CartProvider> = ({children}) => {
     const [items, setItems] = useState<Hardware[]>([]);
+    const [bookingStart, setBookingStart] = useState<Date | null>(null);
+    const [bookingEnd, setBookingEnd] = useState<Date | null>(null);
 
     useEffect(() => {
-        const localStorageItems: Hardware[] = JSON.parse(localStorage.getItem('cart') ?? "[]");
+        const localStorageCartJson = localStorage.getItem('cart');
+        const localStorageItems: Hardware[] = localStorageCartJson ? JSON.parse(localStorageCartJson) : [];
+        const bookingStart: Date = JSON.parse(localStorage.getItem('bookingStart') ?? "[]");
+        const bookingEnd: Date = JSON.parse(localStorage.getItem('bookingEnd') ?? "[]");
         setItems(localStorageItems);
+        setBookingStart(bookingStart);
+        setBookingEnd(bookingEnd);
     }, [])
 
     const addCartItem = (item: Hardware) => {
@@ -34,8 +41,27 @@ export const CartProvider: React.FC<CartProvider> = ({children}) => {
         return cartIds.includes(hardware.id);
     }
 
+    const setBookingStartInCart = (date: Date | null) => {
+        setBookingStart(date);
+        localStorage.setItem('bookingStart', JSON.stringify(date));
+    }
+
+    const setBookingEndInCart = (date: Date | null) => {
+        setBookingEnd(date);
+        localStorage.setItem('bookingEnd', JSON.stringify(date));
+    }
+
     return (
-        <CartContext.Provider value={{items, addCartItem, removeCartItem, isItemInCart}}>
+        <CartContext.Provider value={{
+            items,
+            bookingStart,
+            bookingEnd,
+            addCartItem,
+            removeCartItem,
+            isItemInCart,
+            setBookingStartInCart,
+            setBookingEndInCart
+        }}>
             {children}
         </CartContext.Provider>
     );
