@@ -19,7 +19,6 @@ export function BrowseHardwarePage() {
     const errorMessage = bookingStart && bookingEnd ? null : "Bitte Start- und Enddatum der Buchung auswählen."
 
     useEffect(() => {
-        console.log("Hardware values: ", hardware);
         if (bookingStart && bookingEnd && !hardwareStatus) {
             dispatch(fetchHardware({
                 "booking_start": bookingStart.toISOString(),

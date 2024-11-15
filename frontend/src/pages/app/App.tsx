@@ -9,6 +9,7 @@ import {BrowseHardwarePage} from "../BrowseHardwarePage";
 import LoginRedirect from "../OAuthLoginRedirectPage";
 import LogoutRedirect from "../OAuthLogoutRedirectPage";
 import {Dashboard} from "../Dashboard";
+import RequestBookingPage from "../RequestBookingPage";
 
 
 const router = createBrowserRouter([
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
     {
         path: "/browse-hardware",
         element: <BrowseHardwarePage/>
+    },
+    {
+        path: "/request-booking",
+        element: <RequestBookingPage/>
     },
     {
         path: "/auth/callback",

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useContext, useState} from 'react';
 import {CartContext} from "./providers/CartProvider";
-import {Badge, Box, Popover} from "@mui/material";
+import {Badge, Box, Button, Popover} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {useSelector} from "react-redux";
@@ -50,13 +50,34 @@ export default function HeaderCartIcon() {
                 }}
             >
                 <Box sx={{p: 2, width: 300}}>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h2" gutterBottom>
                         Warenkorb
                     </Typography>
                     {cartContext.items.length > 0 ? (
-                        cartContext.items.map((item, index) => (
-                            <Typography key={index}>{item.name}</Typography>
-                        ))
+                        <Box
+                            width="100%"
+                            display={"flex"}
+                            flexDirection={"column"}
+                            justifyContent={"center"}
+                            alignItems={"center"}
+                            gap={2}
+                        >
+                            <Box
+                                width="100%"
+                                display={"flex"}
+                                flexDirection={"column"}
+                                justifyContent={"center"}
+                            >
+                                {
+                                    cartContext.items.map((item, index) => (
+                                        <Typography key={index}>{item.name}</Typography>
+                                    ))
+                                }
+                            </Box>
+                            <Button href={"request-booking"} variant="contained" color="primary" type="submit">
+                                Buchung anfragen
+                            </Button>
+                        </Box>
                     ) : (
                         <Typography variant="body2">Ihr Warenkorb ist leer.</Typography>
                     )}
