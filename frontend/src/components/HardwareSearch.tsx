@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {
+    Alert,
     Box, Card,
     Checkbox,
     FormControl,
@@ -78,7 +79,7 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingSta
             <Divider sx={{marginY: 2}}/>
             {
                 errorMessage ? (
-                    <Typography marginTop={2} color={"error"}>{errorMessage}</Typography>
+                    <Alert severity={"error"}>{errorMessage}</Alert>
                 ) : (
                     <List>
                         {filteredHardware.length > 0 ? (

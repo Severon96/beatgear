@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useContext} from 'react';
-import {Alert, Card, Paper, Stack} from "@mui/material";
+import {Alert, Box, Card, Paper, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {CartContext} from "../components/providers/CartProvider";
 import {Hardware} from "../models/Hardware";
@@ -8,6 +8,7 @@ import Divider from "@mui/material/Divider";
 
 export default function InquireBookingPage() {
     const cartContext = useContext(CartContext);
+    const totalAmount = cartContext.items.reduce((sum, item) => sum + item.price_per_day, 0);
 
     function groupByOwnerId(hardwareArray: Hardware[]): Map<string, Hardware[]> {
         return hardwareArray.reduce((result, item) => {
@@ -42,9 +43,16 @@ export default function InquireBookingPage() {
         return date ? new Intl.DateTimeFormat("de-DE", options).format(date) : "";
     }
 
+    const formatPrice = (num: number): string => {
+        return new Intl.NumberFormat("de-DE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(num);
+    };
+
     function renderCart() {
         return (
-            <Stack direction={"row"} gap={2}>
+            <Stack direction={{md: "row", xs: "column"}} gap={2}>
                 <Stack gap={2} width={"100%"}>
                     <Alert severity={"info"} color={"info"}>Die Einträge in deinem Warenkorb werden anhand des
                         Vermieters gruppiert.</Alert>
@@ -56,10 +64,10 @@ export default function InquireBookingPage() {
                                         {
                                             hardwareArray.map((hardware) => {
                                                 return (
-                                                    <>
-                                                        <Typography key={hardware.id}>{hardware.name}</Typography>
+                                                    <Box key={hardware.id}>
+                                                        <Typography>{hardware.name}</Typography>
                                                         <Divider/>
-                                                    </>
+                                                    </Box>
                                                 )
                                             })
                                         }
@@ -71,9 +79,9 @@ export default function InquireBookingPage() {
                 </Stack>
                 <Stack gap={2}>
                     <Card>
-                        <Stack>
+                        <Stack gap={1}>
                             <Typography variant={"h4"}>Deine Buchungs-Details</Typography>
-                            <Divider sx={{marginY: 1}}/>
+                            <Divider/>
                             <Stack direction={"row"} gap={2}>
                                 <Stack>
                                     <Typography fontWeight={"500"}>Von</Typography>
@@ -87,6 +95,24 @@ export default function InquireBookingPage() {
                                     <Typography fontWeight={"800"}>{formatDate(cartContext.bookingEnd)}</Typography>
                                     <Typography>{formatTime(cartContext.bookingEnd)}</Typography>
                                 </Stack>
+                            </Stack>
+                        </Stack>
+                    </Card>
+                    <Card>
+                        <Stack gap={1}>
+                            <Typography variant={"h4"}>Deine Preis-Zusammenfassung</Typography>
+                            <Divider/>
+                            <Stack gap={2}>
+                                <Stack direction={"row"} justifyContent={"space-between"}>
+                                    <Typography>Summe</Typography>
+                                    <Typography>{`${formatPrice(totalAmount)}€/Tag`}</Typography>
+                                </Stack>
+                                <Alert
+                                    severity={"info"}>
+                                    <Typography>Der Preis ist nicht verbindlich. Die endgültige Entscheidung liegt beim
+                                        Vermieter.</Typography>
+                                    <Typography>Sollte es ein Gegenangebot geben, wirst du informiert.</Typography>
+                                </Alert>
                             </Stack>
                         </Stack>
                     </Card>
