@@ -89,7 +89,7 @@ export default function InquireBookingPage() {
                                 return (
                                     <Card key={ownerId}>
                                         {
-                                            hardwareArray.map((hardware) => {
+                                            hardwareArray.map((hardware, index) => {
                                                 return (
                                                     <Stack key={hardware.id}>
                                                         <Stack direction="row" alignItems={"center"}
@@ -131,7 +131,7 @@ export default function InquireBookingPage() {
                                                                 </IconButton>
                                                             </Stack>
                                                         </Stack>
-                                                        <Divider/>
+                                                        {index < hardwareArray.length - 1 && <Divider />}
                                                     </Stack>
                                                 )
                                             })
