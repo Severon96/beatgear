@@ -1,14 +1,33 @@
 import * as React from 'react';
 import {useContext} from 'react';
-import {Alert, Box, Card, Paper, Stack} from "@mui/material";
+import {Alert, Box, Button, Card, Paper, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {CartContext} from "../components/providers/CartProvider";
-import {Hardware} from "../models/Hardware";
+import {getReadableCategory, Hardware} from "../models/Hardware";
 import Divider from "@mui/material/Divider";
+import RemoveShoppingCartIcon from "@mui/icons-material/RemoveShoppingCart";
+import IconButton from "@mui/material/IconButton";
+import HideImageOutlinedIcon from '@mui/icons-material/HideImageOutlined';
 
 export default function InquireBookingPage() {
     const cartContext = useContext(CartContext);
-    const totalAmount = cartContext.items.reduce((sum, item) => sum + item.price_per_day, 0);
+
+    const getRoundedDaysDifference = () => {
+        if (cartContext.bookingStart && cartContext.bookingEnd) {
+            const diffInMillis = Math.abs(cartContext.bookingEnd.getTime() - cartContext.bookingStart.getTime());
+            const oneDayInMillis = 24 * 60 * 60 * 1000;
+            const diffInDays = diffInMillis / oneDayInMillis;
+
+            return Math.round(diffInDays);
+        }
+
+        return 1;
+    };
+
+    const roundedDays = getRoundedDaysDifference();
+
+    const rawItemPrice = cartContext.items.reduce((sum, item) => sum + item.price_per_day, 0);
+    const totalAmount = roundedDays * rawItemPrice;
 
     function groupByOwnerId(hardwareArray: Hardware[]): Map<string, Hardware[]> {
         return hardwareArray.reduce((result, item) => {
@@ -54,8 +73,11 @@ export default function InquireBookingPage() {
         return (
             <Stack direction={{md: "row", xs: "column"}} gap={2}>
                 <Stack gap={2} width={"100%"}>
-                    <Alert severity={"info"} color={"info"}>Die Einträge in deinem Warenkorb werden anhand des
-                        Vermieters gruppiert.</Alert>
+                    <Alert severity={"info"} color={"info"}>
+                        <Typography variant={"subtitle2"} textAlign={"center"}>Die Einträge in deinem Warenkorb werden
+                            anhand des
+                            Vermieters gruppiert, falls du von mehreren Anbietern buchst.</Typography>
+                    </Alert>
                     <Stack width={"100%"}>
                         {
                             Array.from(groupByOwnerId(cartContext.items).entries()).map(([ownerId, hardwareArray]) => {
@@ -64,10 +86,43 @@ export default function InquireBookingPage() {
                                         {
                                             hardwareArray.map((hardware) => {
                                                 return (
-                                                    <Box key={hardware.id}>
-                                                        <Typography>{hardware.name}</Typography>
+                                                    <Stack key={hardware.id}>
+                                                        <Stack direction="row" alignItems={"center"}
+                                                               justifyContent="space-between">
+                                                            <Stack direction={"row"} alignItems={"center"} gap={2}>
+                                                                {
+                                                                    hardware.image ? (
+                                                                            <Typography>Test</Typography>
+                                                                        ) :
+                                                                        <Box sx={{paddingY: 2}} display={"flex"}
+                                                                             justifyContent={"center"} height={"100%"}
+                                                                             alignItems={"center"}>
+                                                                            <HideImageOutlinedIcon
+                                                                                sx={{transform: 'scale(2)'}}/>
+                                                                        </Box>
+                                                                }
+                                                                <Stack>
+
+                                                                    <Typography
+                                                                        variant={"subtitle2"}>{getReadableCategory(hardware.category)}</Typography>
+                                                                    <Typography>{hardware.name}</Typography>
+                                                                </Stack>
+                                                            </Stack>
+                                                            <Stack direction={"row"} gap={1} alignItems={"center"}>
+                                                                <Typography>{`${formatPrice(hardware.price_per_day)}€/Tag`}</Typography>
+                                                                <IconButton
+                                                                    color="inherit"
+                                                                    aria-label="remove from cart"
+                                                                    edge="start"
+                                                                    onClick={() => cartContext.removeCartItem(hardware)}
+                                                                    sx={{width: 60, borderRadius: "20%"}}
+                                                                >
+                                                                    <RemoveShoppingCartIcon/>
+                                                                </IconButton>
+                                                            </Stack>
+                                                        </Stack>
                                                         <Divider/>
-                                                    </Box>
+                                                    </Stack>
                                                 )
                                             })
                                         }
@@ -96,6 +151,12 @@ export default function InquireBookingPage() {
                                     <Typography>{formatTime(cartContext.bookingEnd)}</Typography>
                                 </Stack>
                             </Stack>
+                            <Alert severity={"info"}>
+                                <Typography
+                                    variant={"subtitle2"}>
+                                    {`Buchungsdauer: ${roundedDays} ${roundedDays == 1 ? "Tag" : "Tage"}`}
+                                </Typography>
+                            </Alert>
                         </Stack>
                     </Card>
                     <Card>
@@ -105,14 +166,19 @@ export default function InquireBookingPage() {
                             <Stack gap={2}>
                                 <Stack direction={"row"} justifyContent={"space-between"}>
                                     <Typography>Summe</Typography>
-                                    <Typography>{`${formatPrice(totalAmount)}€/Tag`}</Typography>
+                                    <Typography>{`${formatPrice(totalAmount)}€`}</Typography>
                                 </Stack>
                                 <Alert
                                     severity={"info"}>
-                                    <Typography>Der Preis ist nicht verbindlich. Die endgültige Entscheidung liegt beim
+                                    <Typography variant={"subtitle2"}>Der Preis ist nicht verbindlich. Die endgültige
+                                        Entscheidung liegt beim
                                         Vermieter.</Typography>
-                                    <Typography>Sollte es ein Gegenangebot geben, wirst du informiert.</Typography>
+                                    <Typography variant={"subtitle2"}>Sollte es ein Gegenangebot geben, wirst du
+                                        informiert.</Typography>
                                 </Alert>
+                                <Button variant="contained" color="primary">
+                                    <Typography fontWeight={700} color={"common.white"}>Jetzt buchen</Typography>
+                                </Button>
                             </Stack>
                         </Stack>
                     </Card>

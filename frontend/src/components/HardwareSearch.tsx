@@ -1,7 +1,8 @@
 import React, {useContext, useState} from 'react';
 import {
     Alert,
-    Box, Card,
+    Box,
+    Card,
     Checkbox,
     FormControl,
     InputLabel,
@@ -14,7 +15,6 @@ import {
     TextField
 } from '@mui/material';
 import {getReadableCategory, Hardware, HardwareCategory} from "../models/Hardware";
-import Typography from "@mui/material/Typography";
 import {CartContext} from "./providers/CartProvider";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
@@ -89,7 +89,7 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingSta
                                             <Box display={"flex"} flexDirection={"row"}>
                                                 <ListItemText
                                                     primary={hardware.name}
-                                                    secondary={`Kategorie: ${getReadableCategory(hardware.category)} | Preis pro Stunde: ${hardware.price_per_day}€`}
+                                                    secondary={`Kategorie: ${getReadableCategory(hardware.category)} | Preis pro Tag: ${hardware.price_per_day}€`}
                                                 />
                                                 {
                                                     cartContext.isItemInCart(hardware) ? (
