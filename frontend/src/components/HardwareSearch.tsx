@@ -11,7 +11,7 @@ import {
     ListItemText,
     MenuItem,
     OutlinedInput,
-    Select,
+    Select, Stack,
     TextField
 } from '@mui/material';
 import {getReadableCategory, Hardware, HardwareCategory} from "../models/Hardware";
@@ -20,6 +20,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 
 interface HardwareSearchProps {
     hardwareList: Hardware[];
@@ -39,9 +40,16 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingSta
         return matchesName && matchesCategory;
     });
 
+    const formatPrice = (num: number): string => {
+        return new Intl.NumberFormat("de-DE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(num);
+    };
+
     return (
         <Box>
-            <Box display={"flex"} flexDirection={"row"} gap={2}>
+            <Box display={"flex"} flexDirection={{md: "row", xs: "column"}} gap={2}>
                 <TextField
                     label="Name"
                     variant="outlined"
@@ -86,38 +94,41 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingSta
                             filteredHardware.map((hardware) => (
                                     <ListItem key={hardware.id} sx={{padding: 0, margin: 0}}>
                                         <Card sx={{width: '100%'}}>
-                                            <Box display={"flex"} flexDirection={"row"}>
+                                            <Stack direction={{md: "row", xs: "column"}}>
                                                 <ListItemText
                                                     primary={hardware.name}
-                                                    secondary={`Kategorie: ${getReadableCategory(hardware.category)} | Preis pro Tag: ${hardware.price_per_day}€`}
+                                                    secondary={`Kategorie: ${getReadableCategory(hardware.category)}`}
                                                 />
-                                                {
-                                                    cartContext.isItemInCart(hardware) ? (
-                                                        <IconButton
-                                                            color="inherit"
-                                                            aria-label="remove from cart"
-                                                            edge="start"
-                                                            onClick={() => cartContext.removeCartItem(hardware)}
-                                                            sx={{width: 60, borderRadius: "20%"}}
-                                                        >
-                                                            <RemoveShoppingCartIcon/>
-                                                        </IconButton>
-                                                    ) : (
-                                                        <IconButton
-                                                            color="inherit"
-                                                            aria-label="add to cart"
-                                                            onClick={() => {
-                                                                cartContext.addCartItem(hardware);
-                                                                cartContext.setBookingStartInCart(bookingStart);
-                                                                cartContext.setBookingEndInCart(bookingEnd);
-                                                            }}
-                                                            sx={{width: 60, borderRadius: "20%"}}
-                                                        >
-                                                            <AddShoppingCartIcon/>
-                                                        </IconButton>
-                                                    )
-                                                }
-                                            </Box>
+                                                <Stack direction={"row"} alignItems={"center"} justifyContent={{md: "center", xs: "space-between"}}>
+                                                    <Typography>{`${formatPrice(hardware.price_per_day)}€/Tag`}</Typography>
+                                                    {
+                                                        cartContext.isItemInCart(hardware) ? (
+                                                            <IconButton
+                                                                color="inherit"
+                                                                aria-label="remove from cart"
+                                                                edge="start"
+                                                                onClick={() => cartContext.removeCartItem(hardware)}
+                                                                sx={{width: 60, borderRadius: "20%"}}
+                                                            >
+                                                                <RemoveShoppingCartIcon/>
+                                                            </IconButton>
+                                                        ) : (
+                                                            <IconButton
+                                                                color="inherit"
+                                                                aria-label="add to cart"
+                                                                onClick={() => {
+                                                                    cartContext.addCartItem(hardware);
+                                                                    cartContext.setBookingStartInCart(bookingStart);
+                                                                    cartContext.setBookingEndInCart(bookingEnd);
+                                                                }}
+                                                                sx={{width: 60, borderRadius: "20%"}}
+                                                            >
+                                                                <AddShoppingCartIcon/>
+                                                            </IconButton>
+                                                        )
+                                                    }
+                                                </Stack>
+                                            </Stack>
                                         </Card>
                                     </ListItem>
                                 )
