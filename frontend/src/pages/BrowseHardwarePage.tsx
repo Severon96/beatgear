@@ -16,7 +16,7 @@ export function BrowseHardwarePage() {
     const [bookingEnd, setBookingEnd] = useState<Date | null>(null)
     const hardware = useAppSelector((state) => state.hardware.hardware);
     const hardwareStatus = useAppSelector((state) => state.hardware.fetchHardwareStatus);
-    const errorMessage = bookingStart && bookingEnd ? null : "Bitte Start- und Enddatum für die Buchung auswählen."
+    const errorMessage = bookingStart && bookingEnd ? null : "Bitte Start- und Enddatum der Buchung auswählen."
 
     useEffect(() => {
         console.log("Hardware values: ", hardware);
@@ -34,7 +34,7 @@ export function BrowseHardwarePage() {
                 <FloatingErrors/>
                 <Paper>
                     <Box display={"flex"} flexDirection={"column"} gap={2} marginBottom={2}>
-                        <Typography>Nach Hardware suchen</Typography>
+                        <Typography variant={"h1"}>Nach Hardware suchen</Typography>
                         <Box display="flex" flexDirection={"row"} gap={2}>
                             <DateTimePicker
                                 viewRenderers={{

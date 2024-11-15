@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {
-    Box,
+    Box, Card,
     Checkbox,
     FormControl,
     InputLabel,
@@ -18,6 +18,7 @@ import {CartContext} from "./providers/CartProvider";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
 
 interface HardwareSearchProps {
     hardwareList: Hardware[];
@@ -58,7 +59,10 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
                                 setSelectedCategories(e.target.value as HardwareCategory[])
                             }}
                         input={<OutlinedInput label="Tag"/>}
-                        renderValue={(selected) => selected.length == 0 ? "Alle" : selected.join(', ')}
+                        renderValue={(selected) => {
+                            const selectedReadable = selected.map((selectedCategory) => getReadableCategory(selectedCategory));
+                            return selected.length == 0 ? "Alle" : selectedReadable.join(', ');
+                        }}
                     >
                         {Object.values(HardwareCategory).map((category) => (
                             <MenuItem key={category} value={category}>
@@ -69,44 +73,48 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
                     </Select>
                 </FormControl>
             </Box>
-
+            <Divider sx={{marginY: 2}}/>
             {
                 errorMessage ? (
                     <Typography marginTop={2} color={"error"}>{errorMessage}</Typography>
                 ) : (
                     <List>
                         {filteredHardware.length > 0 ? (
-                            filteredHardware.map((hardware) => {
-                                console.log(`Hardware Category: ${hardware.category}`)
-                                return (
-                                <ListItem key={hardware.id} sx={{width: '100%'}}>
-                                    <ListItemText
-                                        primary={hardware.name}
-                                        secondary={`Kategorie: ${getReadableCategory(hardware.category)} | Preis pro Stunde: ${hardware.price_per_day}€`}
-                                    />
-                                    {
-                                        cartContext.isItemInCart(hardware) ? (
-                                            <IconButton
-                                                color="inherit"
-                                                aria-label="open drawer"
-                                                edge="start"
-                                                onClick={() => cartContext.removeCartItem(hardware)}
-                                            >
-                                                <RemoveShoppingCartIcon/>
-                                            </IconButton>
-                                        ) : (
-                                            <IconButton
-                                                color="inherit"
-                                                aria-label="open drawer"
-                                                edge="start"
-                                                onClick={() => cartContext.addCartItem(hardware)}
-                                            >
-                                                <AddShoppingCartIcon />
-                                            </IconButton>
-                                        )
-                                    }
-                                </ListItem>
-                            )})
+                            filteredHardware.map((hardware) => (
+                                    <ListItem key={hardware.id} sx={{width: '100%', padding: 0, margin: 0}}>
+                                        <Card sx={{width: '100%'}}>
+                                            <Box display={"flex"} flexDirection={"row"}>
+                                                <ListItemText
+                                                    primary={hardware.name}
+                                                    secondary={`Kategorie: ${getReadableCategory(hardware.category)} | Preis pro Stunde: ${hardware.price_per_day}€`}
+                                                />
+                                                {
+                                                    cartContext.isItemInCart(hardware) ? (
+                                                        <IconButton
+                                                            color="inherit"
+                                                            aria-label="remove from cart"
+                                                            edge="start"
+                                                            onClick={() => cartContext.removeCartItem(hardware)}
+                                                            sx={{width: 60, borderRadius: "20%"}}
+                                                        >
+                                                            <RemoveShoppingCartIcon/>
+                                                        </IconButton>
+                                                    ) : (
+                                                        <IconButton
+                                                            color="inherit"
+                                                            aria-label="add to cart"
+                                                            onClick={() => cartContext.addCartItem(hardware)}
+                                                            sx={{width: 60, borderRadius: "20%"}}
+                                                        >
+                                                            <AddShoppingCartIcon/>
+                                                        </IconButton>
+                                                    )
+                                                }
+                                            </Box>
+                                        </Card>
+                                    </ListItem>
+                                )
+                            )
                         ) : (
                             <ListItem>
                                 <ListItemText primary="Keine Hardware gefunden."/>
