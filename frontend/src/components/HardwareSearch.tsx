@@ -12,7 +12,7 @@ import {
     Select,
     TextField
 } from '@mui/material';
-import {Hardware, HardwareCategory} from "../models/Hardware";
+import {getReadableCategory, Hardware, HardwareCategory} from "../models/Hardware";
 import Typography from "@mui/material/Typography";
 import {CartContext} from "./providers/CartProvider";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -63,7 +63,7 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
                         {Object.values(HardwareCategory).map((category) => (
                             <MenuItem key={category} value={category}>
                                 <Checkbox checked={selectedCategories.includes(category)}/>
-                                <ListItemText primary={category}/>
+                                <ListItemText primary={getReadableCategory(category)}/>
                             </MenuItem>
                         ))}
                     </Select>
@@ -76,11 +76,13 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
                 ) : (
                     <List>
                         {filteredHardware.length > 0 ? (
-                            filteredHardware.map((hardware) => (
+                            filteredHardware.map((hardware) => {
+                                console.log(`Hardware Category: ${hardware.category}`)
+                                return (
                                 <ListItem key={hardware.id} sx={{width: '100%'}}>
                                     <ListItemText
                                         primary={hardware.name}
-                                        secondary={`Kategorie: ${hardware.category} | Preis pro Stunde: ${hardware.price_per_day}€`}
+                                        secondary={`Kategorie: ${getReadableCategory(hardware.category)} | Preis pro Stunde: ${hardware.price_per_day}€`}
                                     />
                                     {
                                         cartContext.isItemInCart(hardware) ? (
@@ -104,7 +106,7 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, errorMessa
                                         )
                                     }
                                 </ListItem>
-                            ))
+                            )})
                         ) : (
                             <ListItem>
                                 <ListItemText primary="Keine Hardware gefunden."/>
