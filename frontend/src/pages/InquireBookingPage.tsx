@@ -18,7 +18,7 @@ export default function InquireBookingPage() {
             const oneDayInMillis = 24 * 60 * 60 * 1000;
             const diffInDays = diffInMillis / oneDayInMillis;
 
-            return Math.round(diffInDays);
+            return Math.ceil(diffInDays);
         }
 
         return 1;
