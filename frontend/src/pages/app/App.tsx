@@ -9,7 +9,7 @@ import {BrowseHardwarePage} from "../BrowseHardwarePage";
 import LoginRedirect from "../OAuthLoginRedirectPage";
 import LogoutRedirect from "../OAuthLogoutRedirectPage";
 import {Dashboard} from "../Dashboard";
-import RequestBookingPage from "../RequestBookingPage";
+import InquireBookingPage from "../InquireBookingPage";
 
 
 const router = createBrowserRouter([
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/request-booking",
-        element: <RequestBookingPage/>
+        element: <InquireBookingPage/>
     },
     {
         path: "/auth/callback",
