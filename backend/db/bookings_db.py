@@ -45,16 +45,7 @@ def get_current_bookings_for_user(user_id: UUID) -> Sequence[Row[Any] | RowMappi
 
 
 def create_booking(booking: BookingDb) -> BookingDb:
-    now = datetime.now()
-
-    booking.id = uuid.uuid4()
-    booking.customer_id = UUID(booking.customer_id) if isinstance(booking.customer_id, str) else booking.customer_id
-    booking.booking_start = dateutil.parser.isoparse(booking.booking_start) if isinstance(
-        booking.booking_start, str) else booking.booking_start
-    booking.booking_end = dateutil.parser.isoparse(booking.booking_end) if isinstance(
-        booking.booking_end, str) else booking.booking_end
-    booking.created_at = now
-    booking.updated_at = now
+    _prepare_for_creation(booking)
 
     session = util.get_db_session()
 
@@ -65,16 +56,7 @@ def create_booking(booking: BookingDb) -> BookingDb:
 
 
 def create_booking_inquiry(booking_inquiry: BookingInquiryDb) -> BookingInquiryDb:
-    now = datetime.now()
-
-    booking_inquiry.id = uuid.uuid4()
-    booking_inquiry.customer_id = UUID(booking_inquiry.customer_id) if isinstance(booking_inquiry.customer_id, str) else booking_inquiry.customer_id
-    booking_inquiry.booking_start = dateutil.parser.isoparse(booking_inquiry.booking_start) if isinstance(
-        booking_inquiry.booking_start, str) else booking_inquiry.booking_start
-    booking_inquiry.booking_end = dateutil.parser.isoparse(booking_inquiry.booking_end) if isinstance(
-        booking_inquiry.booking_end, str) else booking_inquiry.booking_end
-    booking_inquiry.created_at = now
-    booking_inquiry.updated_at = now
+    _prepare_for_creation(booking_inquiry)
 
     session = util.get_db_session()
 
@@ -85,8 +67,6 @@ def create_booking_inquiry(booking_inquiry: BookingInquiryDb) -> BookingInquiryD
 
 
 def update_booking(booking_id: UUID, booking: BookingDb) -> Type[BookingDb]:
-    now = datetime.now()
-
     session = util.get_db_session()
 
     db_booking = session.get(BookingDb, booking_id)
@@ -101,8 +81,6 @@ def update_booking(booking_id: UUID, booking: BookingDb) -> Type[BookingDb]:
         booking.booking_start, str) else booking.booking_start
     booking.booking_end = dateutil.parser.isoparse(booking.booking_end) if isinstance(
         booking.booking_end, str) else booking.booking_end
-    booking.updated_at = now
-    booking.created_at = db_booking.created_at
 
     session.merge(booking)
 
@@ -110,3 +88,12 @@ def update_booking(booking_id: UUID, booking: BookingDb) -> Type[BookingDb]:
     session.refresh(db_booking)
 
     return db_booking
+
+
+def _prepare_for_creation(booking: BookingDb | BookingInquiryDb) -> None:
+    booking.id = uuid.uuid4()
+    booking.customer_id = UUID(booking.customer_id) if isinstance(booking.customer_id, str) else booking.customer_id
+    booking.booking_start = dateutil.parser.isoparse(booking.booking_start) if isinstance(
+        booking.booking_start, str) else booking.booking_start
+    booking.booking_end = dateutil.parser.isoparse(booking.booking_end) if isinstance(
+        booking.booking_end, str) else booking.booking_end

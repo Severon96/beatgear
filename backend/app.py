@@ -28,10 +28,26 @@ def create_app() -> Flask:
 
     psycopg2.extras.register_uuid()
 
+    add_error_handlers(flask_app)
     add_root_route(flask_app)
     add_blueprints(flask_app)
 
     return flask_app
+
+
+def add_error_handlers(app):
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        status_code = getattr(e, 'code', 500)
+
+        response = {
+            "error": {
+                "type": type(e).__name__,
+                "message": str(e),
+                "status_code": status_code,
+            }
+        }
+        return response, status_code
 
 
 def add_blueprints(flask_app):

@@ -65,11 +65,11 @@ class BookingInquiryBase(BaseModel):
 
 class BookingInquiryRequest(BookingInquiryBase):
     hardware_ids: List[UUID]
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime]= None
 
 
-class BookingInquiry(BaseModel):
+class BookingInquiry(BookingInquiryBase):
     hardware: list[Hardware]
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None

@@ -6,7 +6,8 @@ from http import HTTPStatus
 import pytest
 
 from models.db_models import BookingDb, JSONEncoder
-from models.models import Booking
+from models.models import Booking, BookingInquiry
+from test_util.db_util import setup_booking_inquiry
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
@@ -199,6 +200,61 @@ class TestBookingApi:
         # then
         result = client.post(
             "/api/bookings",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=json.dumps(booking_dict, cls=JSONEncoder)
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
+
+    def test_create_booking_inquiry(self, client, jwt):
+        # when
+        booking_inquiry = setup_booking_inquiry()
+
+        # then
+        result = client.post(
+            "/api/bookings/inquire",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=booking_inquiry.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.CREATED
+        api_booking = parse_model(BookingInquiry, result.json)
+        assert api_booking.customer_id == booking_inquiry.customer_id
+        assert len(api_booking.hardware) == 2
+
+    def test_create_booking_inquiry_with_missing_jwt(self, client):
+        # when
+        booking = setup_booking_inquiry()
+        booking_dict = booking.model_dump()
+
+        # then
+        result = client.post(
+            "/api/bookings/inquire",
+            headers={
+                'Content-Type': 'application/json',
+            },
+            data=json.dumps(booking_dict, cls=JSONEncoder)
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.UNAUTHORIZED
+
+    def test_create_booking_inquiry_with_missing_booking_name(self, client, jwt):
+        # when
+        booking = setup_booking()
+        booking_dict = booking.model_dump()
+
+        # then
+        result = client.post(
+            "/api/bookings/inquire",
             headers={
                 'Content-Type': 'application/json',
                 'Authorization': f"Bearer {jwt}",
