@@ -4,13 +4,17 @@ import {FloatingErrors} from "../components/FloatingErrors";
 import Typography from "@mui/material/Typography";
 import {Box, CircularProgress, Paper} from "@mui/material";
 import HardwareSearch from "../components/HardwareSearch";
-import {useAppDispatch, useAppSelector} from "../store";
+import {RootState, useAppDispatch, useAppSelector} from "../store";
 import {fetchHardware} from "../redux-tk/slices/hardwareSlice";
 import {DateTimePicker, LocalizationProvider, renderTimeViewClock} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFnsV3";
 import {de} from "date-fns/locale";
+import NotFoundErrorPage from "./NotFoundErrorPage";
+import {isLoggedIn} from "../utils/auth";
+import {useSelector} from "react-redux";
 
 export function BrowseHardwarePage() {
+    const {accessToken} = useSelector((state: RootState) => state.auth);
     const dispatch = useAppDispatch();
     const [bookingStart, setBookingStart] = useState<Date | null>(null)
     const [bookingEnd, setBookingEnd] = useState<Date | null>(null)
@@ -27,8 +31,8 @@ export function BrowseHardwarePage() {
         }
     }, [dispatch, bookingStart, bookingEnd, hardwareStatus]);
 
-    return (
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
+    function renderBrowseHardwarePage() {
+        return <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
             <Container maxWidth={"lg"}>
                 <FloatingErrors/>
                 <Paper>
@@ -72,6 +76,8 @@ export function BrowseHardwarePage() {
                     )}
                 </Paper>
             </Container>
-        </LocalizationProvider>
-    );
+        </LocalizationProvider>;
+    }
+
+    return isLoggedIn(accessToken) ? renderBrowseHardwarePage() : <NotFoundErrorPage/>;
 }

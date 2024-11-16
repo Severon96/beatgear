@@ -79,18 +79,22 @@ export default function MuiHeader() {
                 </Typography>
             </Stack>
             <Divider/>
-            <List>
-                {Array.from(navItems.entries()).map(([link, label]) => (
-                    <ListItem key={link} disablePadding>
-                        <ListItemButton
-                            sx={{textAlign: 'center'}}
-                            href={link}
-                        >
-                            <ListItemText primary={label}/>
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
+            {
+                isLoggedIn(accessToken) && (
+                    <List>
+                        {Array.from(navItems.entries()).map(([link, label]) => (
+                            <ListItem key={link} disablePadding>
+                                <ListItemButton
+                                    sx={{textAlign: 'center'}}
+                                    href={link}
+                                >
+                                    <ListItemText primary={label}/>
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                )
+            }
         </Box>
     );
 
@@ -142,23 +146,24 @@ export default function MuiHeader() {
                         BeatGear
                     </Typography>
                     <Box sx={{display: {xs: 'none', sm: 'block'}}}>
-                        {Array.from(navItems.entries()).map(([link, label]) => (
-                            <Button
-                                key={link}
-                                href={link}
-                                color={"inherit"}
-                                sx={{
-                                    letterSpacing: '0.05em',
-                                    fontWeight: 550,
-                                    transition: 'transform 0.2s ease-in-out',
-                                    '&:hover': {
-                                        transform: 'scale(1.05)',
-                                        backgroundColor: 'colors.white'
-                                    }
-                                }}>
-                                {label}
-                            </Button>
-                        ))}
+                        {
+                            isLoggedIn(accessToken) && Array.from(navItems.entries()).map(([link, label]) => (
+                                <Button
+                                    key={link}
+                                    href={link}
+                                    color={"inherit"}
+                                    sx={{
+                                        letterSpacing: '0.05em',
+                                        fontWeight: 550,
+                                        transition: 'transform 0.2s ease-in-out',
+                                        '&:hover': {
+                                            transform: 'scale(1.05)',
+                                            backgroundColor: 'colors.white'
+                                        }
+                                    }}>
+                                    {label}
+                                </Button>
+                            ))}
                     </Box>
                     <Box sx={{
                         flexGrow: 0,

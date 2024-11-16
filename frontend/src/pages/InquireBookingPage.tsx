@@ -22,6 +22,8 @@ import {inquireBooking} from "../redux-tk/slices/bookingSlice";
 import {v4 as uuid} from "uuid";
 import {jwtDecode} from "jwt-decode";
 import {useSelector} from "react-redux";
+import {isLoggedIn} from "../utils/auth";
+import NotFoundErrorPage from "./NotFoundErrorPage";
 
 export default function InquireBookingPage() {
     const inquiryStatus = useAppSelector((state) => state.bookings.inquireBookingStatus);
@@ -30,8 +32,11 @@ export default function InquireBookingPage() {
     const cartContext = useContext(CartContext);
     const errorContext = useContext(ErrorContext);
     const {accessToken} = useSelector((state: RootState) => state.auth);
-    console.log("accessToken", accessToken);
-    const decodedToken: { sub: string } = jwtDecode(accessToken ?? "");
+
+    let decodedToken: { sub: string };
+    if (accessToken) {
+        decodedToken = jwtDecode(accessToken ?? "");
+    }
 
     const roundedDays = getRoundedDaysDifference(cartContext.bookingStart, cartContext.bookingEnd);
 
@@ -39,7 +44,7 @@ export default function InquireBookingPage() {
     const totalAmount = roundedDays * rawItemPrice;
 
     useEffect(() => {
-        if(inquiryStatus === "failed") {
+        if (inquiryStatus === "failed") {
             errorContext.addError({
                 message: "Anfrage konnte nicht erstellt werden."
             })
@@ -52,7 +57,7 @@ export default function InquireBookingPage() {
             dispatch(inquireBooking(
                 {
                     id: uuid(),
-                    customer_id: decodedToken.sub,
+                    customer_id: decodedToken ? decodedToken.sub : "",
                     hardware_ids: hardwareIds,
                     booking_start: cartContext.bookingStart,
                     booking_end: cartContext.bookingEnd,
@@ -73,7 +78,8 @@ export default function InquireBookingPage() {
             <Stack direction={{md: "row", xs: "column"}} gap={2}>
                 <Stack gap={2} width={"100%"}>
                     <Alert severity={"info"} color={"info"}>
-                        <Typography variant={"subtitle2"} textAlign={"center"}>Die Einträge in deinem Warenkorb werden
+                        <Typography variant={"subtitle2"} textAlign={"center"}>Die Einträge in deinem Warenkorb
+                            werden
                             anhand des
                             Vermieters gruppiert, falls du von mehreren Anbietern buchst.</Typography>
                     </Alert>
@@ -99,7 +105,8 @@ export default function InquireBookingPage() {
                                                                             />
                                                                         ) :
                                                                         <Box sx={{paddingY: 2}} display={"flex"}
-                                                                             justifyContent={"center"} height={"100%"}
+                                                                             justifyContent={"center"}
+                                                                             height={"100%"}
                                                                              alignItems={"center"}>
                                                                             <HideImageOutlinedIcon
                                                                                 sx={{transform: 'scale(2)'}}/>
@@ -174,14 +181,16 @@ export default function InquireBookingPage() {
                                 </Stack>
                                 <Alert
                                     severity={"info"}>
-                                    <Typography variant={"subtitle2"}>Der Preis ist nicht verbindlich. Die endgültige
+                                    <Typography variant={"subtitle2"}>Der Preis ist nicht verbindlich. Die
+                                        endgültige
                                         Entscheidung liegt beim
                                         Vermieter.</Typography>
                                     <Typography variant={"subtitle2"}>Sollte es ein Gegenangebot geben, wirst du
                                         informiert.</Typography>
                                 </Alert>
                                 <Button variant="contained" color="primary" onClick={createBookingInquiry}>
-                                    <Typography fontWeight={700} color={"common.white"}>Buchung anfragen</Typography>
+                                    <Typography fontWeight={700} color={"common.white"}>Buchung
+                                        anfragen</Typography>
                                 </Button>
                             </Stack>
                         </Stack>
@@ -191,16 +200,20 @@ export default function InquireBookingPage() {
         );
     }
 
-    return (
+    function renderEmptyCart() {
+        return <Paper>
+            <Stack justifyContent={"center"}>
+                <Typography variant={"h3"}>Dein Warenkorb ist leer</Typography>
+            </Stack>
+        </Paper>;
+    }
+
+    return isLoggedIn(accessToken) ? (
         <>
             {
                 cartContext.items.length > 0 ? renderCart() :
-                    <Paper>
-                        <Stack justifyContent={"center"}>
-                            <Typography variant={"h3"}>Dein Warenkorb ist leer</Typography>
-                        </Stack>
-                    </Paper>
+                    renderEmptyCart()
             }
         </>
-    );
+    ) : <NotFoundErrorPage/>;
 }

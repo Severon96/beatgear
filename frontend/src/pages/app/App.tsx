@@ -10,6 +10,9 @@ import LoginRedirect from "../OAuthLoginRedirectPage";
 import LogoutRedirect from "../OAuthLogoutRedirectPage";
 import {Dashboard} from "../Dashboard";
 import InquireBookingPage from "../InquireBookingPage";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
+import {CircularProgress, Stack} from "@mui/material";
 
 
 const router = createBrowserRouter([
@@ -36,13 +39,23 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+    const {isRestoring} = useSelector((state: RootState) => state.auth);
+
     return (
         <Box>
             <InitContainer>
                 <main>
                     <Header/>
-                    <Container maxWidth="xl" sx={{ marginTop: 2}}>
-                        <RouterProvider router={router}/>
+                    <Container maxWidth="xl" sx={{marginTop: 2}}>
+                        {
+                            isRestoring ? (
+                                <Stack justifyContent={"center"} alignItems={"center"}>
+                                    <CircularProgress/>
+                                </Stack>
+                            ) : (
+                                <RouterProvider router={router}/>
+                            )
+                        }
                     </Container>
                 </main>
             </InitContainer>
