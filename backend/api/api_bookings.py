@@ -5,6 +5,7 @@ from flask import Blueprint, abort, request, make_response, jsonify
 from pydantic_core import ValidationError
 
 from db import bookings_db
+from models.db_models import BookingInquiryDb, BookingDb
 from models.models import AuthenticatedUser, BookingRequest, Booking, BookingInquiryRequest, BookingInquiry
 from util.auth_util import token_required, user, is_author_or_admin
 from util.model_util import convert_to_db_booking, convert_to_db_booking_inquiry
@@ -65,6 +66,36 @@ def create_booking():
         abort(HTTPStatus.BAD_REQUEST, str(e))
 
 
+@api.route("/bookings/<booking_id>", methods=['PATCH'])
+@token_required
+@user
+def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
+    try:
+        booking_uuid = UUID(booking_id)
+    except ValueError:
+        abort(make_response(jsonify(message=f"{booking_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
+
+    db_booking = bookings_db.get_booking(booking_uuid)
+
+    is_user_allowed_to_update = is_booking_edit_allowed(authenticated_user, db_booking)
+    if not is_user_allowed_to_update:
+        abort(make_response(jsonify(message="You are not authorized to edit this booking."), HTTPStatus.FORBIDDEN))
+
+    try:
+        json_body = request.json
+        request_booking = BookingRequest(**json_body)
+
+        db_booking = convert_to_db_booking(request_booking)
+
+        updated_booking = bookings_db.update_booking(booking_uuid, db_booking)
+
+        booking = parse_model(Booking, updated_booking.dict())
+
+        return jsonify(booking.model_dump()), HTTPStatus.OK
+    except (ValidationError, ValueError) as e:
+        abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
+
+
 @api.route("/bookings/inquire", methods=['POST'])
 @token_required
 def inquire_booking():
@@ -97,31 +128,54 @@ def get_booking_inquiries(authenticated_user: AuthenticatedUser):
         abort(HTTPStatus.BAD_REQUEST, str(e))
 
 
-@api.route("/bookings/<booking_id>", methods=['PATCH'])
+@api.route("/bookings/inquiries/<inquiry_id>", methods=['GET'])
+@token_required
+def get_booking_inquiry(inquiry_id: str):
+    try:
+        booking_inquiry_uuid = UUID(inquiry_id)
+    except ValueError:
+        abort(make_response(jsonify(message=f"{inquiry_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
+
+    db_booking_inquiry = bookings_db.get_booking_inquiry_by_id(booking_inquiry_uuid)
+    booking_inquiry = parse_model(BookingInquiry, db_booking_inquiry.dict())
+
+    return jsonify(booking_inquiry.model_dump()), HTTPStatus.OK
+
+
+@api.route("/bookings/inquiries/<inquiry_id>", methods=['PATCH'])
 @token_required
 @user
-def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
+def update_booking_inquiry(authenticated_user: AuthenticatedUser, inquiry_id: str):
     try:
-        booking_uuid = UUID(booking_id)
+        booking_inquiry_uuid = UUID(inquiry_id)
     except ValueError:
-        abort(make_response(jsonify(message=f"{booking_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
+        abort(make_response(jsonify(message=f"{inquiry_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
 
-    db_booking = bookings_db.get_booking(booking_uuid)
+    db_booking_inquiry = bookings_db.get_booking_inquiry_by_id(booking_inquiry_uuid)
 
-    is_user_allowed_to_update = is_author_or_admin(authenticated_user, db_booking.author_id)
+    is_user_allowed_to_update = is_booking_edit_allowed(authenticated_user, db_booking_inquiry)
+
     if not is_user_allowed_to_update:
         abort(make_response(jsonify(message="You are not authorized to edit this booking."), HTTPStatus.FORBIDDEN))
 
     try:
         json_body = request.json
-        request_booking = BookingRequest(**json_body)
+        request_booking_inquiry = BookingInquiryRequest(**json_body)
 
-        db_booking = convert_to_db_booking(request_booking)
+        db_booking_inquiry = convert_to_db_booking_inquiry(request_booking_inquiry)
 
-        updated_booking = bookings_db.update_booking(booking_uuid, db_booking)
+        updated_booking_inquiry = bookings_db.update_booking_inquiry(booking_inquiry_uuid, db_booking_inquiry)
 
-        booking = parse_model(Booking, updated_booking.dict())
+        booking_inquiry = parse_model(BookingInquiry, updated_booking_inquiry.dict())
 
-        return jsonify(booking.model_dump()), HTTPStatus.OK
+        return jsonify(booking_inquiry.model_dump()), HTTPStatus.OK
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
+
+
+def is_booking_edit_allowed(authenticated_user: AuthenticatedUser, entity: BookingDb | BookingInquiryDb) -> bool:
+    is_user_author_or_admin = is_author_or_admin(authenticated_user, entity.author_id)
+    hardware_owner_ids = list(map(lambda hardware: hardware.owner_id, entity.hardware))
+    is_user_hardware_owner = authenticated_user in hardware_owner_ids
+
+    return is_user_hardware_owner or is_user_author_or_admin

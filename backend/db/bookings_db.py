@@ -55,17 +55,6 @@ def create_booking(booking: BookingDb) -> BookingDb:
     return booking
 
 
-def create_booking_inquiry(booking_inquiry: BookingInquiryDb) -> BookingInquiryDb:
-    _prepare_for_creation(booking_inquiry)
-
-    session = util.get_db_session()
-
-    session.add(booking_inquiry)
-    session.commit()
-
-    return booking_inquiry
-
-
 def get_current_booking_inquiries_for_user(user_id: UUID) -> Sequence[Row[Any] | RowMapping | Any]:
     session = util.get_db_session()
     now = datetime.now()
@@ -101,8 +90,61 @@ def update_booking(booking_id: UUID, booking: BookingDb) -> Type[BookingDb]:
     return db_booking
 
 
+def create_booking_inquiry(booking_inquiry: BookingInquiryDb) -> BookingInquiryDb:
+    _prepare_for_creation(booking_inquiry)
+
+    session = util.get_db_session()
+
+    session.add(booking_inquiry)
+    session.commit()
+
+    return booking_inquiry
+
+
+def get_booking_inquiry_by_id(booking_inquiry_id: UUID) -> Type[BookingInquiryDb]:
+    session = util.get_db_session()
+
+    booking_inquiry = session.get(BookingInquiryDb, booking_inquiry_id)
+
+    if booking_inquiry is None:
+        abort(make_response(jsonify(message=f"Booking inquiry with id {booking_inquiry_id} not found"), HTTPStatus.NOT_FOUND))
+
+    return booking_inquiry
+
+
+def get_all_booking_inquiries() -> Sequence[BookingDb]:
+    session = util.get_db_session()
+
+    stmt = select(BookingDb)
+
+    return session.scalars(stmt).all()
+
+
+def update_booking_inquiry(booking_inquiry_id: UUID, booking_inquiry: BookingInquiryDb) -> Type[BookingInquiryDb]:
+    session = util.get_db_session()
+
+    db_booking_inquiry = session.get(BookingInquiryDb, booking_inquiry_id)
+
+    if db_booking_inquiry is None:
+        abort(make_response(jsonify(message=f"Booking inquiry with id {booking_inquiry_id} not found"), HTTPStatus.NOT_FOUND))
+
+    # field types might not be appropriate
+    booking_inquiry.id = UUID(booking_inquiry.id) if isinstance(booking_inquiry.id, str) else booking_inquiry.id
+    booking_inquiry.customer_id = UUID(booking_inquiry.customer_id) if isinstance(booking_inquiry.customer_id, str) else booking_inquiry.customer_id
+    booking_inquiry.booking_start = dateutil.parser.isoparse(booking_inquiry.booking_start) if isinstance(
+        booking_inquiry.booking_start, str) else booking_inquiry.booking_start
+    booking_inquiry.booking_end = dateutil.parser.isoparse(booking_inquiry.booking_end) if isinstance(
+        booking_inquiry.booking_end, str) else booking_inquiry.booking_end
+
+    session.merge(booking_inquiry)
+
+    session.commit()
+    session.refresh(db_booking_inquiry)
+
+    return db_booking_inquiry
+
+
 def _prepare_for_creation(booking: BookingDb | BookingInquiryDb) -> None:
-    booking.id = uuid.uuid4()
     booking.customer_id = UUID(booking.customer_id) if isinstance(booking.customer_id, str) else booking.customer_id
     booking.booking_start = dateutil.parser.isoparse(booking.booking_start) if isinstance(
         booking.booking_start, str) else booking.booking_start
