@@ -82,6 +82,21 @@ def inquire_booking():
         abort(HTTPStatus.BAD_REQUEST, str(e))
 
 
+@api.route("/bookings/inquiries", methods=['GET'])
+@token_required
+@user
+def get_booking_inquiries(authenticated_user: AuthenticatedUser):
+    try:
+        db_booking_inquiries = bookings_db.get_current_booking_inquiries_for_user(authenticated_user.id)
+
+        booking_inquiries = parse_model_list(BookingInquiry, [booking.dict() for booking in db_booking_inquiries])
+        response_payload = [booking_inquiry.model_dump() for booking_inquiry in booking_inquiries]
+
+        return jsonify(response_payload), HTTPStatus.OK
+    except (ValidationError, ValueError) as e:
+        abort(HTTPStatus.BAD_REQUEST, str(e))
+
+
 @api.route("/bookings/<booking_id>", methods=['PATCH'])
 @token_required
 @user

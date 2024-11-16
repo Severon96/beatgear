@@ -66,6 +66,17 @@ def create_booking_inquiry(booking_inquiry: BookingInquiryDb) -> BookingInquiryD
     return booking_inquiry
 
 
+def get_current_booking_inquiries_for_user(user_id: UUID) -> Sequence[Row[Any] | RowMapping | Any]:
+    session = util.get_db_session()
+    now = datetime.now()
+
+    stmt = session.query(BookingInquiryDb).filter(
+        BookingInquiryDb.booking_end >= now,
+        BookingInquiryDb.customer_id == user_id)
+
+    return session.scalars(stmt).all()
+
+
 def update_booking(booking_id: UUID, booking: BookingDb) -> Type[BookingDb]:
     session = util.get_db_session()
 

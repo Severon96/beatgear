@@ -7,7 +7,7 @@ import pytest
 
 from models.db_models import BookingDb, JSONEncoder
 from models.models import Booking, BookingInquiry
-from test_util.db_util import setup_booking_inquiry
+from test_util.db_util import setup_booking_inquiry, create_booking_inquiry
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
@@ -287,10 +287,11 @@ class TestBookingApi:
         # expect
         assert result.status_code == HTTPStatus.UNAUTHORIZED
 
-    def test_create_booking_inquiry_with_missing_booking_name(self, client, jwt):
+    def test_create_booking_inquiry_with_missing_total_booking_days(self, client, jwt):
         # when
-        booking = setup_booking()
+        booking = setup_booking_inquiry()
         booking_dict = booking.model_dump()
+        booking_dict['total_booking_days'] = None
 
         # then
         result = client.post(
@@ -304,6 +305,69 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.BAD_REQUEST
+
+    def test_get_booking_inquiries_without_inquiries(self, client, jwt):
+        # then
+        result = client.get(
+            "/api/bookings/inquiries",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}"
+            }
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 0
+
+    def test_get_booking_inquiries_with_inquiries(self, client, jwt):
+        # when
+        user_id_from_token = get_user_id_from_jwt(jwt)
+
+        yesterday = datetime.now() - timedelta(days=1)
+        tomorrow = datetime.now() + timedelta(days=1)
+        create_booking_inquiry(setup_booking_inquiry())
+        create_booking_inquiry(
+            setup_booking_inquiry(
+            customer_id=uuid.UUID(user_id_from_token),
+            booking_start=yesterday,
+            booking_end=tomorrow)
+        )
+
+        # then
+        result = client.get(
+            "/api/bookings/inquiries",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}"
+            }
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 1
+
+    def test_get_booking_inquiries_with_missing_jwt(self, client, jwt):
+        # when
+        yesterday = datetime.now() - timedelta(days=1)
+        tomorrow = datetime.now() + timedelta(days=1)
+        create_booking_inquiry(setup_booking_inquiry())
+        create_booking_inquiry(
+            setup_booking_inquiry(
+            booking_start=yesterday,
+            booking_end=tomorrow)
+        )
+
+        # then
+        result = client.get(
+            "/api/bookings/inquiries",
+            headers={
+                "Content-Type": "application/json",
+            }
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.UNAUTHORIZED
 
     def test_update_booking_as_author(self, client, jwt):
         # when

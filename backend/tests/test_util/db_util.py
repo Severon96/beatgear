@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import List
 
 from db import bookings_db, hardware_db
-from models.db_models import HardwareDb, HardwareCategory, BookingDb
+from models.db_models import HardwareDb, HardwareCategory, BookingDb, BookingInquiryDb
 from models.models import BookingRequest, Hardware, Booking, BookingInquiryRequest
-from util.model_util import convert_to_db_booking
+from util.model_util import convert_to_db_booking, convert_to_db_booking_inquiry
 
 
 def setup_hardware(user_uuid = None) -> Hardware:
@@ -75,8 +75,10 @@ def setup_booking_inquiry(
         hardware_ids: List[uuid.UUID] = None,
         author_id: uuid.UUID = None,
         booking_start: datetime = datetime.now(),
-        booking_end: datetime = datetime.now()
-) -> BookingRequest:
+        booking_end: datetime = datetime.now(),
+        total_booking_days: int = 1,
+        total_amount: float = 50.00
+) -> BookingInquiryRequest:
     if customer_id is None:
         customer_id = uuid.uuid4()
 
@@ -88,21 +90,22 @@ def setup_booking_inquiry(
     if author_id is None:
         author_id = uuid.uuid4()
 
-    return BookingRequest(
+    return BookingInquiryRequest(
         id=uuid.uuid4(),
-        name='test booking',
         customer_id=customer_id,
         hardware_ids=hardware_ids,
         booking_start=booking_start,
         booking_end=booking_end,
         author_id=author_id,
+        total_booking_days=total_booking_days,
+        total_amount=total_amount
     )
 
 
-def create_booking_inquiry(booking_inquiry: BookingInquiryRequest) -> BookingDb:
+def create_booking_inquiry(booking_inquiry: BookingInquiryRequest) -> BookingInquiryDb:
     if booking_inquiry is None:
         booking_inquiry = setup_booking_inquiry()
 
-    db_booking_inquiry = convert_to_db_booking(booking)
+    db_booking_inquiry = convert_to_db_booking_inquiry(booking_inquiry)
 
-    return bookings_db.create_booking(db_booking_inquiry)
+    return bookings_db.create_booking_inquiry(db_booking_inquiry)
