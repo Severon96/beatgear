@@ -171,6 +171,26 @@ class TestBookingApi:
         assert api_booking.name == booking.name
         assert len(api_booking.hardware) == 2
 
+    def test_create_booking_with_missing_hardware(self, client, jwt):
+        # when
+        booking = setup_booking()
+        random_uuid = uuid.uuid4()
+        booking.hardware_ids = [random_uuid]
+
+        # then
+        result = client.post(
+            "/api/bookings",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=booking.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.NOT_FOUND
+        assert result.json["message"] == f"Hardware with id {random_uuid} not found"
+
     def test_create_booking_with_missing_jwt(self, client):
         # when
         booking = setup_booking()
@@ -229,6 +249,26 @@ class TestBookingApi:
         api_booking = parse_model(BookingInquiry, result.json)
         assert api_booking.customer_id == booking_inquiry.customer_id
         assert len(api_booking.hardware) == 2
+
+    def test_create_booking_inquiry_with_missing_hardware(self, client, jwt):
+        # when
+        booking_inquiry = setup_booking_inquiry()
+        random_uuid = uuid.uuid4()
+        booking_inquiry.hardware_ids = [random_uuid]
+
+        # then
+        result = client.post(
+            "/api/bookings/inquire",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=booking_inquiry.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.NOT_FOUND
+        assert result.json["message"] == f"Hardware with id {random_uuid} not found"
 
     def test_create_booking_inquiry_with_missing_jwt(self, client):
         # when

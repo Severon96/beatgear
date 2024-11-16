@@ -81,7 +81,7 @@ if __name__ == "__main__":
     )
     JWTManager(app)
 
-    app_port = os.environ.get("FLASK_RUN_PORT", 5000)
+    app_port = os.environ.get("FLASK_RUN_PORT", 8000)
 
     setup_db_engine()
 
