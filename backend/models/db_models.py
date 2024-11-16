@@ -78,6 +78,7 @@ class HardwareDb(Base):
                                                  server_default=func.now())
 
     bookings: Mapped[List["BookingDb"]] = relationship(secondary=booking_to_hardware_table, back_populates="hardware")
+    bookings_inquiries: Mapped[List["BookingInquiryDb"]] = relationship(secondary=booking_inquiries_to_hardware_table, back_populates="hardware")
 
     @validates("name", "serial", "category", "owner_id", include_removes=True)
     def validates_hardware(self, key, value, is_remove) -> str:
@@ -148,7 +149,7 @@ class BookingInquiryDb(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, onupdate=func.now(), server_default=func.now())
 
-    hardware: Mapped[List[HardwareDb]] = relationship(secondary=booking_to_hardware_table)
+    hardware: Mapped[List[HardwareDb]] = relationship(secondary=booking_inquiries_to_hardware_table)
 
     def dict(self) -> dict[Any, Any]:
         booking_dict = super().dict()
