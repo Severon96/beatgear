@@ -102,7 +102,7 @@ def setup_booking_inquiry(
     )
 
 
-def create_booking_inquiry(booking_inquiry: BookingInquiryRequest) -> BookingInquiryDb:
+def create_booking_inquiry(booking_inquiry: BookingInquiryRequest = None) -> BookingInquiryDb:
     if booking_inquiry is None:
         booking_inquiry = setup_booking_inquiry()
 

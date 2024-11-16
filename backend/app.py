@@ -39,7 +39,7 @@ def add_error_handlers(app):
     @app.errorhandler(Exception)
     def handle_exception(e):
         status_code = getattr(e, 'code', 500)
-
+        print(e)
         response = {
             "error": {
                 "type": type(e).__name__,
