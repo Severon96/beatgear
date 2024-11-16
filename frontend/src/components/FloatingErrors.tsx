@@ -1,16 +1,16 @@
 import React, {useContext} from "react";
-import Box from "@mui/material/Box";
 import {ErrorContext} from "./providers/ErrorProvider";
 import {ErrorSnackbar} from "./ErrorSnackbar";
+import {Stack} from "@mui/material";
 
 export function FloatingErrors() {
     const context = useContext(ErrorContext);
 
     return (
-        <Box>
+        <Stack>
             {context?.errors.map((error, index) => (
                 <ErrorSnackbar key={index} error={error} index={index}/>
             ))}
-        </Box>
+        </Stack>
     )
 }

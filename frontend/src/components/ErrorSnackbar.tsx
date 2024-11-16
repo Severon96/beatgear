@@ -19,7 +19,7 @@ export const ErrorSnackbar: React.FC<ErrorSnackbarProps> = ({error, index}) => {
 
     return (
         <Snackbar
-            anchorOrigin={{vertical: "bottom", horizontal: "right"}}
+            anchorOrigin={{vertical: "top", horizontal: "right"}}
             open={open}
             onClose={handleClose}
             autoHideDuration={6000}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {useContext, useEffect} from 'react';
-import {Alert, Box, Button, Card, CardMedia, Paper, Stack} from "@mui/material";
+import {Alert, AlertTitle, Box, Button, Card, CardMedia, Paper, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {CartContext} from "../components/providers/CartProvider";
 import {getReadableCategory} from "../models/Hardware";
@@ -24,10 +24,13 @@ import {jwtDecode} from "jwt-decode";
 import {useSelector} from "react-redux";
 import {isLoggedIn} from "../utils/auth";
 import NotFoundErrorPage from "./NotFoundErrorPage";
+import {useNavigate} from "react-router-dom";
+import {FloatingErrors} from "../components/FloatingErrors";
 
 export default function InquireBookingPage() {
     const inquiryStatus = useAppSelector((state) => state.bookings.inquireBookingStatus);
-
+    const createdBookingInquiry = useAppSelector((state) => state.bookings.createdBookingInquiry);
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const cartContext = useContext(CartContext);
     const errorContext = useContext(ErrorContext);
@@ -49,7 +52,7 @@ export default function InquireBookingPage() {
                 message: "Anfrage konnte nicht erstellt werden."
             })
         }
-    }, [inquiryStatus])
+    }, [navigate, inquiryStatus, createdBookingInquiry])
 
     function createBookingInquiry() {
         if (cartContext.bookingStart && cartContext.bookingEnd) {
@@ -74,7 +77,7 @@ export default function InquireBookingPage() {
     }
 
     function renderCart() {
-        return (
+        return inquiryStatus === "succeeded" ? renderSuccessPage() : (
             <Stack direction={{md: "row", xs: "column"}} gap={2}>
                 <Stack gap={2} width={"100%"}>
                     <Alert severity={"info"} color={"info"}>
@@ -189,15 +192,31 @@ export default function InquireBookingPage() {
                                         informiert.</Typography>
                                 </Alert>
                                 <Button variant="contained" color="primary" onClick={createBookingInquiry}>
-                                    <Typography fontWeight={700} color={"common.white"}>Buchung
-                                        anfragen</Typography>
+                                    <Typography fontWeight={700} color={"common.white"}>Buchung anfragen</Typography>
                                 </Button>
                             </Stack>
                         </Stack>
                     </Card>
                 </Stack>
+                <FloatingErrors/>
             </Stack>
         );
+    }
+
+    function renderSuccessPage() {
+        return (
+            <Stack>
+                <Alert severity={"success"} action={
+                    <Button href={"/"}>
+                        Zurück zum Dashboard
+                    </Button>
+                }>
+                    <Stack justifyContent={"center"} alignContent={"center"} alignItems={"center"}>
+                        <AlertTitle>Deine Buchung wurde angefragt</AlertTitle>
+                    </Stack>
+                </Alert>
+            </Stack>
+        )
     }
 
     function renderEmptyCart() {

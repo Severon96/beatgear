@@ -5,6 +5,7 @@ import axiosInstance from "../../utils/apiConfig";
 interface BookingsState {
     activeBookings: Booking[]
     createdBooking?: Booking
+    createdBookingInquiry?: BookingInquiry
     fetchBookingsStatus?: BookingsStatus
     createBookingStatus?: BookingsStatus
     inquireBookingStatus?: BookingsStatus
@@ -13,6 +14,7 @@ interface BookingsState {
 const initialState = {
     activeBookings: [],
     createdBooking: undefined,
+    createdBookingInquiry: undefined,
     fetchBookingsStatus: undefined,
     createBookingStatus: undefined,
     inquireBookingStatus: undefined
@@ -90,7 +92,8 @@ function setupCreateBookingCases(builder: ActionReducerMapBuilder<BookingsState>
 }
 
 function setupInquireBookingCases(builder: ActionReducerMapBuilder<BookingsState>) {
-    builder.addCase(inquireBooking.fulfilled, (state) => {
+    builder.addCase(inquireBooking.fulfilled, (state, action) => {
+        state.createdBookingInquiry = action.payload.data;
         state.inquireBookingStatus = "succeeded";
     })
     builder.addCase(inquireBooking.pending, (state) => {
