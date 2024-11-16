@@ -8,7 +8,7 @@ import dateutil.parser
 from flask import abort, make_response, jsonify
 from sqlalchemy import select, Row, RowMapping
 
-from models.db_models import BookingDb
+from models.db_models import BookingDb, BookingInquiryDb
 from models.models import Booking
 from util import util
 
@@ -62,6 +62,26 @@ def create_booking(booking: BookingDb) -> BookingDb:
     session.commit()
 
     return booking
+
+
+def create_booking_inquiry(booking_inquiry: BookingInquiryDb) -> BookingInquiryDb:
+    now = datetime.now()
+
+    booking_inquiry.id = uuid.uuid4()
+    booking_inquiry.customer_id = UUID(booking_inquiry.customer_id) if isinstance(booking_inquiry.customer_id, str) else booking_inquiry.customer_id
+    booking_inquiry.booking_start = dateutil.parser.isoparse(booking_inquiry.booking_start) if isinstance(
+        booking_inquiry.booking_start, str) else booking_inquiry.booking_start
+    booking_inquiry.booking_end = dateutil.parser.isoparse(booking_inquiry.booking_end) if isinstance(
+        booking_inquiry.booking_end, str) else booking_inquiry.booking_end
+    booking_inquiry.created_at = now
+    booking_inquiry.updated_at = now
+
+    session = util.get_db_session()
+
+    session.add(booking_inquiry)
+    session.commit()
+
+    return booking_inquiry
 
 
 def update_booking(booking_id: UUID, booking: BookingDb) -> Type[BookingDb]:

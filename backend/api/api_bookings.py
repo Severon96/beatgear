@@ -5,9 +5,9 @@ from flask import Blueprint, abort, request, make_response, jsonify
 from pydantic_core import ValidationError
 
 from db import bookings_db
-from models.models import AuthenticatedUser, BookingRequest, Booking
+from models.models import AuthenticatedUser, BookingRequest, Booking, BookingInquiryRequest, BookingInquiry
 from util.auth_util import token_required, user, is_author_or_admin
-from util.model_util import convert_to_db_booking
+from util.model_util import convert_to_db_booking, convert_to_db_booking_inquiry
 from util.util import parse_model, parse_model_list
 
 api = Blueprint('bookings', __name__)
@@ -61,6 +61,23 @@ def create_booking():
         booking = parse_model(Booking, db_booking.dict())
 
         return jsonify(booking.model_dump()), HTTPStatus.CREATED
+    except (ValidationError, ValueError) as e:
+        abort(HTTPStatus.BAD_REQUEST, str(e))
+
+
+@api.route("/bookings/inquire", methods=['POST'])
+@token_required
+def inquire_booking():
+    try:
+        json_body = request.json
+        request_booking_inquiry = parse_model(BookingInquiryRequest, json_body)
+
+        db_booking_inquiry = convert_to_db_booking_inquiry(request_booking_inquiry)
+        db_booking_inquiry = bookings_db.create_booking_inquiry(db_booking_inquiry)
+
+        booking_inquiry = parse_model(BookingInquiry, db_booking_inquiry.dict())
+
+        return jsonify(booking_inquiry.model_dump()), HTTPStatus.CREATED
     except (ValidationError, ValueError) as e:
         abort(HTTPStatus.BAD_REQUEST, str(e))
 

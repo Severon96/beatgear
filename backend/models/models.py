@@ -33,24 +33,43 @@ class Hardware(HardwareBase):
         use_enum_values = True
 
 
-class BookingRequest(BaseModel):
+class BookingBase(BaseModel):
     id: UUID
     name: str
     customer_id: UUID
+    booking_start: datetime
+    booking_end: datetime
+    author_id: UUID
+
+
+class BookingRequest(BookingBase):
     hardware_ids: List[UUID]
-    booking_start: datetime
-    booking_end: datetime
-    author_id: UUID
 
 
-class Booking(BaseModel):
-    id: UUID
-    name: str
-    customer_id: UUID
-    booking_start: datetime
-    booking_end: datetime
-    author_id: UUID
+class Booking(BookingBase):
     total_amount: float = 0
+    hardware: list[Hardware]
     created_at: datetime
     updated_at: datetime
+
+
+class BookingInquiryBase(BaseModel):
+    id: UUID
+    customer_id: UUID
+    booking_start: datetime
+    booking_end: datetime
+    author_id: UUID
+    total_booking_days: int = 0
+    total_amount: float = 0
+
+
+class BookingInquiryRequest(BookingInquiryBase):
+    hardware_ids: List[UUID]
+    created_at: datetime
+    updated_at: datetime
+
+
+class BookingInquiry(BaseModel):
     hardware: list[Hardware]
+    created_at: datetime
+    updated_at: datetime
