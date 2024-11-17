@@ -59,7 +59,6 @@ export default function InquireBookingPage() {
             const hardwareIds = cartContext.items.map((hardware) => hardware.id);
             dispatch(inquireBooking(
                 {
-                    id: uuid(),
                     customer_id: decodedToken ? decodedToken.sub : "",
                     hardware_ids: hardwareIds,
                     booking_start: cartContext.bookingStart,

@@ -1,3 +1,5 @@
+import uuid
+from collections import defaultdict
 from http import HTTPStatus
 from uuid import UUID
 
@@ -8,7 +10,7 @@ from db import bookings_db
 from models.db_models import BookingInquiryDb, BookingDb
 from models.models import AuthenticatedUser, BookingRequest, Booking, BookingInquiryRequest, BookingInquiry
 from util.auth_util import token_required, user, is_author_or_admin
-from util.model_util import convert_to_db_booking, convert_to_db_booking_inquiry
+from util.model_util import convert_to_db_booking, convert_to_db_booking_inquiry, update_db_booking_inquiry_from_request
 from util.util import parse_model, parse_model_list
 
 api = Blueprint('bookings', __name__)
@@ -104,11 +106,16 @@ def inquire_booking():
         request_booking_inquiry = parse_model(BookingInquiryRequest, json_body)
 
         db_booking_inquiry = convert_to_db_booking_inquiry(request_booking_inquiry)
-        db_booking_inquiry = bookings_db.create_booking_inquiry(db_booking_inquiry)
+        db_booking_inquiries = _split_booking_inquiry_by_owner(db_booking_inquiry)
 
-        booking_inquiry = parse_model(BookingInquiry, db_booking_inquiry.dict())
+        db_booking_inquiries = bookings_db.create_multiple_booking_inquiry(db_booking_inquiries)
 
-        return jsonify(booking_inquiry.model_dump()), HTTPStatus.CREATED
+        db_booking_inquiries_dicts = [db_booking_inquiry.dict() for db_booking_inquiry in db_booking_inquiries]
+        booking_inquiries = parse_model_list(BookingInquiry, db_booking_inquiries_dicts)
+
+        response_payload = [booking_inquiry.model_dump() for booking_inquiry in booking_inquiries]
+
+        return jsonify(response_payload), HTTPStatus.CREATED
     except (ValidationError, ValueError) as e:
         abort(HTTPStatus.BAD_REQUEST, str(e))
 
@@ -162,7 +169,7 @@ def update_booking_inquiry(authenticated_user: AuthenticatedUser, inquiry_id: st
         json_body = request.json
         request_booking_inquiry = BookingInquiryRequest(**json_body)
 
-        db_booking_inquiry = convert_to_db_booking_inquiry(request_booking_inquiry)
+        db_booking_inquiry = update_db_booking_inquiry_from_request(request_booking_inquiry, db_booking_inquiry)
 
         updated_booking_inquiry = bookings_db.update_booking_inquiry(booking_inquiry_uuid, db_booking_inquiry)
 
@@ -171,6 +178,28 @@ def update_booking_inquiry(authenticated_user: AuthenticatedUser, inquiry_id: st
         return jsonify(booking_inquiry.model_dump()), HTTPStatus.OK
     except (ValidationError, ValueError) as e:
         abort(make_response(jsonify(message=str(e)), HTTPStatus.BAD_REQUEST))
+
+
+def _split_booking_inquiry_by_owner(booking_inquiry: BookingInquiryDb) -> list[BookingInquiryDb]:
+    hardware_by_owner = defaultdict(list)
+    for hardware in booking_inquiry.hardware:
+        hardware_by_owner[hardware.owner_id].append(hardware)
+
+    new_booking_inquiries = []
+    for owner_id, hardware_list in hardware_by_owner.items():
+        new_booking_inquiry = BookingInquiryDb(
+            id=uuid.uuid4(),
+            customer_id=booking_inquiry.customer_id,
+            booking_start=booking_inquiry.booking_start,
+            booking_end=booking_inquiry.booking_end,
+            author_id=booking_inquiry.author_id,
+            total_booking_days=booking_inquiry.total_booking_days,
+            total_amount=sum(hardware.price_per_day * booking_inquiry.total_booking_days for hardware in hardware_list),
+            hardware=hardware_list
+        )
+        new_booking_inquiries.append(new_booking_inquiry)
+
+    return new_booking_inquiries
 
 
 def is_booking_edit_allowed(authenticated_user: AuthenticatedUser, entity: BookingDb | BookingInquiryDb) -> bool:

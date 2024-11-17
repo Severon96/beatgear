@@ -25,7 +25,6 @@ export type BookingRequest = {
 };
 
 export type BookingInquiry = {
-    id: string | null;
     customer_id: string | null;
     hardware_ids: string[];
     booking_start: Date | null;

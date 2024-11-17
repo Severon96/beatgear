@@ -54,7 +54,6 @@ class Booking(BookingBase):
 
 
 class BookingInquiryBase(BaseModel):
-    id: UUID
     customer_id: UUID
     booking_start: datetime
     booking_end: datetime
@@ -70,6 +69,7 @@ class BookingInquiryRequest(BookingInquiryBase):
 
 
 class BookingInquiry(BookingInquiryBase):
+    id: UUID
     hardware: list[Hardware]
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
