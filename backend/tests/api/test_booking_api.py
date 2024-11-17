@@ -373,7 +373,7 @@ class TestBookingApi:
 
     def test_create_booking_inquiry(self, client, jwt):
         # when
-        booking_inquiry = setup_booking_inquiry()
+        booking_inquiry = setup_booking_inquiry(total_booking_days=2)
 
         # then
         result = client.post(
@@ -389,7 +389,9 @@ class TestBookingApi:
         assert result.status_code == HTTPStatus.CREATED
         api_booking = parse_model_list(BookingInquiry, result.json)
         assert api_booking[0].customer_id == booking_inquiry.customer_id
+        assert api_booking[0].total_amount == 140
         assert api_booking[1].customer_id == booking_inquiry.customer_id
+        assert api_booking[1].total_amount == 140
         assert len(api_booking[0].hardware) == 1
         assert len(api_booking[1].hardware) == 1
         assert api_booking[0].hardware[0].owner_id != api_booking[1].hardware[0].owner_id

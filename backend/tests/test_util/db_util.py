@@ -18,6 +18,7 @@ def setup_hardware(user_uuid = None) -> Hardware:
         name='test hardware',
         serial=f'hdw-{hardware_id}',
         image=None,
+        price_per_day=70,
         category=HardwareCategory.CONTROLLER,
         owner_id=user_uuid,
         created_at=datetime.now(),
