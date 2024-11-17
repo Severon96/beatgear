@@ -24,6 +24,18 @@ def get_hardware(hardware_id: UUID) -> Type[HardwareDb]:
     return hardware
 
 
+def get_hardware_by_ids(hardware_ids: list[UUID]) -> Sequence[HardwareDb]:
+    session = util.get_db_session()
+
+    stmt = select(HardwareDb).where(HardwareDb.id.in_(hardware_ids))
+    hardware = session.scalars(stmt).all()
+
+    if len(hardware) == 0:
+        return []
+
+    return hardware
+
+
 def get_all_hardware() -> Sequence[HardwareDb]:
     session = util.get_db_session()
 

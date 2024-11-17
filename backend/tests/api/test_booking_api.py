@@ -11,7 +11,7 @@ from test_util.db_util import setup_booking_inquiry, create_booking_inquiry
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
-from util.util import parse_model
+from util.util import parse_model, parse_model_list
 
 
 @pytest.mark.usefixtures("postgres")
@@ -188,8 +188,27 @@ class TestBookingApi:
         )
 
         # expect
-        assert result.status_code == HTTPStatus.NOT_FOUND
-        assert result.json["message"] == f"Hardware with id {random_uuid} not found"
+        assert result.status_code == HTTPStatus.BAD_REQUEST
+        assert result.json["message"] == f"No available hardware provided"
+
+    def test_create_booking_with_empty_hardware(self, client, jwt):
+        # when
+        booking = setup_booking()
+        booking.hardware_ids = []
+
+        # then
+        result = client.post(
+            "/api/bookings",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=booking.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
+        assert result.json["message"] == f"No available hardware provided"
 
     def test_create_booking_with_missing_jwt(self, client):
         # when
@@ -368,9 +387,12 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.CREATED
-        api_booking = parse_model(BookingInquiry, result.json)
-        assert api_booking.customer_id == booking_inquiry.customer_id
-        assert len(api_booking.hardware) == 2
+        api_booking = parse_model_list(BookingInquiry, result.json)
+        assert api_booking[0].customer_id == booking_inquiry.customer_id
+        assert api_booking[1].customer_id == booking_inquiry.customer_id
+        assert len(api_booking[0].hardware) == 1
+        assert len(api_booking[1].hardware) == 1
+        assert api_booking[0].hardware[0].owner_id != api_booking[1].hardware[0].owner_id
 
     def test_create_booking_inquiry_with_missing_hardware(self, client, jwt):
         # when
@@ -389,8 +411,27 @@ class TestBookingApi:
         )
 
         # expect
-        assert result.status_code == HTTPStatus.NOT_FOUND
-        assert result.json["message"] == f"Hardware with id {random_uuid} not found"
+        assert result.status_code == HTTPStatus.BAD_REQUEST
+        assert result.json["message"] == f"No available hardware provided"
+
+    def test_create_booking_inquiry_with_empty_hardware(self, client, jwt):
+        # when
+        booking_inquiry = setup_booking_inquiry()
+        booking_inquiry.hardware_ids = []
+
+        # then
+        result = client.post(
+            "/api/bookings/inquire",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=booking_inquiry.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
+        assert result.json["message"] == f"No available hardware provided"
 
     def test_create_booking_inquiry_with_missing_jwt(self, client):
         # when
@@ -453,17 +494,18 @@ class TestBookingApi:
         assert len(api_booking.hardware) == 2
         assert api_booking.total_amount == 600
 
-    def test_update_booking_inquiry_with_missing_hardware(self, client, jwt):
+    def test_update_booking_inquiry_with_missing_and_existing_hardware(self, client, jwt):
         # when
         user_id_from_token = get_user_id_from_jwt(jwt)
         booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
-        create_booking_inquiry(booking_inquiry_request)
+        db_booking_inquiry = create_booking_inquiry(booking_inquiry_request)
         random_uuid = uuid.uuid4()
+        original_hardware_ids = booking_inquiry_request.hardware_ids
         booking_inquiry_request.hardware_ids = booking_inquiry_request.hardware_ids + [random_uuid]
 
         # then
         result = client.patch(
-            f"/api/bookings/inquiries/{booking_inquiry_request.id}",
+            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
             headers={
                 'Content-Type': 'application/json',
                 'Authorization': f"Bearer {jwt}",
@@ -472,18 +514,62 @@ class TestBookingApi:
         )
 
         # expect
-        assert result.status_code == HTTPStatus.NOT_FOUND
-        assert result.json["message"] == f"Hardware with id {random_uuid} not found"
+        assert result.status_code == HTTPStatus.OK
+        api_booking = parse_model(BookingInquiry, result.json)
+        assert len(api_booking.hardware) == len(original_hardware_ids)
+
+    def test_update_booking_inquiry_with_missing_hardware(self, client, jwt):
+        # when
+        user_id_from_token = get_user_id_from_jwt(jwt)
+        booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
+        db_booking_inquiry = create_booking_inquiry(booking_inquiry_request)
+        random_uuid = uuid.uuid4()
+        booking_inquiry_request.hardware_ids = [random_uuid]
+
+        # then
+        result = client.patch(
+            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=booking_inquiry_request.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
+        assert result.json["message"] == f"No available hardware provided"
+
+    def test_update_booking_inquiry_with_empty_hardware(self, client, jwt):
+        # when
+        user_id_from_token = get_user_id_from_jwt(jwt)
+        booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
+        db_booking_inquiry = create_booking_inquiry(booking_inquiry_request)
+        booking_inquiry_request.hardware_ids = []
+
+        # then
+        result = client.patch(
+            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
+            headers={
+                'Content-Type': 'application/json',
+                'Authorization': f"Bearer {jwt}",
+            },
+            data=booking_inquiry_request.model_dump_json()
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.BAD_REQUEST
+        assert result.json["message"] == f"No available hardware provided"
 
     def test_update_booking_inquiry_with_missing_jwt(self, client):
         # when
         booking_inquiry = setup_booking_inquiry()
-        create_booking_inquiry(booking_inquiry)
+        db_booking_inquiry = create_booking_inquiry(booking_inquiry)
         booking_inquiry_dict = booking_inquiry.model_dump()
 
         # then
         result = client.patch(
-            f"/api/bookings/inquiries/{booking_inquiry.id}",
+            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
             headers={
                 'Content-Type': 'application/json',
             },
@@ -497,13 +583,13 @@ class TestBookingApi:
         # when
         user_id_from_token = get_user_id_from_jwt(jwt)
         booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
-        create_booking_inquiry(booking_inquiry_request)
+        db_booking_inquiry = create_booking_inquiry(booking_inquiry_request)
         booking_inquiry_dict = booking_inquiry_request.model_dump()
         booking_inquiry_dict['total_booking_days'] = None
 
         # then
         result = client.patch(
-            f"/api/bookings/inquiries/{booking_inquiry_request.id}",
+            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
             headers={
                 'Content-Type': 'application/json',
                 'Authorization': f"Bearer {jwt}",
@@ -537,9 +623,9 @@ class TestBookingApi:
         create_booking_inquiry(setup_booking_inquiry())
         create_booking_inquiry(
             setup_booking_inquiry(
-            customer_id=uuid.UUID(user_id_from_token),
-            booking_start=yesterday,
-            booking_end=tomorrow)
+                customer_id=uuid.UUID(user_id_from_token),
+                booking_start=yesterday,
+                booking_end=tomorrow)
         )
 
         # then
@@ -562,8 +648,8 @@ class TestBookingApi:
         create_booking_inquiry(setup_booking_inquiry())
         create_booking_inquiry(
             setup_booking_inquiry(
-            booking_start=yesterday,
-            booking_end=tomorrow)
+                booking_start=yesterday,
+                booking_end=tomorrow)
         )
 
         # then

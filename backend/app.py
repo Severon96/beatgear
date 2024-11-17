@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 import psycopg2.extras
 from flask import Flask
@@ -39,7 +40,9 @@ def add_error_handlers(app):
     @app.errorhandler(Exception)
     def handle_exception(e):
         status_code = getattr(e, 'code', 500)
-        print(e)
+
+        print(e, file=sys.stderr)
+
         response = {
             "error": {
                 "type": type(e).__name__,

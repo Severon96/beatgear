@@ -91,7 +91,6 @@ def setup_booking_inquiry(
         author_id = uuid.uuid4()
 
     return BookingInquiryRequest(
-        id=uuid.uuid4(),
         customer_id=customer_id,
         hardware_ids=hardware_ids,
         booking_start=booking_start,

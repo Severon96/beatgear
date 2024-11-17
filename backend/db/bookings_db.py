@@ -101,6 +101,17 @@ def create_booking_inquiry(booking_inquiry: BookingInquiryDb) -> BookingInquiryD
     return booking_inquiry
 
 
+def create_multiple_booking_inquiry(booking_inquiries: list[BookingInquiryDb]) -> list[BookingInquiryDb]:
+    booking_inquiries = [_prepare_for_creation(booking_inquiry) for booking_inquiry in booking_inquiries]
+
+    session = util.get_db_session()
+
+    session.bulk_save_objects(booking_inquiries)
+    session.commit()
+
+    return booking_inquiries
+
+
 def get_booking_inquiry_by_id(booking_inquiry_id: UUID) -> Type[BookingInquiryDb]:
     session = util.get_db_session()
 
@@ -136,9 +147,11 @@ def update_booking_inquiry(booking_inquiry_id: UUID, booking_inquiry: BookingInq
     return db_booking_inquiry
 
 
-def _prepare_for_creation(booking: BookingDb | BookingInquiryDb) -> None:
-    booking.customer_id = UUID(booking.customer_id) if isinstance(booking.customer_id, str) else booking.customer_id
-    booking.booking_start = dateutil.parser.isoparse(booking.booking_start) if isinstance(
-        booking.booking_start, str) else booking.booking_start
-    booking.booking_end = dateutil.parser.isoparse(booking.booking_end) if isinstance(
-        booking.booking_end, str) else booking.booking_end
+def _prepare_for_creation[T](entity: T) -> T:
+    entity.customer_id = UUID(entity.customer_id) if isinstance(entity.customer_id, str) else entity.customer_id
+    entity.booking_start = dateutil.parser.isoparse(entity.booking_start) if isinstance(
+        entity.booking_start, str) else entity.booking_start
+    entity.booking_end = dateutil.parser.isoparse(entity.booking_end) if isinstance(
+        entity.booking_end, str) else entity.booking_end
+
+    return entity
