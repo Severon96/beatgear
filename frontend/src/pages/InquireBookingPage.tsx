@@ -19,7 +19,6 @@ import {
 import {ErrorContext} from "../components/providers/ErrorProvider";
 import {RootState, useAppDispatch, useAppSelector} from "../store";
 import {inquireBooking} from "../redux-tk/slices/bookingSlice";
-import {v4 as uuid} from "uuid";
 import {jwtDecode} from "jwt-decode";
 import {useSelector} from "react-redux";
 import {isLoggedIn} from "../utils/auth";
@@ -51,6 +50,8 @@ export default function InquireBookingPage() {
             errorContext.addError({
                 message: "Anfrage konnte nicht erstellt werden."
             })
+        } else if (inquiryStatus === "succeeded") {
+            cartContext.clearCart()
         }
     }, [navigate, inquiryStatus, createdBookingInquiry])
 

@@ -55,6 +55,12 @@ export const CartProvider: React.FC<CartProvider> = ({children}) => {
         localStorage.setItem('bookingEnd', date?.toString() ?? "");
     }
 
+    const clearCart = () => {
+        localStorage.removeItem("cart");
+        localStorage.removeItem("bookingStart");
+        localStorage.removeItem("bookingEnd");
+    }
+
     return (
         <CartContext.Provider value={{
             items,
@@ -64,7 +70,8 @@ export const CartProvider: React.FC<CartProvider> = ({children}) => {
             removeCartItem,
             isItemInCart,
             setBookingStartInCart,
-            setBookingEndInCart
+            setBookingEndInCart,
+            clearCart,
         }}>
             {children}
         </CartContext.Provider>

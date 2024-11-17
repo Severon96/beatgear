@@ -9,6 +9,7 @@ export interface CartContextType {
     isItemInCart: (item: Hardware) => boolean;
     setBookingStartInCart: (date: Date | null) => void;
     setBookingEndInCart: (date: Date | null) => void;
+    clearCart: () => void;
 }
 
 export const cartContextDefault: CartContextType = {
@@ -20,4 +21,5 @@ export const cartContextDefault: CartContextType = {
     isItemInCart: (item: Hardware) => Boolean(item),
     setBookingStartInCart: (date: Date | null) => console.log(date),
     setBookingEndInCart: (date: Date | null) => console.log(date),
+    clearCart: () => console.log("cleared cart"),
 }
