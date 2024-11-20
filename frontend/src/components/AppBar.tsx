@@ -29,7 +29,7 @@ const redirectPath = process.env.REACT_APP_OAUTH_REDIRECT_PATH;
 
 const drawerWidth = 240;
 const navItems = new Map<string, string>([
-    ["/browse-hardware", "Hardware suchen"],
+    ["/browse-hardware", "Mieten"],
 ]);
 
 export default function MuiHeader() {

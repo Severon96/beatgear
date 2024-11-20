@@ -37,7 +37,7 @@ export function BrowseHardwarePage() {
                 <FloatingErrors/>
                 <Paper>
                     <Box display={"flex"} flexDirection={"column"} gap={2} marginBottom={2}>
-                        <Typography variant={"h1"}>Nach Hardware suchen</Typography>
+                        <Typography variant={"h1"}>Equipment suchen</Typography>
                         <Box display="flex" flexDirection={{md: "row", xs: "column"}} gap={2}>
                             <DateTimePicker
                                 viewRenderers={{

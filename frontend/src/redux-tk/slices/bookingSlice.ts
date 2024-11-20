@@ -1,11 +1,11 @@
 import {ActionReducerMapBuilder, createAsyncThunk, createSlice} from '@reduxjs/toolkit'
-import {Booking, BookingInquiry, BookingRequest, BookingsStatus} from "../../models/Booking";
+import {Booking, BookingRequest, BookingsStatus} from "../../models/Booking";
 import axiosInstance from "../../utils/apiConfig";
 
 interface BookingsState {
     activeBookings: Booking[]
     createdBooking?: Booking
-    createdBookingInquiry?: BookingInquiry
+    createdBookingInquiry?: BookingRequest
     fetchBookingsStatus?: BookingsStatus
     createBookingStatus?: BookingsStatus
     inquireBookingStatus?: BookingsStatus
@@ -44,7 +44,7 @@ export const createBooking = createAsyncThunk(
 
 export const inquireBooking = createAsyncThunk(
     'bookings/inquire',
-    async (bookingRequest: BookingInquiry) => {
+    async (bookingRequest: BookingRequest) => {
         const response = await axiosInstance.post(
             `bookings/inquire`, bookingRequest
         )

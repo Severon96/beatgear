@@ -28,6 +28,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialVa
         hardware_ids: [],
         booking_start: null,
         booking_end: null,
+        total_amount: 0,
+        total_booking_days: 1,
         author_id: decodedToken.sub,
     };
     const [booking, setBooking] = useState<BookingRequest>(initialValues ? initialValues : initialState);

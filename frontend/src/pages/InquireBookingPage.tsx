@@ -25,6 +25,7 @@ import {isLoggedIn} from "../utils/auth";
 import NotFoundErrorPage from "./NotFoundErrorPage";
 import {useNavigate} from "react-router-dom";
 import {FloatingErrors} from "../components/FloatingErrors";
+import {v4 as uuid} from "uuid";
 
 export default function InquireBookingPage() {
     const inquiryStatus = useAppSelector((state) => state.bookings.inquireBookingStatus);
@@ -60,6 +61,8 @@ export default function InquireBookingPage() {
             const hardwareIds = cartContext.items.map((hardware) => hardware.id);
             dispatch(inquireBooking(
                 {
+                    id: uuid(),
+                    name: null,
                     customer_id: decodedToken ? decodedToken.sub : "",
                     hardware_ids: hardwareIds,
                     booking_start: cartContext.bookingStart,
