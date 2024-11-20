@@ -72,13 +72,6 @@ booking_to_hardware_table = Table(
     Column("hardware_id", ForeignKey("hardware.id")),
 )
 
-booking_to_bookings_table = Table(
-    "booking_to_bookings",
-    Base.metadata,
-    Column("booking_id", ForeignKey("bookings.id"), primary_key=True),
-    Column("child_booking_id", ForeignKey("bookings.id"), primary_key=True),
-)
-
 
 class HardwareDb(Base):
     __tablename__ = "hardware"
@@ -140,25 +133,15 @@ class BookingDb(Base):
     hardware: Mapped[List["HardwareDb"]] = relationship(
         secondary=booking_to_hardware_table
     )
-    children: Mapped[List["BookingDb"]] = relationship(
-        secondary=booking_to_bookings_table,
-        primaryjoin=id == booking_to_bookings_table.c.booking_id,
-        secondaryjoin=id == booking_to_bookings_table.c.child_booking_id,
-        foreign_keys=[
-            booking_to_bookings_table.c.booking_id,
-            booking_to_bookings_table.c.child_booking_id,
-        ],
-        back_populates="parents"
+
+    parent_booking_id: Mapped[Optional[UUID]] = mapped_column(
+        Uuid, ForeignKey("bookings.id"), nullable=True
     )
-    parents: Mapped[List["BookingDb"]] = relationship(
-        secondary=booking_to_bookings_table,
-        primaryjoin=id == booking_to_bookings_table.c.child_booking_id,
-        secondaryjoin=id == booking_to_bookings_table.c.booking_id,
-        foreign_keys=[
-            booking_to_bookings_table.c.child_booking_id,
-            booking_to_bookings_table.c.booking_id,
-        ],
-        back_populates="children"
+    parent: Mapped[Optional["BookingDb"]] = relationship(
+        "BookingDb", remote_side=[id], back_populates="children"
+    )
+    children: Mapped[List["BookingDb"]] = relationship(
+        "BookingDb", back_populates="parent", cascade="all, delete-orphan"
     )
 
     def dict(self) -> dict[Any, Any]:
@@ -167,7 +150,7 @@ class BookingDb(Base):
             hardware_obj.dict() for hardware_obj in self.hardware
         ]
         booking_dict["children"] = [booking_obj.dict() for booking_obj in self.children]
-        booking_dict["parents"] = [booking_obj.dict() for booking_obj in self.parents]
+        booking_dict["parent"] = self.parent.dict() if self.parent else None
         return booking_dict
 
     @validates(
@@ -191,3 +174,4 @@ class BookingDb(Base):
             f"booking_start={self.booking_start}, booking_end={self.booking_end}, "
             f"total_amount={self.total_amount}, created_at={self.created_at}, updated_at={self.updated_at})"
         )
+

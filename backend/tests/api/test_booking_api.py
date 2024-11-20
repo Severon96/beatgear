@@ -275,6 +275,31 @@ class TestBookingApi:
         api_booking = parse_model(Booking, result.json)
         assert api_booking.name == booking.name
 
+    def test_update_booking_as_author_with_children(self, client, jwt):
+        # when
+        user_id_from_token = get_user_id_from_jwt(jwt)
+
+
+        booking = create_booking(setup_booking(author_id=uuid.UUID(user_id_from_token)))
+        booking.name = "updated_booking_name"
+
+        request_booking = convert_to_booking_request(booking)
+
+        # then
+        result = client.patch(
+            f"/api/bookings/{booking.id}",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
+            },
+            data=request_booking.model_dump_json(),
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        api_booking = parse_model(Booking, result.json)
+        assert api_booking.name == booking.name
+
     def test_update_booking_as_admin(self, client, jwt_admin):
         # when
         booking = create_booking(setup_booking())
