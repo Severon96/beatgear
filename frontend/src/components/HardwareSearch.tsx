@@ -99,7 +99,7 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingSta
                                                     primary={hardware.name}
                                                     secondary={`Kategorie: ${getReadableCategory(hardware.category)}`}
                                                 />
-                                                <Stack direction={"row"} alignItems={"center"} justifyContent={{md: "center", xs: "space-between"}}>
+                                                <Stack direction={"row"} alignItems={"center"} justifyContent={{md: "center", xs: "space-between"}} gap={2}>
                                                     <Typography>{`${formatPrice(hardware.price_per_day)}€/Tag`}</Typography>
                                                     {
                                                         cartContext.isItemInCart(hardware) ? (
@@ -108,7 +108,7 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingSta
                                                                 aria-label="remove from cart"
                                                                 edge="start"
                                                                 onClick={() => cartContext.removeCartItem(hardware)}
-                                                                sx={{width: 60, borderRadius: "20%"}}
+                                                                sx={{width: 60, borderRadius: "20%", border: "1px solid black"}}
                                                             >
                                                                 <RemoveShoppingCartIcon/>
                                                             </IconButton>
@@ -121,9 +121,9 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingSta
                                                                     cartContext.setBookingStartInCart(bookingStart);
                                                                     cartContext.setBookingEndInCart(bookingEnd);
                                                                 }}
-                                                                sx={{width: 60, borderRadius: "20%"}}
+                                                                sx={{width: 60, borderRadius: "25%", border: "1px solid black"}}
                                                             >
-                                                                <AddShoppingCartIcon/>
+                                                                <AddShoppingCartIcon />
                                                             </IconButton>
                                                         )
                                                     }
