@@ -46,6 +46,15 @@ def get_booking(booking_id: str):
         abort(make_response(jsonify(message=f"{booking_id} is not a valid id"), HTTPStatus.BAD_REQUEST))
 
     db_booking = bookings_db.get_booking(uuid)
+
+    if db_booking is None:
+        abort(
+            make_response(
+                jsonify(message=f"Booking with id {booking_id} not found"),
+                HTTPStatus.NOT_FOUND,
+            )
+        )
+
     booking = parse_model(Booking, db_booking.dict())
 
     return jsonify(booking.model_dump()), HTTPStatus.OK
@@ -79,6 +88,14 @@ def update_booking(authenticated_user: AuthenticatedUser, booking_id: str):
 
     db_booking = bookings_db.get_booking(booking_uuid)
 
+    if db_booking is None:
+        abort(
+            make_response(
+                jsonify(message=f"Booking with id {booking_id} not found"),
+                HTTPStatus.NOT_FOUND,
+            )
+        )
+
     is_user_allowed_to_update = is_booking_edit_allowed(authenticated_user, db_booking)
     if not is_user_allowed_to_update:
         abort(make_response(jsonify(message="You are not authorized to edit this booking."), HTTPStatus.FORBIDDEN))
@@ -107,15 +124,15 @@ def inquire_booking():
 
         db_booking_inquiry = convert_to_db_booking(request_booking)
         db_booking_inquiries = _split_booking_by_owner(db_booking_inquiry)
+        # clean parent booking hardware connections
+        db_booking_inquiry.hardware = []
+        db_booking_inquiry.children = db_booking_inquiries
 
-        db_booking_inquiries = bookings_db.create_multiple_bookings(db_booking_inquiries)
+        db_booking_inquiry = bookings_db.create_booking(db_booking_inquiry)
 
-        db_booking_inquiries_dicts = [db_booking_inquiry.dict() for db_booking_inquiry in db_booking_inquiries]
-        bookings = parse_model_list(Booking, db_booking_inquiries_dicts)
+        response_booking = parse_model(Booking, db_booking_inquiry.dict())
 
-        response_payload = [booking_inquiry.model_dump() for booking_inquiry in bookings]
-
-        return jsonify(response_payload), HTTPStatus.CREATED
+        return jsonify(response_booking.model_dump()), HTTPStatus.CREATED
     except (ValidationError, ValueError) as e:
         abort(HTTPStatus.BAD_REQUEST, str(e))
 

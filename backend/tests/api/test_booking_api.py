@@ -5,6 +5,7 @@ from http import HTTPStatus
 
 import pytest
 
+from db import bookings_db
 from models.db_models import JSONEncoder
 from models.models import Booking
 from test_util import db_util
@@ -428,15 +429,19 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.CREATED
-        api_booking = parse_model_list(Booking, result.json)
-        assert api_booking[0].customer_id == booking.customer_id
-        assert api_booking[0].total_amount == 280.0
-        assert api_booking[1].customer_id == booking.customer_id
-        assert api_booking[1].total_amount == 140.0
-        assert len(api_booking[0].hardware) == 2
-        assert len(api_booking[1].hardware) == 1
+        db_booking = bookings_db.get_booking(booking.id)
+
+        assert db_booking is not None
+
+        assert db_booking.id == booking.id
+        assert db_booking.children[0].customer_id == booking.customer_id
+        assert db_booking.children[0].total_amount == 280.0
+        assert db_booking.children[1].customer_id == booking.customer_id
+        assert db_booking.children[1].total_amount == 140.0
+        assert len(db_booking.children[0].hardware) == 2
+        assert len(db_booking.children[1].hardware) == 1
         assert (
-            api_booking[0].hardware[0].owner_id != api_booking[1].hardware[0].owner_id
+            db_booking.children[0].hardware[0].owner_id != db_booking.children[1].hardware[0].owner_id
         )
 
     def test_create_booking_inquiry_with_missing_hardware(self, client, jwt):

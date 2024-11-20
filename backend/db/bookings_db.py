@@ -5,24 +5,17 @@ from uuid import UUID
 
 import dateutil.parser
 from flask import abort, make_response, jsonify
+from requests import session
 from sqlalchemy import select, Row, RowMapping
 
 from models.db_models import BookingDb
 from util import util
 
 
-def get_booking(booking_id: UUID) -> Type[BookingDb]:
+def get_booking(booking_id: UUID) -> Type[BookingDb] | None:
     session = util.get_db_session()
 
     booking = session.get(BookingDb, booking_id)
-
-    if booking is None:
-        abort(
-            make_response(
-                jsonify(message=f"Booking with id {booking_id} not found"),
-                HTTPStatus.NOT_FOUND,
-            )
-        )
 
     return booking
 
@@ -116,13 +109,18 @@ def create_multiple_bookings(
     bookings: list[BookingDb],
 ) -> list[BookingDb]:
     bookings = [_prepare_for_creation(booking_inquiry) for booking_inquiry in bookings]
+    saved_bookings = []
 
     session = util.get_db_session()
 
-    session.bulk_save_objects(bookings)
+    session.add_all(bookings)
     session.commit()
 
-    return bookings
+    for booking in bookings:
+        session.refresh(booking)
+        saved_bookings.append(booking)
+
+    return saved_bookings
 
 
 def _prepare_for_creation(entity: BookingDb) -> BookingDb:

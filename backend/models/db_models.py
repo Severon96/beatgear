@@ -150,7 +150,7 @@ class BookingDb(Base):
             hardware_obj.dict() for hardware_obj in self.hardware
         ]
         booking_dict["children"] = [booking_obj.dict() for booking_obj in self.children]
-        booking_dict["parent"] = self.parent.dict() if self.parent else None
+
         return booking_dict
 
     @validates(
