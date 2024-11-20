@@ -5,9 +5,9 @@ from http import HTTPStatus
 
 import pytest
 
-from models.db_models import BookingDb, JSONEncoder
-from models.models import Booking, BookingInquiry
-from test_util.db_util import setup_booking_inquiry, create_booking_inquiry
+from models.db_models import JSONEncoder
+from models.models import Booking
+from test_util import db_util
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
@@ -23,8 +23,8 @@ class TestBookingApi:
             "/api/bookings",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
+                "Authorization": f"Bearer {jwt}",
+            },
         )
 
         # expect
@@ -41,8 +41,8 @@ class TestBookingApi:
             "/api/bookings",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
+                "Authorization": f"Bearer {jwt}",
+            },
         )
 
         # expect
@@ -55,8 +55,8 @@ class TestBookingApi:
             "/api/bookings/current",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
+                "Authorization": f"Bearer {jwt}",
+            },
         )
 
         # expect
@@ -70,19 +70,21 @@ class TestBookingApi:
         yesterday = datetime.now() - timedelta(days=1)
         tomorrow = datetime.now() + timedelta(days=1)
         create_booking(setup_booking())
-        create_booking(setup_booking(
-            customer_id=uuid.UUID(user_id_from_token),
-            booking_start=yesterday,
-            booking_end=tomorrow
-        ))
+        create_booking(
+            setup_booking(
+                customer_id=uuid.UUID(user_id_from_token),
+                booking_start=yesterday,
+                booking_end=tomorrow,
+            )
+        )
 
         # then
         result = client.get(
             "/api/bookings/current",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
+                "Authorization": f"Bearer {jwt}",
+            },
         )
 
         # expect
@@ -101,7 +103,7 @@ class TestBookingApi:
             "/api/bookings/current",
             headers={
                 "Content-Type": "application/json",
-            }
+            },
         )
 
         # expect
@@ -116,8 +118,8 @@ class TestBookingApi:
             f"/api/bookings/{booking.id}",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
+                "Authorization": f"Bearer {jwt}",
+            },
         )
 
         # expect
@@ -131,8 +133,8 @@ class TestBookingApi:
             f"/api/bookings/{uuid.uuid4()}",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
+                "Authorization": f"Bearer {jwt}",
+            },
         )
 
         # expect
@@ -144,8 +146,8 @@ class TestBookingApi:
             f"/api/bookings/test",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
+                "Authorization": f"Bearer {jwt}",
+            },
         )
 
         # expect
@@ -159,10 +161,10 @@ class TestBookingApi:
         result = client.post(
             "/api/bookings",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=booking.model_dump_json()
+            data=booking.model_dump_json(),
         )
 
         # expect
@@ -181,10 +183,10 @@ class TestBookingApi:
         result = client.post(
             "/api/bookings",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=booking.model_dump_json()
+            data=booking.model_dump_json(),
         )
 
         # expect
@@ -200,10 +202,10 @@ class TestBookingApi:
         result = client.post(
             "/api/bookings",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=booking.model_dump_json()
+            data=booking.model_dump_json(),
         )
 
         # expect
@@ -214,16 +216,16 @@ class TestBookingApi:
         # when
         booking = setup_booking()
         booking_dict = booking.model_dump()
-        booking_dict['hardware_ids'] = ['test']
-        booking_dict['customer_id'] = None
+        booking_dict["hardware_ids"] = ["test"]
+        booking_dict["customer_id"] = None
 
         # then
         result = client.post(
             "/api/bookings",
             headers={
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            data=json.dumps(booking_dict, cls=JSONEncoder)
+            data=json.dumps(booking_dict, cls=JSONEncoder),
         )
 
         # expect
@@ -233,17 +235,17 @@ class TestBookingApi:
         # when
         booking = setup_booking()
         booking_dict = booking.model_dump()
-        booking_dict['hardware_ids'] = ['test']
-        booking_dict['customer_id'] = None
+        booking_dict["hardware_ids"] = ["test"]
+        booking_dict["customer_id"] = None
 
         # then
         result = client.post(
             "/api/bookings",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=json.dumps(booking_dict, cls=JSONEncoder)
+            data=json.dumps(booking_dict, cls=JSONEncoder),
         )
 
         # expect
@@ -262,10 +264,10 @@ class TestBookingApi:
         result = client.patch(
             f"/api/bookings/{booking.id}",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=request_booking.model_dump_json()
+            data=request_booking.model_dump_json(),
         )
 
         # expect
@@ -284,10 +286,10 @@ class TestBookingApi:
         result = client.patch(
             f"/api/bookings/{booking.id}",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt_admin}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt_admin}",
             },
-            data=request_booking.model_dump_json()
+            data=request_booking.model_dump_json(),
         )
 
         # expect
@@ -306,10 +308,10 @@ class TestBookingApi:
         result = client.patch(
             f"/api/bookings/{booking.id}",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=request_booking.model_dump_json()
+            data=request_booking.model_dump_json(),
         )
 
         # expect
@@ -324,9 +326,9 @@ class TestBookingApi:
         result = client.patch(
             f"/api/bookings/{uuid.uuid4()}",
             headers={
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            data=booking.model_dump_json()
+            data=booking.model_dump_json(),
         )
 
         # expect
@@ -341,10 +343,10 @@ class TestBookingApi:
         result = client.patch(
             f"/api/bookings/{uuid.uuid4()}",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=booking.model_dump_json()
+            data=booking.model_dump_json(),
         )
 
         # expect
@@ -356,16 +358,16 @@ class TestBookingApi:
 
         booking = create_booking(setup_booking(author_id=uuid.UUID(user_id_from_token)))
         booking_dict = booking.dict()
-        booking_dict['customer_id'] = None
+        booking_dict["customer_id"] = None
 
         # then
         result = client.patch(
             f"/api/bookings/{booking.id}",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=json.dumps(booking_dict, cls=JSONEncoder)
+            data=json.dumps(booking_dict, cls=JSONEncoder),
         )
 
         # expect
@@ -373,43 +375,61 @@ class TestBookingApi:
 
     def test_create_booking_inquiry(self, client, jwt):
         # when
-        booking_inquiry = setup_booking_inquiry(total_booking_days=2)
+        user_uuid_1 = uuid.uuid4()
+        user_uuid_2 = uuid.uuid4()
+        hardware_1 = db_util.create_hardware(
+            db_util.setup_hardware(user_uuid=user_uuid_1)
+        )
+        hardware_2 = db_util.create_hardware(
+            db_util.setup_hardware(user_uuid=user_uuid_1)
+        )
+        hardware_3 = db_util.create_hardware(
+            db_util.setup_hardware(user_uuid=user_uuid_2)
+        )
+        booking = db_util.setup_booking(
+            total_booking_days=2,
+            hardware_ids=[hardware_1.id, hardware_2.id, hardware_3.id],
+        )
 
         # then
         result = client.post(
             "/api/bookings/inquire",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=booking_inquiry.model_dump_json()
+            data=booking.model_dump_json(),
         )
 
         # expect
         assert result.status_code == HTTPStatus.CREATED
-        api_booking = parse_model_list(BookingInquiry, result.json)
-        assert api_booking[0].customer_id == booking_inquiry.customer_id
-        assert api_booking[0].total_amount == 140
-        assert api_booking[1].customer_id == booking_inquiry.customer_id
-        assert api_booking[1].total_amount == 140
-        assert len(api_booking[0].hardware) == 1
+        api_booking = parse_model_list(Booking, result.json)
+        assert api_booking[0].customer_id == booking.customer_id
+        assert api_booking[0].total_amount == 280.0
+        assert api_booking[1].customer_id == booking.customer_id
+        assert api_booking[1].total_amount == 140.0
+        assert len(api_booking[0].hardware) == 2
         assert len(api_booking[1].hardware) == 1
-        assert api_booking[0].hardware[0].owner_id != api_booking[1].hardware[0].owner_id
+        assert (
+            api_booking[0].hardware[0].owner_id != api_booking[1].hardware[0].owner_id
+        )
 
     def test_create_booking_inquiry_with_missing_hardware(self, client, jwt):
         # when
-        booking_inquiry = setup_booking_inquiry()
         random_uuid = uuid.uuid4()
-        booking_inquiry.hardware_ids = [random_uuid]
+        booking = db_util.setup_booking(
+            total_booking_days=2,
+            hardware_ids=[random_uuid],
+        )
 
         # then
         result = client.post(
             "/api/bookings/inquire",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=booking_inquiry.model_dump_json()
+            data=booking.model_dump_json(),
         )
 
         # expect
@@ -418,17 +438,19 @@ class TestBookingApi:
 
     def test_create_booking_inquiry_with_empty_hardware(self, client, jwt):
         # when
-        booking_inquiry = setup_booking_inquiry()
-        booking_inquiry.hardware_ids = []
+        booking = db_util.setup_booking(
+            total_booking_days=2,
+            hardware_ids=[],
+        )
 
         # then
         result = client.post(
             "/api/bookings/inquire",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
             },
-            data=booking_inquiry.model_dump_json()
+            data=booking.model_dump_json(),
         )
 
         # expect
@@ -437,16 +459,17 @@ class TestBookingApi:
 
     def test_create_booking_inquiry_with_missing_jwt(self, client):
         # when
-        booking = setup_booking_inquiry()
-        booking_dict = booking.model_dump()
+        booking = db_util.setup_booking(
+            total_booking_days=2,
+        )
 
         # then
         result = client.post(
             "/api/bookings/inquire",
             headers={
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            data=json.dumps(booking_dict, cls=JSONEncoder)
+            data=booking.model_dump(),
         )
 
         # expect
@@ -454,271 +477,20 @@ class TestBookingApi:
 
     def test_create_booking_inquiry_with_missing_total_booking_days(self, client, jwt):
         # when
-        booking = setup_booking_inquiry()
+        booking = db_util.setup_booking(
+            total_booking_days=2,
+        )
         booking_dict = booking.model_dump()
-        booking_dict['total_booking_days'] = None
+        booking_dict["total_booking_days"] = None
 
         # then
         result = client.post(
             "/api/bookings/inquire",
             headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
-            },
-            data=json.dumps(booking_dict, cls=JSONEncoder)
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.BAD_REQUEST
-
-    def test_update_booking_inquiry(self, client, jwt):
-        # when
-        user_id_from_token = get_user_id_from_jwt(jwt)
-        booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
-        booking_inquiry = create_booking_inquiry(booking_inquiry_request)
-
-        booking_inquiry_request.total_amount = 600
-
-        # then
-        result = client.patch(
-            f"/api/bookings/inquiries/{booking_inquiry.id}",
-            headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
-            },
-            data=booking_inquiry_request.model_dump_json()
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.OK
-        api_booking = parse_model(BookingInquiry, result.json)
-        assert api_booking.customer_id == booking_inquiry.customer_id
-        assert len(api_booking.hardware) == 2
-        assert api_booking.total_amount == 600
-
-    def test_update_booking_inquiry_with_missing_and_existing_hardware(self, client, jwt):
-        # when
-        user_id_from_token = get_user_id_from_jwt(jwt)
-        booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
-        db_booking_inquiry = create_booking_inquiry(booking_inquiry_request)
-        random_uuid = uuid.uuid4()
-        original_hardware_ids = booking_inquiry_request.hardware_ids
-        booking_inquiry_request.hardware_ids = booking_inquiry_request.hardware_ids + [random_uuid]
-
-        # then
-        result = client.patch(
-            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
-            headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
-            },
-            data=booking_inquiry_request.model_dump_json()
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.OK
-        api_booking = parse_model(BookingInquiry, result.json)
-        assert len(api_booking.hardware) == len(original_hardware_ids)
-
-    def test_update_booking_inquiry_with_missing_hardware(self, client, jwt):
-        # when
-        user_id_from_token = get_user_id_from_jwt(jwt)
-        booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
-        db_booking_inquiry = create_booking_inquiry(booking_inquiry_request)
-        random_uuid = uuid.uuid4()
-        booking_inquiry_request.hardware_ids = [random_uuid]
-
-        # then
-        result = client.patch(
-            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
-            headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
-            },
-            data=booking_inquiry_request.model_dump_json()
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.BAD_REQUEST
-        assert result.json["message"] == f"No available hardware provided"
-
-    def test_update_booking_inquiry_with_empty_hardware(self, client, jwt):
-        # when
-        user_id_from_token = get_user_id_from_jwt(jwt)
-        booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
-        db_booking_inquiry = create_booking_inquiry(booking_inquiry_request)
-        booking_inquiry_request.hardware_ids = []
-
-        # then
-        result = client.patch(
-            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
-            headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
-            },
-            data=booking_inquiry_request.model_dump_json()
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.BAD_REQUEST
-        assert result.json["message"] == f"No available hardware provided"
-
-    def test_update_booking_inquiry_with_missing_jwt(self, client):
-        # when
-        booking_inquiry = setup_booking_inquiry()
-        db_booking_inquiry = create_booking_inquiry(booking_inquiry)
-        booking_inquiry_dict = booking_inquiry.model_dump()
-
-        # then
-        result = client.patch(
-            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
-            headers={
-                'Content-Type': 'application/json',
-            },
-            data=json.dumps(booking_inquiry_dict, cls=JSONEncoder)
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.UNAUTHORIZED
-
-    def test_update_booking_inquiry_with_missing_total_booking_days(self, client, jwt):
-        # when
-        user_id_from_token = get_user_id_from_jwt(jwt)
-        booking_inquiry_request = setup_booking_inquiry(author_id=uuid.UUID(user_id_from_token))
-        db_booking_inquiry = create_booking_inquiry(booking_inquiry_request)
-        booking_inquiry_dict = booking_inquiry_request.model_dump()
-        booking_inquiry_dict['total_booking_days'] = None
-
-        # then
-        result = client.patch(
-            f"/api/bookings/inquiries/{db_booking_inquiry.id}",
-            headers={
-                'Content-Type': 'application/json',
-                'Authorization': f"Bearer {jwt}",
-            },
-            data=json.dumps(booking_inquiry_dict, cls=JSONEncoder)
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.BAD_REQUEST
-
-    def test_get_booking_inquiries_without_inquiries(self, client, jwt):
-        # then
-        result = client.get(
-            "/api/bookings/inquiries",
-            headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.OK
-        assert len(result.json) == 0
-
-    def test_get_booking_inquiries_with_inquiries(self, client, jwt):
-        # when
-        user_id_from_token = get_user_id_from_jwt(jwt)
-
-        yesterday = datetime.now() - timedelta(days=1)
-        tomorrow = datetime.now() + timedelta(days=1)
-        create_booking_inquiry(setup_booking_inquiry())
-        create_booking_inquiry(
-            setup_booking_inquiry(
-                customer_id=uuid.UUID(user_id_from_token),
-                booking_start=yesterday,
-                booking_end=tomorrow)
-        )
-
-        # then
-        result = client.get(
-            "/api/bookings/inquiries",
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.OK
-        assert len(result.json) == 1
-
-    def test_get_booking_inquiries_with_missing_jwt(self, client, jwt):
-        # when
-        yesterday = datetime.now() - timedelta(days=1)
-        tomorrow = datetime.now() + timedelta(days=1)
-        create_booking_inquiry(setup_booking_inquiry())
-        create_booking_inquiry(
-            setup_booking_inquiry(
-                booking_start=yesterday,
-                booking_end=tomorrow)
-        )
-
-        # then
-        result = client.get(
-            "/api/bookings/inquiries",
-            headers={
-                "Content-Type": "application/json",
-            }
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.UNAUTHORIZED
-
-    def test_get_booking_inquiry_by_id(self, client, jwt):
-        # when
-        booking_inquiry = create_booking_inquiry(setup_booking_inquiry())
-
-        # then
-        result = client.get(
-            f"/api/bookings/inquiries/{booking_inquiry.id}",
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.OK
-        api_booking_inquiry = parse_model(BookingInquiry, result.json)
-        assert api_booking_inquiry.id == booking_inquiry.id
-
-    def test_get_booking_inquiry_with_missing_jwt(self, client):
-        # when
-        booking_inquiry = create_booking_inquiry(setup_booking_inquiry())
-
-        # then
-        result = client.get(
-            f"/api/bookings/inquiries/{booking_inquiry.id}",
-            headers={
-                "Content-Type": "application/json",
-            }
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.UNAUTHORIZED
-
-    def test_get_missing_booking_inquiry_by_id(self, client, jwt):
-        # then
-        result = client.get(
-            f"/api/bookings/inquiries/{uuid.uuid4()}",
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
-        )
-
-        # expect
-        assert result.status_code == HTTPStatus.NOT_FOUND
-
-    def test_get_booking_inquiry_by_malformed_uuid(self, client, jwt):
-        # then
-        result = client.get(
-            f"/api/bookings/inquiries/test",
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}"
-            }
+                "Authorization": f"Bearer {jwt}",
+            },
+            data=json.dumps(booking_dict, cls=JSONEncoder),
         )
 
         # expect

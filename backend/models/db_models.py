@@ -5,8 +5,25 @@ from typing import Optional, List, Any
 from uuid import UUID
 
 from flask.json.provider import JSONProvider
-from sqlalchemy import Uuid, String, Enum, ForeignKey, Table, Column, DateTime, Float, func, Integer
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, validates
+from sqlalchemy import (
+    Uuid,
+    String,
+    Enum,
+    ForeignKey,
+    Table,
+    Column,
+    DateTime,
+    Float,
+    func,
+    Integer,
+)
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    mapped_column,
+    relationship,
+    validates,
+)
 
 
 class JSONEncoder(json.JSONEncoder):
@@ -40,12 +57,12 @@ class Base(DeclarativeBase):
 
 
 class HardwareCategory(enum.Enum):
-    CONTROLLER = 'CONTROLLER'
-    LIGHT = 'LIGHT'
-    CABLE_XLR = 'CABLE_XLR'
-    PLUG_COLD_APPLIANCE = 'PLUG_COLD_APPLIANCE'
-    LAPTOP_STAND = 'LAPTOP_STAND'
-    OTHER = 'OTHER'
+    CONTROLLER = "CONTROLLER"
+    LIGHT = "LIGHT"
+    CABLE_XLR = "CABLE_XLR"
+    PLUG_COLD_APPLIANCE = "PLUG_COLD_APPLIANCE"
+    LAPTOP_STAND = "LAPTOP_STAND"
+    OTHER = "OTHER"
 
 
 booking_to_hardware_table = Table(
@@ -55,11 +72,11 @@ booking_to_hardware_table = Table(
     Column("hardware_id", ForeignKey("hardware.id")),
 )
 
-booking_inquiries_to_hardware_table = Table(
-    "booking_inquiries_to_hardware",
+booking_to_bookings_table = Table(
+    "booking_to_bookings",
     Base.metadata,
-    Column("booking_inquiry_id", ForeignKey("booking_inquiries.id")),
-    Column("hardware_id", ForeignKey("hardware.id")),
+    Column("booking_id", ForeignKey("bookings.id"), primary_key=True),
+    Column("child_booking_id", ForeignKey("bookings.id"), primary_key=True),
 )
 
 
@@ -73,12 +90,16 @@ class HardwareDb(Base):
     category: Mapped[HardwareCategory] = mapped_column(Enum(HardwareCategory))
     owner_id: Mapped[UUID] = mapped_column(Uuid)
     price_per_day: Mapped[float] = mapped_column(Float, default=0)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), onupdate=func.now(),
-                                                 server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now(), onupdate=func.now(), server_default=func.now()
+    )
 
-    bookings: Mapped[List["BookingDb"]] = relationship(secondary=booking_to_hardware_table, back_populates="hardware")
-    bookings_inquiries: Mapped[List["BookingInquiryDb"]] = relationship(secondary=booking_inquiries_to_hardware_table, back_populates="hardware")
+    bookings: Mapped[List["BookingDb"]] = relationship(
+        secondary=booking_to_hardware_table, back_populates="hardware"
+    )
 
     @validates("name", "serial", "category", "owner_id", include_removes=True)
     def validates_hardware(self, key, value, is_remove) -> str:
@@ -90,9 +111,11 @@ class HardwareDb(Base):
             return value
 
     def __repr__(self):
-        return (f"Hardware(id={self.id}, name={self.name}, serial={self.serial}, image={self.image}, "
-                f"category={self.category}, owner_id={self.owner_id}, created_at={self.created_at}, "
-                f"updated_at={self.updated_at})")
+        return (
+            f"Hardware(id={self.id}, name={self.name}, serial={self.serial}, image={self.image}, "
+            f"category={self.category}, owner_id={self.owner_id}, created_at={self.created_at}, "
+            f"updated_at={self.updated_at})"
+        )
 
 
 class BookingDb(Base):
@@ -107,18 +130,53 @@ class BookingDb(Base):
     booking_start: Mapped[datetime] = mapped_column(DateTime)
     booking_end: Mapped[datetime] = mapped_column(DateTime)
     author_id: Mapped[UUID] = mapped_column(Uuid)
+    total_booking_days: Mapped[int] = mapped_column(Integer, default=1)
     total_amount: Mapped[float] = mapped_column(Float, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, onupdate=func.now(), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, onupdate=func.now(), server_default=func.now()
+    )
 
-    hardware: Mapped[List[HardwareDb]] = relationship(secondary=booking_to_hardware_table)
+    hardware: Mapped[List["HardwareDb"]] = relationship(
+        secondary=booking_to_hardware_table
+    )
+    children: Mapped[List["BookingDb"]] = relationship(
+        secondary=booking_to_bookings_table,
+        primaryjoin=id == booking_to_bookings_table.c.booking_id,
+        secondaryjoin=id == booking_to_bookings_table.c.child_booking_id,
+        foreign_keys=[
+            booking_to_bookings_table.c.booking_id,
+            booking_to_bookings_table.c.child_booking_id,
+        ],
+        back_populates="parents"
+    )
+    parents: Mapped[List["BookingDb"]] = relationship(
+        secondary=booking_to_bookings_table,
+        primaryjoin=id == booking_to_bookings_table.c.child_booking_id,
+        secondaryjoin=id == booking_to_bookings_table.c.booking_id,
+        foreign_keys=[
+            booking_to_bookings_table.c.child_booking_id,
+            booking_to_bookings_table.c.booking_id,
+        ],
+        back_populates="children"
+    )
 
     def dict(self) -> dict[Any, Any]:
         booking_dict = super().dict()
-        booking_dict['hardware'] = [hardware_obj.dict() for hardware_obj in self.hardware]
+        booking_dict["hardware"] = [
+            hardware_obj.dict() for hardware_obj in self.hardware
+        ]
+        booking_dict["children"] = [booking_obj.dict() for booking_obj in self.children]
+        booking_dict["parents"] = [booking_obj.dict() for booking_obj in self.parents]
         return booking_dict
 
-    @validates("customer_id", "hardware_id", "booking_start", "booking_end", include_removes=True)
+    @validates(
+        "customer_id",
+        "hardware_id",
+        "booking_start",
+        "booking_end",
+        include_removes=True,
+    )
     def validates_booking(self, key, value, is_remove) -> str:
         if is_remove:
             raise ValueError(f"not allowed to remove {key} from booking")
@@ -128,44 +186,8 @@ class BookingDb(Base):
             return value
 
     def __repr__(self):
-        return (f"Booking(id={self.id}, name={self.name}, customer_id={self.customer_id}, "
-                f"booking_start={self.booking_start}, booking_end={self.booking_end}, "
-                f"total_amount={self.total_amount}, created_at={self.created_at}, updated_at={self.updated_at})")
-
-
-class BookingInquiryDb(Base):
-    __tablename__ = "booking_inquiries"
-
-    def __init__(self, **kw: Any):
-        super().__init__(**kw)
-
-    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
-    customer_id: Mapped[UUID] = mapped_column(Uuid)
-    booking_start: Mapped[datetime] = mapped_column(DateTime)
-    booking_end: Mapped[datetime] = mapped_column(DateTime)
-    author_id: Mapped[UUID] = mapped_column(Uuid)
-    total_booking_days: Mapped[int] = mapped_column(Integer, default=0)
-    total_amount: Mapped[float] = mapped_column(Float, default=0)
-    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, onupdate=func.now(), server_default=func.now())
-
-    hardware: Mapped[List[HardwareDb]] = relationship(secondary=booking_inquiries_to_hardware_table)
-
-    def dict(self) -> dict[Any, Any]:
-        booking_dict = super().dict()
-        booking_dict['hardware'] = [hardware_obj.dict() for hardware_obj in self.hardware]
-        return booking_dict
-
-    @validates("customer_id", "hardware_id", "booking_start", "booking_end", include_removes=True)
-    def validates_booking(self, key, value, is_remove) -> str:
-        if is_remove:
-            raise ValueError(f"not allowed to remove {key} from booking")
-        else:
-            if value is None:
-                raise ValueError(f"{key} must be set")
-            return value
-
-    def __repr__(self):
-        return (f"BookingInquiry(id={self.id}, customer_id={self.customer_id}, "
-                f"booking_start={self.booking_start}, booking_end={self.booking_end},  total_booking_days={self.total_booking_days}, "
-                f"total_amount={self.total_amount}, created_at={self.created_at}, updated_at={self.updated_at})")
+        return (
+            f"Booking(id={self.id}, name={self.name}, customer_id={self.customer_id}, "
+            f"booking_start={self.booking_start}, booking_end={self.booking_end}, "
+            f"total_amount={self.total_amount}, created_at={self.created_at}, updated_at={self.updated_at})"
+        )
