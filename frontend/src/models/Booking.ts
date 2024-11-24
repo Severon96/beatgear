@@ -25,3 +25,4 @@ export type BookingRequest = {
     total_booking_days: number;
     total_amount: number;
 };
+
