@@ -6,9 +6,10 @@ from uuid import UUID
 import dateutil.parser
 from flask import abort, make_response, jsonify
 from requests import session
-from sqlalchemy import select, Row, RowMapping
+from sqlalchemy import select, Row, RowMapping, and_
+from sqlalchemy.orm import joinedload
 
-from models.db_models import BookingDb
+from models.db_models import BookingDb, HardwareDb, booking_to_hardware_table
 from util import util
 
 
@@ -36,10 +37,33 @@ def get_current_bookings_for_user(
     now = datetime.now()
 
     stmt = session.query(BookingDb).filter(
-        BookingDb.booking_end >= now, BookingDb.customer_id == user_id, BookingDb.parent_booking_id.is_(None)
+        BookingDb.booking_end >= now,
+        BookingDb.customer_id == user_id,
+        BookingDb.parent_booking_id.is_(None),
     )
 
     return session.scalars(stmt).all()
+
+
+def get_current_inquiries_for_user(
+    user_id: UUID,
+) -> Sequence[BookingDb]:
+    session = util.get_db_session()
+    now = datetime.now()
+
+    query = (
+        select(BookingDb)
+        .join(booking_to_hardware_table,
+              BookingDb.id == booking_to_hardware_table.c.booking_id)  # Join über die n:m-Tabelle
+        .join(HardwareDb, HardwareDb.id == booking_to_hardware_table.c.hardware_id)  # Join mit Hardware
+        .where(and_(
+            HardwareDb.owner_id == user_id,
+            BookingDb.booking_end >= now,
+            BookingDb.parent_booking_id.isnot(None),
+        )).distinct()
+    )
+
+    return session.execute(query).scalars().all()
 
 
 def create_booking(booking: BookingDb) -> BookingDb:

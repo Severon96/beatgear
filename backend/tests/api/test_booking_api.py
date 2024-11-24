@@ -1,6 +1,6 @@
 import json
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from http import HTTPStatus
 
 import pytest
@@ -12,7 +12,7 @@ from test_util import db_util
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
-from util.util import parse_model
+from util.util import parse_model, parse_model_list
 
 
 @pytest.mark.usefixtures("postgres")
@@ -543,3 +543,90 @@ class TestBookingApi:
 
         # expect
         assert result.status_code == HTTPStatus.BAD_REQUEST
+
+    def test_get_current_booking_inquiries_by_hardware_owner_id(self, client, jwt):
+        # when
+        now = datetime.now(tz=timezone.utc)
+        tomorrow = now + timedelta(days=1)
+        yesterday = now - timedelta(days=1)
+        day_before_yesterday = now - timedelta(days=2)
+        three_days_ago = now - timedelta(days=3)
+
+        owner_id_1 = uuid.UUID(get_user_id_from_jwt(jwt))
+        owner_id_2 = uuid.uuid4()
+
+        hardware_1 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_1))
+        hardware_2 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_1))
+        hardware_3 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_2))
+        booking_1_values = db_util.setup_booking(booking_start=yesterday, booking_end=tomorrow,
+                                        hardware_ids=[hardware_1.id, hardware_2.id])
+        booking_child_1 = create_booking(
+            booking_1_values
+        )
+        booking_child_2 = create_booking(
+            db_util.setup_booking(
+                booking_start=yesterday,
+                booking_end=tomorrow,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=day_before_yesterday,
+                booking_end=tomorrow
+            ),
+            [booking_child_1, booking_child_2]
+        )
+
+        booking_child_3 = create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday,
+                hardware_ids=[hardware_1.id, hardware_2.id]
+            )
+        )
+        booking_child_4 = create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday
+            ),
+            [booking_child_3, booking_child_4]
+        )
+
+        booking_child_5 = create_booking(
+            db_util.setup_booking(
+                booking_start=day_before_yesterday,
+                booking_end=tomorrow,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday
+            ),
+            [booking_child_5]
+        )
+
+        # then
+        result = client.get(
+            f"/api/bookings/inquiries",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
+            },
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        api_booking = parse_model_list(Booking, result.json)
+
+        assert len(api_booking) == 1
+        assert api_booking[0].id == booking_1_values.id

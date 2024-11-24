@@ -66,7 +66,7 @@ def setup_booking(
     )
 
 
-def create_booking(booking: BookingRequest, children: list[BookingDb] = []) -> BookingDb:
+def create_booking(booking: BookingRequest = None, children: list[BookingDb] = []) -> BookingDb:
     if booking is None:
         booking = setup_booking()
 
