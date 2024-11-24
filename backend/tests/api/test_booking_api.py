@@ -544,7 +544,7 @@ class TestBookingApi:
         # expect
         assert result.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_get_current_booking_inquiries_by_hardware_owner_id(self, client, jwt):
+    def test_get_current_booking_inquiries_by_hardware_owner_id_with_bookings(self, client, jwt):
         # when
         now = datetime.now(tz=timezone.utc)
         tomorrow = now + timedelta(days=1)
@@ -630,3 +630,171 @@ class TestBookingApi:
 
         assert len(api_booking) == 1
         assert api_booking[0].id == booking_1_values.id
+
+    def test_get_current_booking_inquiries_by_hardware_owner_id_without_bookings(self, client, jwt):
+        # when
+        now = datetime.now(tz=timezone.utc)
+        tomorrow = now + timedelta(days=1)
+        yesterday = now - timedelta(days=1)
+        day_before_yesterday = now - timedelta(days=2)
+        three_days_ago = now - timedelta(days=3)
+
+        owner_id_1 = uuid.uuid4()
+        owner_id_2 = uuid.uuid4()
+
+        hardware_1 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_1))
+        hardware_2 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_1))
+        hardware_3 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_2))
+        booking_1_values = db_util.setup_booking(booking_start=yesterday, booking_end=tomorrow,
+                                        hardware_ids=[hardware_1.id, hardware_2.id])
+        booking_child_1 = create_booking(
+            booking_1_values
+        )
+        booking_child_2 = create_booking(
+            db_util.setup_booking(
+                booking_start=yesterday,
+                booking_end=tomorrow,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=day_before_yesterday,
+                booking_end=tomorrow
+            ),
+            [booking_child_1, booking_child_2]
+        )
+
+        booking_child_3 = create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday,
+                hardware_ids=[hardware_1.id, hardware_2.id]
+            )
+        )
+        booking_child_4 = create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday
+            ),
+            [booking_child_3, booking_child_4]
+        )
+
+        booking_child_5 = create_booking(
+            db_util.setup_booking(
+                booking_start=day_before_yesterday,
+                booking_end=tomorrow,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday
+            ),
+            [booking_child_5]
+        )
+
+        # then
+        result = client.get(
+            f"/api/bookings/inquiries",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt}",
+            },
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        api_booking = parse_model_list(Booking, result.json)
+
+        assert len(api_booking) == 0
+
+    def test_get_current_booking_inquiries_by_hardware_owner_id_without_jwt(self, client):
+        # when
+        now = datetime.now(tz=timezone.utc)
+        tomorrow = now + timedelta(days=1)
+        yesterday = now - timedelta(days=1)
+        day_before_yesterday = now - timedelta(days=2)
+        three_days_ago = now - timedelta(days=3)
+
+        owner_id_1 = uuid.uuid4()
+        owner_id_2 = uuid.uuid4()
+
+        hardware_1 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_1))
+        hardware_2 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_1))
+        hardware_3 = db_util.create_hardware(db_util.setup_hardware(user_uuid=owner_id_2))
+        booking_1_values = db_util.setup_booking(booking_start=yesterday, booking_end=tomorrow,
+                                        hardware_ids=[hardware_1.id, hardware_2.id])
+        booking_child_1 = create_booking(
+            booking_1_values
+        )
+        booking_child_2 = create_booking(
+            db_util.setup_booking(
+                booking_start=yesterday,
+                booking_end=tomorrow,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=day_before_yesterday,
+                booking_end=tomorrow
+            ),
+            [booking_child_1, booking_child_2]
+        )
+
+        booking_child_3 = create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday,
+                hardware_ids=[hardware_1.id, hardware_2.id]
+            )
+        )
+        booking_child_4 = create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday
+            ),
+            [booking_child_3, booking_child_4]
+        )
+
+        booking_child_5 = create_booking(
+            db_util.setup_booking(
+                booking_start=day_before_yesterday,
+                booking_end=tomorrow,
+                hardware_ids=[hardware_3.id]
+            )
+        )
+        create_booking(
+            db_util.setup_booking(
+                booking_start=three_days_ago,
+                booking_end=yesterday
+            ),
+            [booking_child_5]
+        )
+
+        # then
+        result = client.get(
+            f"/api/bookings/inquiries",
+            headers={
+                "Content-Type": "application/json",
+            },
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.UNAUTHORIZED

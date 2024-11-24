@@ -59,14 +59,7 @@ def get_active_bookings(authenticated_user: AuthenticatedUser):
 def get_active_booking_inquiries(authenticated_user: AuthenticatedUser):
     db_bookings = bookings_db.get_current_inquiries_for_user(authenticated_user.id)
 
-    seen = set()
-    unique_bookings = []
-    for booking in db_bookings:
-        if booking.id not in seen:
-            unique_bookings.append(booking)
-            seen.add(booking.id)
-
-    bookings = parse_model_list(Booking, [booking.dict() for booking in unique_bookings])
+    bookings = parse_model_list(Booking, [booking.dict() for booking in db_bookings])
     response_payload = [booking.model_dump() for booking in bookings]
 
     return jsonify(response_payload), HTTPStatus.OK
