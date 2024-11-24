@@ -6,18 +6,22 @@ interface BookingsState {
     activeBookings: Booking[]
     createdBooking?: Booking
     createdBookingInquiry?: BookingRequest
+    inquiries: Booking[]
     fetchBookingsStatus?: BookingsStatus
     createBookingStatus?: BookingsStatus
     inquireBookingStatus?: BookingsStatus
+    inquiriesStatus?: BookingsStatus
 }
 
 const initialState = {
     activeBookings: [],
     createdBooking: undefined,
     createdBookingInquiry: undefined,
+    inquiries: [],
     fetchBookingsStatus: undefined,
     createBookingStatus: undefined,
-    inquireBookingStatus: undefined
+    inquireBookingStatus: undefined,
+    inquiriesStatus: undefined
 } satisfies BookingsState as BookingsState
 
 export const fetchBookings = createAsyncThunk(
@@ -53,6 +57,17 @@ export const inquireBooking = createAsyncThunk(
     }
 )
 
+export const fetchInquiries = createAsyncThunk(
+    'bookings/inquiries',
+    async () => {
+        const response = await axiosInstance.get(
+            `bookings/inquiries`
+        )
+
+        return {data: response.data};
+    }
+)
+
 const bookingsSlice = createSlice({
     name: 'bookings',
     initialState,
@@ -61,6 +76,7 @@ const bookingsSlice = createSlice({
         setupActiveBookingsCases(builder);
         setupCreateBookingCases(builder);
         setupInquireBookingCases(builder);
+        setupFetchInquiriesCases(builder)
     }
 })
 
@@ -102,6 +118,20 @@ function setupInquireBookingCases(builder: ActionReducerMapBuilder<BookingsState
     builder.addCase(inquireBooking.rejected, (state) => {
         console.log("failed booking inquiry");
         state.inquireBookingStatus = "failed";
+    })
+}
+
+function setupFetchInquiriesCases(builder: ActionReducerMapBuilder<BookingsState>) {
+    builder.addCase(fetchInquiries.fulfilled, (state, action) => {
+        state.inquiries = action.payload.data;
+        state.inquiriesStatus = "succeeded";
+    })
+    builder.addCase(fetchInquiries.pending, (state) => {
+        state.inquiriesStatus = "loading";
+    })
+    builder.addCase(fetchInquiries.rejected, (state) => {
+        console.log("failed fetching inquiries");
+        state.inquiriesStatus = "failed";
     })
 }
 
