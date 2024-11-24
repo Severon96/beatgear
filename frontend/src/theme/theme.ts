@@ -95,6 +95,14 @@ theme = createTheme(theme, {
                     padding: 10
                 }
             }
+        },
+        MuiLink: {
+            styleOverrides: {
+                root: {
+                    textDecoration: "none",
+                    color: common.black,
+                }
+            }
         }
     },
     typography: {

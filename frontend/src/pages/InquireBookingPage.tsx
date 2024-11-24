@@ -23,14 +23,12 @@ import {jwtDecode} from "jwt-decode";
 import {useSelector} from "react-redux";
 import {isLoggedIn} from "../utils/auth";
 import NotFoundErrorPage from "./NotFoundErrorPage";
-import {useNavigate} from "react-router-dom";
 import {FloatingErrors} from "../components/FloatingErrors";
 import {v4 as uuid} from "uuid";
 
 export default function InquireBookingPage() {
     const inquiryStatus = useAppSelector((state) => state.bookings.inquireBookingStatus);
     const createdBookingInquiry = useAppSelector((state) => state.bookings.createdBookingInquiry);
-    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const cartContext = useContext(CartContext);
     const errorContext = useContext(ErrorContext);
@@ -54,7 +52,7 @@ export default function InquireBookingPage() {
         } else if (inquiryStatus === "succeeded") {
             cartContext.clearCart()
         }
-    }, [navigate, inquiryStatus, createdBookingInquiry])
+    }, [inquiryStatus, createdBookingInquiry])
 
     function createBookingInquiry() {
         if (cartContext.bookingStart && cartContext.bookingEnd) {

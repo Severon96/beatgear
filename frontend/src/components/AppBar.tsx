@@ -14,9 +14,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
 import {isLoggedIn} from "../utils/auth";
-import {Link, Stack} from "@mui/material";
+import {Avatar, Link, Menu, MenuItem, Stack, Tooltip} from "@mui/material";
 import {useSelector} from "react-redux";
 import {RootState} from "../store";
 import HeaderCartIcon from "./HeaderCartIcon";
@@ -31,14 +30,30 @@ const drawerWidth = 240;
 const navItems = new Map<string, string>([
     ["/browse-hardware", "Mieten"],
 ]);
+const settings = new Map<string, string>([
+    ["/inquiries", "Anfragen"],
+]);
 
 export default function MuiHeader() {
     const {accessToken, idToken} = useSelector((state: RootState) => state.auth);
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+    if (!Array.from(settings.values()).some((value) => value === "Abmelden")) {
+        settings.set(`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`, "Abmelden")
+    }
 
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
+    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+
 
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{textAlign: 'center'}}>
@@ -172,17 +187,7 @@ export default function MuiHeader() {
                          color={"colors.common.black"}>
                         <HeaderCartIcon/>
                         {
-                            isLoggedIn(accessToken) ?? false ? (
-                                <IconButton
-                                    href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/logout?id_token_hint=${idToken}&post_logout_redirect_uri=${rootUrl}/auth/logout`}
-                                    aria-label="logout"
-                                    sx={{
-                                        color: "common.black"
-                                    }}
-                                >
-                                    <LogoutIcon/>
-                                </IconButton>
-                            ) : (
+                            !isLoggedIn(accessToken) && (
                                 <IconButton
                                     href={`${oauthUrl}/realms/${realmName}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${rootUrl}${redirectPath}&response_type=code&scope=openid`}
                                     aria-label="login"
@@ -195,6 +200,40 @@ export default function MuiHeader() {
                             )
                         }
                     </Box>
+                    {isLoggedIn(accessToken) && (
+                        <Box sx={{flexGrow: 0}}>
+                            <Tooltip title="Open settings">
+                                <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{mt: '45px'}}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                            >
+                                {Array.from(settings.entries()).map(([link, label]) => (
+                                    <MenuItem key={link} onClick={handleCloseUserMenu}>
+                                        <Link href={link}>
+                                            <Typography sx={{textAlign: 'center'}}>{label}</Typography>
+                                        </Link>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                        </Box>
+                    )
+                    }
                 </Toolbar>
             </AppBar>
             <nav>

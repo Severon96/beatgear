@@ -13,6 +13,7 @@ import InquireBookingPage from "../InquireBookingPage";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {CircularProgress, Stack} from "@mui/material";
+import InquiriesPage from "../InquiriesPage";
 
 
 const router = createBrowserRouter([
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     {
         path: "/request-booking",
         element: <InquireBookingPage/>
+    },
+    {
+        path: "/inquiries",
+        element: <InquiriesPage/>
     },
     {
         path: "/auth/callback",
