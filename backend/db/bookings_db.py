@@ -36,7 +36,7 @@ def get_current_bookings_for_user(
     now = datetime.now()
 
     stmt = session.query(BookingDb).filter(
-        BookingDb.booking_end >= now, BookingDb.customer_id == user_id
+        BookingDb.booking_end >= now, BookingDb.customer_id == user_id, BookingDb.parent_booking_id.is_(None)
     )
 
     return session.scalars(stmt).all()

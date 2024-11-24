@@ -15,7 +15,7 @@ from sqlalchemy import (
     DateTime,
     Float,
     func,
-    Integer,
+    Integer, Boolean,
 )
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -125,6 +125,7 @@ class BookingDb(Base):
     author_id: Mapped[UUID] = mapped_column(Uuid)
     total_booking_days: Mapped[int] = mapped_column(Integer, default=1)
     total_amount: Mapped[float] = mapped_column(Float, default=0)
+    booking_confirmed: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, onupdate=func.now(), server_default=func.now()

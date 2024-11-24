@@ -9,7 +9,7 @@ from pydantic_core import ValidationError
 from db import bookings_db
 from models.db_models import BookingDb
 from models.models import AuthenticatedUser, BookingRequest, Booking
-from util.auth_util import token_required, user, is_author_or_admin
+from util.auth_util import token_required, user, is_author_or_admin, is_admin
 from util.model_util import convert_to_db_booking
 from util.util import parse_model, parse_model_list
 
@@ -18,7 +18,11 @@ api = Blueprint('bookings', __name__)
 
 @api.route("/bookings", methods=['GET'])
 @token_required
-def get_all_bookings():
+@user
+def get_all_bookings(authenticated_user: AuthenticatedUser):
+    if is_admin(authenticated_user) is False:
+        abort(make_response(jsonify(message="You are not authorized to get all bookings."), HTTPStatus.FORBIDDEN))
+
     db_bookings = bookings_db.get_all_bookings()
     bookings = parse_model_list(Booking, [booking.dict() for booking in db_bookings])
     response_payload = [booking.model_dump_json() for booking in bookings]
@@ -31,7 +35,19 @@ def get_all_bookings():
 @user
 def get_active_bookings(authenticated_user: AuthenticatedUser):
     db_bookings = bookings_db.get_current_bookings_for_user(authenticated_user.id)
-    bookings = parse_model_list(Booking, [booking.dict() for booking in db_bookings])
+
+    populated_parent_bookings = []
+    for booking in db_bookings:
+        booking_hardware = []
+
+        for child_booking in booking.children:
+            booking_hardware += child_booking.hardware
+
+        booking.hardware = booking_hardware
+        booking.children = []
+        populated_parent_bookings.append(booking)
+
+    bookings = parse_model_list(Booking, [booking.dict() for booking in populated_parent_bookings])
     response_payload = [booking.model_dump() for booking in bookings]
 
     return jsonify(response_payload), HTTPStatus.OK

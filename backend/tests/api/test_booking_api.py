@@ -12,19 +12,19 @@ from test_util import db_util
 from tests.test_util.auth_util import get_user_id_from_jwt
 from tests.test_util.db_util import create_booking, setup_booking
 from util.model_util import convert_to_booking_request
-from util.util import parse_model, parse_model_list
+from util.util import parse_model
 
 
 @pytest.mark.usefixtures("postgres")
 class TestBookingApi:
 
-    def test_get_all_bookings_without_bookings(self, client, jwt):
+    def test_get_all_bookings_without_bookings(self, client, jwt_admin):
         # then
         result = client.get(
             "/api/bookings",
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {jwt}",
+                "Authorization": f"Bearer {jwt_admin}",
             },
         )
 
@@ -32,7 +32,25 @@ class TestBookingApi:
         assert result.status_code == HTTPStatus.OK
         assert len(result.json) == 0
 
-    def test_get_all_bookings_with_bookings(self, client, jwt):
+    def test_get_all_bookings_with_bookings(self, client, jwt_admin):
+        # when
+        create_booking(setup_booking())
+        create_booking(setup_booking())
+
+        # then
+        result = client.get(
+            "/api/bookings",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {jwt_admin}",
+            },
+        )
+
+        # expect
+        assert result.status_code == HTTPStatus.OK
+        assert len(result.json) == 2
+
+    def test_get_all_bookings_with_bookings_as_regular_user(self, client, jwt):
         # when
         create_booking(setup_booking())
         create_booking(setup_booking())
@@ -47,8 +65,8 @@ class TestBookingApi:
         )
 
         # expect
-        assert result.status_code == HTTPStatus.OK
-        assert len(result.json) == 2
+        assert result.status_code == HTTPStatus.FORBIDDEN
+        assert result.json['message'] == "You are not authorized to get all bookings."
 
     def test_get_active_bookings_without_bookings(self, client, jwt):
         # then
