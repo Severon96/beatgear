@@ -42,6 +42,7 @@ export default function InquiriesPage() {
                                         <Typography gutterBottom sx={{color: 'text.secondary', fontSize: 14}}>
                                             {`${formatDateTime(inquiry.booking_start)} - ${formatDateTime(inquiry.booking_end)}`}
                                         </Typography>
+                                        <Typography>Test</Typography>
                                     </CardContent>
                                 </Card>
                             )
