@@ -31,13 +31,24 @@ export const formatPrice = (num: number): string => {
     }).format(num);
 };
 
-export const byteArrayToDataUrl = (byteArray: Uint8Array) => {
-    const blob = new Blob([byteArray], { type: 'image/png' });
+export const calculateHardwarePrice = (hardwarePrice: number, bookingDuration: number): string => {
+    return formatPrice(hardwarePrice * bookingDuration)
+}
+
+export const calculateTotalBookingPrice = (bookingDuration: number, hardware: Hardware[]): string => {
+    return formatPrice(hardware.reduce((sum, hardware) => sum + hardware.price_per_day, 0) * bookingDuration)
+}
+
+export const byteArrayToDataUrl = (byteArray: Uint8Array): string => {
+    const blob = new Blob([byteArray], {type: 'image/png'});
     return URL.createObjectURL(blob);
 };
 
-export const getRoundedDaysDifference = (bookingStart: Date | null, bookingEnd: Date | null) => {
+export const getRoundedDaysDifference = (bookingStart: Date | string | null, bookingEnd: Date | string | null): number => {
     if (bookingStart && bookingEnd) {
+        bookingStart = typeof bookingStart == "string" ? new Date(Date.parse(bookingStart)) : bookingStart;
+        bookingEnd = typeof bookingEnd == "string" ? new Date(Date.parse(bookingEnd)) : bookingEnd;
+
         const diffInMillis = Math.abs(bookingEnd.getTime() - bookingStart.getTime());
         const oneDayInMillis = 24 * 60 * 60 * 1000;
         const diffInDays = diffInMillis / oneDayInMillis;
