@@ -37,7 +37,7 @@ def get_active_bookings(authenticated_user: AuthenticatedUser):
     db_bookings = bookings_db.get_current_bookings_for_user(authenticated_user.id)
 
     populated_parent_bookings = []
-    for booking in db_bookings:
+    for booking, hardware in db_bookings:
         booking_hardware = []
 
         for child_booking in booking.children:

@@ -10,6 +10,8 @@ import {
 import Divider from "@mui/material/Divider";
 import HideImageOutlinedIcon from "@mui/icons-material/HideImageOutlined";
 import {Booking} from "../models/Booking";
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from "@mui/material/IconButton";
 
 interface BookingCardProps {
     booking: Booking;
@@ -25,9 +27,6 @@ export const BookingCard: React.FC<BookingCardProps> = ({booking}) => {
                 <Stack flexDirection={"row"} justifyContent={"space-between"}>
                     <Typography variant={"h4"}>
                         {`${formatDateTime(booking.booking_start)} - ${formatDateTime(booking.booking_end)}`}
-                    </Typography>
-                    <Typography fontWeight={700} fontSize={22}>
-                        {`${totalBookingPrice}€`}
                     </Typography>
                 </Stack>
                 <Divider/>
@@ -69,11 +68,11 @@ export const BookingCard: React.FC<BookingCardProps> = ({booking}) => {
                         )
                     })}
                 </List>
-            </Stack>
-            <Stack alignItems={"start"}>
-                <Button>
-                    Bearbeiten
-                </Button>
+                <Stack flexDirection={"row"} justifyContent={"end"}>
+                    <Typography fontWeight={700} fontSize={22}>
+                        {`${totalBookingPrice}€`}
+                    </Typography>
+                </Stack>
             </Stack>
         </Stack>
     )

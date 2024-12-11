@@ -5,9 +5,8 @@ from uuid import UUID
 
 import dateutil.parser
 from flask import abort, make_response, jsonify
-from requests import session
 from sqlalchemy import select, Row, RowMapping, and_
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import aliased
 
 from models.db_models import BookingDb, HardwareDb, booking_to_hardware_table
 from util import util
@@ -31,22 +30,33 @@ def get_all_bookings() -> Sequence[BookingDb]:
 
 
 def get_current_bookings_for_user(
-    user_id: UUID,
+        user_id: UUID,
 ) -> Sequence[Row[Any] | RowMapping | Any]:
     session = util.get_db_session()
     now = datetime.now()
 
-    stmt = session.query(BookingDb).filter(
-        BookingDb.booking_end >= now,
-        BookingDb.customer_id == user_id,
-        BookingDb.parent_booking_id.is_(None),
+    association_alias = aliased(booking_to_hardware_table)
+
+    stmt = (
+        session.query(BookingDb, association_alias.c.price_per_day_overwrite)
+        .join(HardwareDb, BookingDb.hardware)  # Join mit der Hardware-Tabelle
+        .join(
+            association_alias,
+            (association_alias.c.booking_id == BookingDb.id)
+            & (association_alias.c.hardware_id == HardwareDb.id),
+        )
+        .filter(
+            BookingDb.booking_end >= now,
+            BookingDb.customer_id == user_id,
+            BookingDb.parent_booking_id.is_(None),
+        )
     )
 
-    return session.scalars(stmt).all()
+    return stmt.all()
 
 
 def get_current_inquiries_for_user(
-    user_id: UUID,
+        user_id: UUID,
 ) -> Sequence[BookingDb]:
     session = util.get_db_session()
     now = datetime.now()
@@ -78,7 +88,7 @@ def create_booking(booking: BookingDb) -> BookingDb:
 
 
 def get_current_booking_inquiries_for_user(
-    user_id: UUID,
+        user_id: UUID,
 ) -> Sequence[Row[Any] | RowMapping | Any]:
     session = util.get_db_session()
     now = datetime.now()
@@ -130,7 +140,7 @@ def update_booking(booking_id: UUID, booking: BookingDb) -> Type[BookingDb]:
 
 
 def create_multiple_bookings(
-    bookings: list[BookingDb],
+        bookings: list[BookingDb],
 ) -> list[BookingDb]:
     bookings = [_prepare_for_creation(booking_inquiry) for booking_inquiry in bookings]
     saved_bookings = []

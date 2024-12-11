@@ -70,6 +70,7 @@ booking_to_hardware_table = Table(
     Base.metadata,
     Column("booking_id", ForeignKey("bookings.id")),
     Column("hardware_id", ForeignKey("hardware.id")),
+    Column("price_per_day_overwrite", Float, nullable=True)
 )
 
 
