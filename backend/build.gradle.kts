@@ -37,6 +37,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("org.flywaydb:flyway-core:11.0.1")
     implementation("org.flywaydb:flyway-database-postgresql:11.0.1")
+    annotationProcessor("org.mapstruct:mapstruct-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test:6.3.0")
@@ -64,4 +65,18 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks {
+    compileJava {
+        options.annotationProcessorPath = configurations.annotationProcessor.get()
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("build/generated/sources/annotationProcessor/java/main")
+        }
+    }
 }
