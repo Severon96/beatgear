@@ -4,6 +4,8 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
 
+@Entity
+@Table(name = "bookings")
 data class Booking(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

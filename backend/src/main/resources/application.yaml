@@ -9,6 +9,8 @@ spring:
     url: "jdbc:postgresql://localhost:5432/beatgear"
     username: "postgres"
     password: ""
+  sql:
+    init-mode: "always"
 
     jpa:
       hibernate:
