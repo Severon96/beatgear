@@ -41,7 +41,7 @@ export default function InquireBookingPage() {
 
     const roundedDays = getRoundedDaysDifference(cartContext.bookingStart, cartContext.bookingEnd);
 
-    const rawItemPrice = cartContext.items.reduce((sum, item) => sum + item.price_per_day, 0);
+    const rawItemPrice = cartContext.items.reduce((sum, item) => sum + item.pricePerDay, 0);
     const totalAmount = roundedDays * rawItemPrice;
 
     useEffect(() => {
@@ -61,13 +61,13 @@ export default function InquireBookingPage() {
                 {
                     id: uuid(),
                     name: null,
-                    customer_id: decodedToken ? decodedToken.sub : "",
-                    hardware_ids: hardwareIds,
-                    booking_start: cartContext.bookingStart,
-                    booking_end: cartContext.bookingEnd,
-                    total_booking_days: roundedDays,
-                    total_amount: totalAmount,
-                    author_id: decodedToken.sub
+                    customerId: decodedToken ? decodedToken.sub : "",
+                    hardwareIds: hardwareIds,
+                    bookingStart: cartContext.bookingStart,
+                    bookingEnd: cartContext.bookingEnd,
+                    totalBookingDays: roundedDays,
+                    totalAmount: totalAmount,
+                    authorId: decodedToken.sub
                 }
             ))
         } else {
@@ -124,7 +124,7 @@ export default function InquireBookingPage() {
                                                                 </Stack>
                                                             </Stack>
                                                             <Stack direction={"row"} gap={1} alignItems={"center"}>
-                                                                <Typography>{`${formatPrice(hardware.price_per_day)}€/Tag`}</Typography>
+                                                                <Typography>{`${formatPrice(hardware.pricePerDay)}€/Tag`}</Typography>
                                                                 <IconButton
                                                                     color="inherit"
                                                                     aria-label="remove from cart"

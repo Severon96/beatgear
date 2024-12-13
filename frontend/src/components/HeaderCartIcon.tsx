@@ -71,7 +71,7 @@ export default function HeaderCartIcon() {
                                         <Stack key={index} direction={"row"} justifyContent={"space-between"}
                                                alignItems={"center"}>
                                             <Typography>{item.name}</Typography>
-                                            <Typography>{`${item.price_per_day}€/Tag`}</Typography>
+                                            <Typography>{`${item.pricePerDay}€/Tag`}</Typography>
                                         </Stack>
                                     ))
                                 }

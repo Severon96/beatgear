@@ -35,17 +35,6 @@ export const fetchBookings = createAsyncThunk(
     }
 )
 
-export const createBooking = createAsyncThunk(
-    'bookings/create',
-    async (bookingRequest: BookingRequest) => {
-        const response = await axiosInstance.post(
-            `bookings`, bookingRequest
-        )
-
-        return {data: response.data};
-    }
-)
-
 export const inquireBooking = createAsyncThunk(
     'bookings/inquire',
     async (bookingRequest: BookingRequest) => {
@@ -74,7 +63,6 @@ const bookingsSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         setupActiveBookingsCases(builder);
-        setupCreateBookingCases(builder);
         setupInquireBookingCases(builder);
         setupFetchInquiriesCases(builder)
     }
@@ -90,20 +78,6 @@ function setupActiveBookingsCases(builder: ActionReducerMapBuilder<BookingsState
     })
     builder.addCase(fetchBookings.rejected, (state) => {
         state.fetchBookingsStatus = "failed";
-    })
-}
-
-function setupCreateBookingCases(builder: ActionReducerMapBuilder<BookingsState>) {
-    builder.addCase(createBooking.fulfilled, (state, action) => {
-        state.createdBooking = action.payload.data;
-        state.createBookingStatus = "succeeded";
-    })
-    builder.addCase(createBooking.pending, (state) => {
-        state.createBookingStatus = "loading";
-    })
-    builder.addCase(createBooking.rejected, (state) => {
-        console.log("failed booking creation");
-        state.createBookingStatus = "failed";
     })
 }
 

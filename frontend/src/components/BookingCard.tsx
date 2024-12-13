@@ -18,7 +18,7 @@ interface BookingCardProps {
 }
 
 export const BookingCard: React.FC<BookingCardProps> = ({booking}) => {
-    const bookingDays = getRoundedDaysDifference(booking.booking_start, booking.booking_end);
+    const bookingDays = getRoundedDaysDifference(booking.bookingStart, booking.bookingEnd);
     const totalBookingPrice = calculateTotalBookingPrice(bookingDays, booking.hardware);
 
     return (
@@ -26,13 +26,13 @@ export const BookingCard: React.FC<BookingCardProps> = ({booking}) => {
             <Stack gap={2}>
                 <Stack flexDirection={"row"} justifyContent={"space-between"}>
                     <Typography variant={"h4"}>
-                        {`${formatDateTime(booking.booking_start)} - ${formatDateTime(booking.booking_end)}`}
+                        {`${formatDateTime(booking.bookingStart)} - ${formatDateTime(booking.bookingEnd)}`}
                     </Typography>
                 </Stack>
                 <Divider/>
                 <List>
                     {booking.hardware.map((hardware) => {
-                        const hardwareTotalPrice = calculateHardwarePrice(hardware.price_per_day, bookingDays)
+                        const hardwareTotalPrice = calculateHardwarePrice(hardware.pricePerDay, bookingDays)
 
                         return (
                             <ListItem key={hardware.id} alignItems={"flex-start"}>

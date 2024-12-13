@@ -36,7 +36,7 @@ export const calculateHardwarePrice = (hardwarePrice: number, bookingDuration: n
 }
 
 export const calculateTotalBookingPrice = (bookingDuration: number, hardware: Hardware[]): string => {
-    return formatPrice(hardware.reduce((sum, hardware) => sum + hardware.price_per_day, 0) * bookingDuration)
+    return formatPrice(hardware.reduce((sum, hardware) => sum + hardware.pricePerDay, 0) * bookingDuration)
 }
 
 export const byteArrayToDataUrl = (byteArray: Uint8Array): string => {

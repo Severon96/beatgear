@@ -24,13 +24,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialVa
     const initialState: BookingRequest = {
         id: uuid(),
         name: '',
-        customer_id: decodedToken.sub,
-        hardware_ids: [],
-        booking_start: null,
-        booking_end: null,
-        total_amount: 0,
-        total_booking_days: 1,
-        author_id: decodedToken.sub,
+        customerId: decodedToken.sub,
+        hardwareIds: [],
+        bookingStart: null,
+        bookingEnd: null,
+        totalAmount: 0,
+        totalBookingDays: 1,
+        authorId: decodedToken.sub,
     };
     const [booking, setBooking] = useState<BookingRequest>(initialValues ? initialValues : initialState);
 
@@ -40,12 +40,12 @@ export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialVa
             [field]: value,
         }));
 
-        if (booking.booking_start && (field == 'booking_end' && value)) {
+        if (booking.bookingStart && (field == 'bookingEnd' && value)) {
             const date = value as Date;
 
             dispatch(fetchHardware({
-                "booking_start": booking.booking_start.toISOString(),
-                "booking_end": date.toISOString()
+                "bookingStart": booking.bookingStart.toISOString(),
+                "bookingEnd": date.toISOString()
             }))
         }
     };
@@ -76,8 +76,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialVa
                             seconds: renderTimeViewClock,
                         }}
                         label="Booking Start"
-                        value={booking.booking_start}
-                        onChange={(date: Date | null) => handleChange('booking_start', date || new Date())}
+                        value={booking.bookingStart}
+                        onChange={(date: Date | null) => handleChange('bookingStart', date || new Date())}
                         slotProps={{textField: {fullWidth: true, required: true}}}
                         minDate={new Date()}
                     />
@@ -88,16 +88,16 @@ export const BookingForm: React.FC<BookingFormProps> = ({onFormSubmit, initialVa
                             seconds: renderTimeViewClock,
                         }}
                         label="Booking End"
-                        value={booking.booking_end}
-                        disabled={booking.booking_start === null}
-                        onChange={(date: Date | null) => handleChange('booking_end', date || new Date())}
+                        value={booking.bookingEnd}
+                        disabled={booking.bookingStart === null}
+                        onChange={(date: Date | null) => handleChange('bookingEnd', date || new Date())}
                         slotProps={{textField: {fullWidth: true, required: true}}}
-                        minDate={booking.booking_start ?? new Date()}
+                        minDate={booking.bookingStart ?? new Date()}
                     />
                     <HardwareSelect
-                        disabled={booking.booking_start === null || booking.booking_end === null}
+                        disabled={booking.bookingStart === null || booking.bookingEnd === null}
                         handleChange={(selectedHardware) => {
-                            handleChange('hardware_ids', selectedHardware.target.value);
+                            handleChange('hardwareIds', selectedHardware.target.value);
                         }}
                     />
                     <Button variant="contained" color="primary" type="submit">

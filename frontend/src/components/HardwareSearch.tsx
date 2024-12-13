@@ -100,7 +100,7 @@ const HardwareSearch: React.FC<HardwareSearchProps> = ({hardwareList, bookingSta
                                                     secondary={`Kategorie: ${getReadableCategory(hardware.category)}`}
                                                 />
                                                 <Stack direction={"row"} alignItems={"center"} justifyContent={{md: "center", xs: "space-between"}} gap={2}>
-                                                    <Typography>{`${formatPrice(hardware.price_per_day)}€/Tag`}</Typography>
+                                                    <Typography>{`${formatPrice(hardware.pricePerDay)}€/Tag`}</Typography>
                                                     {
                                                         cartContext.isItemInCart(hardware) ? (
                                                             <IconButton
