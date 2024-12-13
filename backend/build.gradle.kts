@@ -20,17 +20,17 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.3.2")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-client:3.3.2")
+	implementation("org.springframework.boot:spring-boot-starter-web:3.3.2")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.mapstruct:mapstruct:1.6.3")
-	implementation("org.postgresql:postgresql")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("org.postgresql:postgresql:42.7.3")
+	testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.1")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testImplementation("org.springframework.security:spring-security-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.springframework.security:spring-security-test:6.3.0")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.3")
 }
 
 kotlin {
