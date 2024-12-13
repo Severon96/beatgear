@@ -54,7 +54,7 @@ export function BookingsWidget() {
                                                 <Stack spacing={"0"}>
                                                     <ListItemText
                                                         primary={booking.name}
-                                                        secondary={`${formatDateTime(booking.booking_start)} - ${formatDateTime(booking.booking_end)}`}/>
+                                                        secondary={`${formatDateTime(booking.bookingStart)} - ${formatDateTime(booking.bookingEnd)}`}/>
                                                     <ListItemText secondary={`${hardwareNames.join(", ")}`}/>
                                                 </Stack>
                                             </ListItem>

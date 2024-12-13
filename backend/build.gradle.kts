@@ -28,9 +28,10 @@ flyway {
 
 dependencies {
     runtimeOnly("org.flywaydb:flyway-gradle-plugin:11.0.1")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.3.2")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client:3.3.2")
-    implementation("org.springframework.boot:spring-boot-starter-web:3.3.2")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.4.0")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.4.0")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.4.0")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.4.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.mapstruct:mapstruct:1.6.3")
@@ -65,18 +66,4 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-tasks {
-    compileJava {
-        options.annotationProcessorPath = configurations.annotationProcessor.get()
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir("build/generated/sources/annotationProcessor/java/main")
-        }
-    }
 }

@@ -5,10 +5,18 @@ spring:
     default: "dev"
     active: "dev"
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://keycloak:8080/realms/bg-test-realm"
+          jwk-set-uri: "http://keycloak:8080/realms/bg-test-realm/protocol/openid-connect/certs"
+
   datasource:
     url: "jdbc:postgresql://localhost:5432/beatgear"
     username: "postgres"
     password: ""
+
 
   flyway:
     enabled: true

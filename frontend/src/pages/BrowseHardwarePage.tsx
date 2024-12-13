@@ -25,8 +25,8 @@ export function BrowseHardwarePage() {
     useEffect(() => {
         if (bookingStart && bookingEnd && !hardwareStatus) {
             dispatch(fetchHardware({
-                "booking_start": bookingStart.toISOString(),
-                "booking_end": bookingEnd.toISOString()
+                "bookingStart": bookingStart.toISOString(),
+                "bookingEnd": bookingEnd.toISOString()
             }))
         }
     }, [dispatch, bookingStart, bookingEnd, hardwareStatus]);
