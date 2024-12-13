@@ -9,12 +9,10 @@ spring:
     url: "jdbc:postgresql://localhost:5432/beatgear"
     username: "postgres"
     password: ""
-  sql:
-    init-mode: "always"
 
-    jpa:
-      hibernate:
-        ddl-auto: "update" # oder "none", "validate", "create-drop", je nach Bedarf
-      properties:
-        hibernate:
-          dialect: "org.hibernate.dialect.PostgreSQLDialect"
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+    url: "jdbc:postgresql://localhost:5432/beatgear"
+    user: postgres
+    password: ""
