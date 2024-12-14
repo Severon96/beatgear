@@ -42,10 +42,12 @@ dependencies {
     implementation("org.flywaydb:flyway-core:11.0.1")
     implementation("org.flywaydb:flyway-database-postgresql:11.0.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.1")
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux:3.4.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test:6.3.0")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
+    testImplementation("com.github.dasniko:testcontainers-keycloak:3.5.1")
     testImplementation("io.rest-assured:rest-assured")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.3")
 }
