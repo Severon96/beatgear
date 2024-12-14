@@ -10,6 +10,10 @@ plugins {
 group = "com.beatgear"
 version = "0.0.1-SNAPSHOT"
 
+ext {
+    set("testcontainers.version", "1.19.8")
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(20)
@@ -40,6 +44,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.3.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test:6.3.0")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("io.rest-assured:rest-assured")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.3")
 }
 

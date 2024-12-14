@@ -24,3 +24,7 @@ spring:
     url: "jdbc:postgresql://localhost:5432/beatgear"
     user: postgres
     password: ""
+
+  sql:
+    init:
+      mode: "always"
