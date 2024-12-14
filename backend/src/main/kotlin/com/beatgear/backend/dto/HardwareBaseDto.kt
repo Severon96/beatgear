@@ -12,5 +12,4 @@ data class HardwareBaseDto(
     val category: HardwareCategory, val ownerId: UUID? = null, val pricePerDay: Double = 0.0,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now(),
-    val bookings: List<BookingDto> = emptyList()
 )

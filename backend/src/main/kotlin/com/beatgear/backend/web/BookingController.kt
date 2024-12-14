@@ -1,5 +1,6 @@
 package com.beatgear.backend.web
 
+import com.beatgear.backend.dto.BookingBaseDto
 import com.beatgear.backend.dto.BookingDto
 import com.beatgear.backend.dto.BookingInquiryDto
 import com.beatgear.backend.mapper.BookingMapper
@@ -12,21 +13,20 @@ import org.springframework.web.bind.annotation.RestController
 @RestController(value = "/bookings")
 class BookingController(
     private val bookingService: BookingService,
-    private val bookingMapper: BookingMapper
 ) {
 
     @GetMapping("/current")
-    fun getCurrentBookings(): List<BookingDto> {
-        return bookingService.getCurrentBookings().map { bookingMapper.mapToBookingDto(it) }
+    fun getCurrentBookings(): List<BookingBaseDto> {
+        return bookingService.getCurrentBookings().map { BookingMapper.mapToBookingBaseDto(it) }
     }
 
     @PostMapping("/inquire")
     fun inquireBooking(@RequestBody request: BookingInquiryDto): BookingDto {
-        return bookingMapper.mapToBookingDto(bookingService.inquireBooking(request))
+        return BookingMapper.mapToBookingDto(bookingService.inquireBooking(request))
     }
 
     @GetMapping("/inquiries")
     fun getUserInquiries(): List<BookingDto> {
-        return bookingService.getUserBookingInquiries().map { bookingMapper.mapToBookingDto(it) }
+        return bookingService.getUserBookingInquiries().map { BookingMapper.mapToBookingDto(it) }
     }
 }
