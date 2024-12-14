@@ -9,8 +9,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "http://keycloak:8080/realms/bg-test-realm"
-          jwk-set-uri: "http://keycloak:8080/realms/bg-test-realm/protocol/openid-connect/certs"
+          issuer-uri: "http://localhost:8080/realms/bg-test-realm"
+          jwk-set-uri: "http://localhost:8080/realms/bg-test-realm/protocol/openid-connect/certs"
 
   datasource:
     url: "jdbc:postgresql://localhost:5432/beatgear"
