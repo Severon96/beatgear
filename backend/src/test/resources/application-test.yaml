@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   datasource:
-    url: jdbc:tc:postgresql:17:///beatgear
+    url: jdbc:tc:postgresql:17:///beatgear?TC_REUSABLE=true
     username: user
     password: password
   security:
