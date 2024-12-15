@@ -5,12 +5,10 @@ import com.beatgear.backend.dto.BookingDto
 import com.beatgear.backend.dto.BookingInquiryDto
 import com.beatgear.backend.mapper.BookingMapper
 import com.beatgear.backend.service.BookingService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
-@RestController(value = "/bookings")
+@RestController
+@RequestMapping("/bookings")
 class BookingController(
     private val bookingService: BookingService,
 ) {
