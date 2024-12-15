@@ -4,9 +4,11 @@ import com.beatgear.backend.dto.HardwareBaseDto
 import com.beatgear.backend.mapper.HardwareMapper
 import com.beatgear.backend.service.HardwareService
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RestController(value = "/hardware")
+@RestController
+@RequestMapping("/hardware")
 class HardwareController(
     private val hardwareService: HardwareService,
 ) {

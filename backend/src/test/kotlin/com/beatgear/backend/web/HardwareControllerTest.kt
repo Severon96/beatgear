@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
 
 @IntegrationTest
-class BookingControllerTest {
+class HardwareControllerTest {
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     lateinit var issuerUrl: String
@@ -22,23 +22,23 @@ class BookingControllerTest {
     }
 
     @Test
-    fun shouldGetCurrentBookingsWithNoBookings() {
+    fun shouldGetAvailableHardwareWithNoHardware() {
         given()
             .contentType(ContentType.JSON)
             .header("Authorization", accessToken)
             .`when`()
-            .get("/bookings/current")
+            .get("/hardware")
             .then()
             .statusCode(200)
             .body("$.size()", equalTo(0))
     }
 
     @Test
-    fun shouldGetCurrentBookingsWithNoBookingsButUnauthorized() {
+    fun shouldGetAvailableHardwareWithNoHardwareButUnauthorized() {
         given()
             .contentType(ContentType.JSON)
             .`when`()
-            .get("/bookings/current")
+            .get("/hardware")
             .then()
             .statusCode(401)
     }

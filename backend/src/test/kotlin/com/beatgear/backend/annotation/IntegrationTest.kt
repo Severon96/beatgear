@@ -29,7 +29,10 @@ annotation class IntegrationTest {
         }
 
         companion object {
-            val postgres = PostgreSQLContainer<Nothing>("postgres:16-alpine").apply { start() }
+            val postgres =
+                PostgreSQLContainer<Nothing>("postgres:16-alpine")
+                    .apply { withReuse(true) }
+                    .apply { start() }
         }
     }
 
@@ -40,7 +43,7 @@ annotation class IntegrationTest {
             val port = applicationContext.environment.getProperty("local.server.port")?.toInt()
                 ?: throw IllegalStateException("Couldn't load local server port")
 
-            RestAssured.baseURI = "http://localhost:$port"
+            RestAssured.baseURI = "http://localhost:$port/api"
         }
     }
 }
