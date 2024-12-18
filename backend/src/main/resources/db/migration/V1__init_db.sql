@@ -26,9 +26,9 @@ CREATE TABLE bookings
 
 CREATE TABLE bookings_to_hardware
 (
-    booking_id      CHAR(36),
-    hardware_id     CHAR(36),
-    total_amount    DOUBLE PRECISION
+    booking_id              CHAR(36),
+    hardware_id             CHAR(36),
+    price_per_day_override  DOUBLE PRECISION
 );
 
 CREATE TABLE hardware

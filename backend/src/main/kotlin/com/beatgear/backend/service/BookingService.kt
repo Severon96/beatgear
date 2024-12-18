@@ -2,12 +2,18 @@ package com.beatgear.backend.service
 
 import com.beatgear.backend.dto.BookingInquiryDto
 import com.beatgear.backend.model.Booking
+import com.beatgear.backend.repository.BookingRepository
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.util.*
 
 @Service
-class BookingService {
+class BookingService(
+    private val bookingRepository: BookingRepository
+) {
 
-    fun getCurrentBookings(): List<Booking> {
+    fun getCurrentBookings(userId: UUID): List<Booking> {
+        val test = bookingRepository.findActiveBookingsWithHardware(LocalDateTime.now(), userId)
         return emptyList()
     }
 
