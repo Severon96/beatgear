@@ -31,5 +31,5 @@ data class Hardware(
     val updatedAt: LocalDateTime = LocalDateTime.now(),
 
     @OneToMany(mappedBy = "hardware")
-    val bookingHardware: Set<BookingHardware>
+    val bookingHardware: Set<BookingHardware> = emptySet()
 )
