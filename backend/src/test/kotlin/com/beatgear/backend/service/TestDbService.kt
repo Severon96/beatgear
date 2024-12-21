@@ -1,4 +1,4 @@
-package com.beatgear.service
+package com.beatgear.backend.service
 
 import com.beatgear.backend.model.*
 import com.beatgear.backend.repository.BookingRepository

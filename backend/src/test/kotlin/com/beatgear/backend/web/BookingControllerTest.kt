@@ -3,7 +3,7 @@ package com.beatgear.backend.web
 import IntegrationTest
 import com.beatgear.backend.dto.BookingDto
 import com.beatgear.backend.util.KeycloakUtil
-import com.beatgear.service.TestDbService
+import com.beatgear.backend.service.TestDbService
 import io.restassured.RestAssured.given
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType

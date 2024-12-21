@@ -24,6 +24,10 @@ data class Booking(
     @Column(name = "booking_confirmed", columnDefinition = "boolean default false")
     val bookingConfirmed: Boolean = false,
 
+    @OneToOne(cascade = [(CascadeType.ALL)])
+    @JoinColumn(name = "parent_booking_id", referencedColumnName = "id")
+    var parentBooking: Booking? = null,
+
     @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
