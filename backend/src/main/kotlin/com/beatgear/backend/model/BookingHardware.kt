@@ -3,6 +3,7 @@ package com.beatgear.backend.model
 import jakarta.persistence.*
 
 @Entity
+@Table(name = "bookings_to_hardware")
 data class BookingHardware(
     @EmbeddedId
     val id: BookingHardwareKey,
@@ -19,6 +20,4 @@ data class BookingHardware(
 
     @Column(name = "price_per_day_override", columnDefinition = "float default 0")
     val pricePerDayOverride: Double = 0.0
-
-
 )
