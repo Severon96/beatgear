@@ -8,12 +8,12 @@ data class BookingHardware(
     val id: BookingHardwareKey,
 
     @ManyToOne
-    @MapsId("hardware_id")
+    @MapsId("hardwareId")
     @JoinColumn(name = "hardware_id")
     val hardware: Hardware,
 
     @ManyToOne
-    @MapsId("booking_id")
+    @MapsId("bookingId")
     @JoinColumn(name = "booking_id")
     val booking: Booking,
 
