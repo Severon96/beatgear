@@ -1,25 +1,11 @@
-package com.beatgear.backend.service
+package com.beatgear.backend.mock
 
 import com.beatgear.backend.model.*
-import com.beatgear.backend.repository.BookingRepository
-import com.beatgear.backend.repository.HardwareRepository
-import jakarta.transaction.Transactional
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
-@Service
-@Transactional
-class TestDbService {
+object ModelMock {
 
-    @Autowired
-    private lateinit var bookingRepository: BookingRepository
-
-    @Autowired
-    private lateinit var hardwareRepository: HardwareRepository
-
-    @Transactional
     fun createBooking(
         hardware: List<Hardware> = emptyList(),
         intercept: (Booking) -> Unit = {}
@@ -42,8 +28,6 @@ class TestDbService {
         )
 
         intercept(booking)
-
-        bookingRepository.save(booking)
 
         if (hardware.isEmpty()) {
             val hardwareModel = createHardware()
@@ -86,8 +70,6 @@ class TestDbService {
         )
 
         intercept(hardware)
-
-        hardwareRepository.save(hardware)
 
         return hardware
     }

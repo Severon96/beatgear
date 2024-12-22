@@ -46,9 +46,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webflux:3.4.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test:6.3.0")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
-    testImplementation("com.github.dasniko:testcontainers-keycloak:3.5.1")
+    testImplementation("io.mockk:mockk:1.13.14")
     testImplementation("io.rest-assured:rest-assured")
 }
 

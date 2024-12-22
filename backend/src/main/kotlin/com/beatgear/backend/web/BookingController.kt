@@ -1,6 +1,5 @@
 package com.beatgear.backend.web
 
-import com.beatgear.backend.dto.BookingBaseDto
 import com.beatgear.backend.dto.BookingDto
 import com.beatgear.backend.dto.BookingInquiryDto
 import com.beatgear.backend.mapper.BookingMapper
@@ -16,9 +15,11 @@ class BookingController(
 ) {
 
     @GetMapping("/current")
-    fun getCurrentBookings(jwt: Principal): List<BookingBaseDto> {
+    fun getCurrentBookings(jwt: Principal): List<BookingDto> {
         val userId = UUID.fromString(jwt.name)
-        return bookingService.getCurrentBookings(userId).map { BookingMapper.mapToBookingBaseDto(it) }
+        val currentBookings = bookingService.getCurrentBookings(userId)
+
+        return BookingMapper.mapToBookingBaseDto(currentBookings)
     }
 
     @PostMapping("/inquire")
