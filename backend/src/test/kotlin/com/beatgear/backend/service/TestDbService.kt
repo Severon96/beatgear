@@ -3,12 +3,14 @@ package com.beatgear.backend.service
 import com.beatgear.backend.model.*
 import com.beatgear.backend.repository.BookingRepository
 import com.beatgear.backend.repository.HardwareRepository
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
 @Service
+@Transactional
 class TestDbService {
 
     @Autowired
@@ -17,6 +19,7 @@ class TestDbService {
     @Autowired
     private lateinit var hardwareRepository: HardwareRepository
 
+    @Transactional
     fun createBooking(
         hardware: List<Hardware> = emptyList(),
         intercept: (Booking) -> Unit = {}

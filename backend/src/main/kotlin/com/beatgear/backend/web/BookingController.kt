@@ -1,13 +1,13 @@
 package com.beatgear.backend.web
 
-import com.beatgear.backend.dto.AuthenticatedUser
 import com.beatgear.backend.dto.BookingBaseDto
 import com.beatgear.backend.dto.BookingDto
 import com.beatgear.backend.dto.BookingInquiryDto
 import com.beatgear.backend.mapper.BookingMapper
 import com.beatgear.backend.service.BookingService
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
+import java.util.*
 
 @RestController
 @RequestMapping("/bookings")
@@ -16,8 +16,9 @@ class BookingController(
 ) {
 
     @GetMapping("/current")
-    fun getCurrentBookings(@AuthenticationPrincipal user: AuthenticatedUser): List<BookingBaseDto> {
-        return bookingService.getCurrentBookings(user.userId).map { BookingMapper.mapToBookingBaseDto(it) }
+    fun getCurrentBookings(jwt: Principal): List<BookingBaseDto> {
+        val userId = UUID.fromString(jwt.name)
+        return bookingService.getCurrentBookings(userId).map { BookingMapper.mapToBookingBaseDto(it) }
     }
 
     @PostMapping("/inquire")
