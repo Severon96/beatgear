@@ -3,11 +3,14 @@ package com.beatgear.backend.web
 import IntegrationTest
 import com.beatgear.backend.dto.BookingDto
 import com.beatgear.backend.mock.ModelMock
+import com.beatgear.backend.model.Booking
 import com.beatgear.backend.repository.BookingRepository
 import com.beatgear.backend.repository.BookingWithHardwareDetails
+import com.beatgear.backend.repository.HardwareRepository
 import com.beatgear.backend.util.KeycloakUtil
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import io.mockk.verify
 import io.restassured.RestAssured.given
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
@@ -24,6 +27,9 @@ class BookingControllerTest {
 
     @MockkBean
     private lateinit var bookingRepository: BookingRepository
+
+    @MockkBean
+    private lateinit var hardwareRepository: HardwareRepository
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     lateinit var issuerUrl: String
@@ -81,5 +87,32 @@ class BookingControllerTest {
             .get("/bookings/current")
             .then()
             .statusCode(401)
+    }
+
+    @Test
+    fun shouldInquireBooking() {
+        val booking = ModelMock.createBooking()
+        val hardware = booking.bookingHardware.map { it.hardware }
+        val bookingInquiryDto = ModelMock.createBookingInquiryDtoFromBooking(booking)
+
+        every { hardwareRepository.findAllById(any<List<UUID>>()) } returns hardware
+        every { bookingRepository.saveAll(any<List<Booking>>()) } returns emptyList<Booking>()
+
+        val bookingDto = given()
+            .contentType(ContentType.JSON)
+            .header("Authorization", accessToken)
+            .body(bookingInquiryDto)
+            .`when`()
+            .post("/bookings/inquire")
+            .then()
+            .statusCode(200)
+            .extract()
+            .`as`(BookingDto::class.java)
+
+        assertEquals(booking.id, bookingDto.id)
+        assert(Objects.isNull(booking.parentBooking))
+        assert(bookingDto.hardware.isEmpty())
+
+        verify(exactly = 1) { bookingRepository.saveAll(any<List<Booking>>()) }
     }
 }

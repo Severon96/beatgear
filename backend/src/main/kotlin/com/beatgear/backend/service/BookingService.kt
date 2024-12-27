@@ -32,7 +32,7 @@ class BookingService(
 
         val hardwareByOwnerId = dbHardware.groupBy { it.ownerId }
 
-        val mainBooking = BookingMapper.mapBookingInquiryToBooking(inquiryDto)
+        val mainBooking = BookingMapper.mapBookingInquiryToBooking(inquiryDto, id = inquiryDto.id)
 
         val bookingsToSave = mutableListOf(mainBooking)
 

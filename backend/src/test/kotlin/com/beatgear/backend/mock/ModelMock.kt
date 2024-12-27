@@ -1,5 +1,6 @@
 package com.beatgear.backend.mock
 
+import com.beatgear.backend.dto.BookingInquiryDto
 import com.beatgear.backend.model.*
 import java.time.LocalDateTime
 import java.util.*
@@ -30,17 +31,12 @@ object ModelMock {
         intercept(booking)
 
         if (hardware.isEmpty()) {
-            val hardwareModel = createHardware()
-            createBookingHardware(booking, hardwareModel)
+            val hardwareModel1 = createHardware()
+            val hardwareModel2 = createHardware()
+
             booking.bookingHardware = mutableListOf(
-                BookingHardware(
-                    id = BookingHardwareKey(
-                        booking.id ?: UUID.randomUUID(),
-                        hardwareModel.id ?: UUID.randomUUID(),
-                    ),
-                    hardware = hardwareModel,
-                    booking = booking
-                )
+                createBookingHardware(booking, hardwareModel1),
+                createBookingHardware(booking, hardwareModel2),
             )
         }
 
@@ -82,6 +78,23 @@ object ModelMock {
         intercept(hardware)
 
         return hardware
+    }
+
+    fun createBookingInquiryDtoFromBooking(booking: Booking): BookingInquiryDto {
+        return BookingInquiryDto(
+            id = booking.id ?: UUID.randomUUID(),
+            name = booking.name,
+            customerId = booking.customerId,
+            bookingStart = booking.bookingStart,
+            bookingEnd = booking.bookingEnd,
+            authorId = booking.authorId,
+            totalBookingDays = booking.totalBookingDays,
+            totalAmount = booking.totalAmount,
+            bookingConfirmed = booking.bookingConfirmed,
+            hardwareIds = booking.bookingHardware.map { it.hardware.id ?: UUID.randomUUID() },
+            createdAt = booking.createdAt,
+            updatedAt = booking.updatedAt,
+        )
     }
 
 }
