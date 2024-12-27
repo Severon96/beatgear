@@ -1,9 +1,11 @@
 package com.beatgear.backend.service
 
 import com.beatgear.backend.dto.BookingInquiryDto
+import com.beatgear.backend.mapper.BookingMapper
 import com.beatgear.backend.model.Booking
 import com.beatgear.backend.repository.BookingRepository
 import com.beatgear.backend.repository.BookingWithHardwareDetails
+import com.beatgear.backend.repository.HardwareRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -11,7 +13,8 @@ import java.util.*
 
 @Service
 class BookingService(
-    private val bookingRepository: BookingRepository
+    private val bookingRepository: BookingRepository,
+    private val hardwareRepository: HardwareRepository,
 ) {
 
     @Transactional
@@ -21,7 +24,20 @@ class BookingService(
 
     @Transactional
     fun inquireBooking(inquiryDto: BookingInquiryDto): Booking {
-        throw NotImplementedError("Sadly you lost the track, try again.")
+        val dbHardware = hardwareRepository.findAllById(inquiryDto.hardwareIds)
+        val hardwareByOwnerId = dbHardware.groupBy { it.ownerId }
+
+        val mainBooking = BookingMapper.mapBookingInquiryToBooking(inquiryDto)
+
+        val bookingsToSave = mutableListOf(mainBooking)
+
+        hardwareByOwnerId.map { (_, hardware) ->
+            bookingsToSave.add(BookingMapper.mapBookingInquiryToBooking(inquiryDto, mainBooking, hardware))
+        }
+
+        bookingRepository.saveAll(bookingsToSave)
+
+        return mainBooking
     }
 
     @Transactional

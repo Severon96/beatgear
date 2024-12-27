@@ -9,7 +9,9 @@ data class HardwareDto(
     val name: String?,
     val serial: String?,
     val image: String?,
-    val category: HardwareCategory, val ownerId: UUID? = null, val pricePerDay: Double = 0.0,
+    val category: HardwareCategory,
+    val ownerId: UUID? = null,
+    val pricePerDay: Double = 0.0,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now(),
     val bookings: List<BookingBaseDto> = emptyList()

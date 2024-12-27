@@ -2,10 +2,14 @@ package com.beatgear.backend.mapper
 
 import com.beatgear.backend.dto.BookingBaseDto
 import com.beatgear.backend.dto.BookingDto
+import com.beatgear.backend.dto.BookingInquiryDto
 import com.beatgear.backend.dto.HardwareBaseDto
 import com.beatgear.backend.model.Booking
 import com.beatgear.backend.model.BookingHardware
+import com.beatgear.backend.model.BookingHardwareKey
+import com.beatgear.backend.model.Hardware
 import com.beatgear.backend.repository.BookingWithHardwareDetails
+import java.time.LocalDateTime
 import java.util.*
 
 object BookingMapper {
@@ -65,6 +69,40 @@ object BookingMapper {
             createdAt = booking.createdAt,
             updatedAt = booking.updatedAt,
             hardware = mapNestedHardware(booking.bookingHardware)
+        )
+    }
+
+    fun mapBookingInquiryToBooking(booking: BookingInquiryDto, parentBooking: Booking? = null, hardware: List<Hardware> = emptyList()): Booking {
+        val dbBooking = Booking(
+            id = booking.id,
+            name = booking.name,
+            customerId = booking.customerId ?: UUID.randomUUID(),
+            bookingStart = booking.bookingStart ?: LocalDateTime.now(),
+            bookingEnd = booking.bookingEnd ?: LocalDateTime.now(),
+            authorId = booking.authorId ?: UUID.randomUUID(),
+            totalBookingDays = booking.totalBookingDays,
+            totalAmount = booking.totalAmount,
+            parentBooking = parentBooking,
+            bookingConfirmed = booking.bookingConfirmed,
+            createdAt = booking.createdAt,
+            updatedAt = booking.updatedAt,
+        )
+
+        val bookingHardware = hardware.map { mapHardwareToBookingHardware(it, dbBooking) }
+
+        dbBooking.bookingHardware = bookingHardware.toMutableList()
+
+        return dbBooking
+    }
+
+    private fun mapHardwareToBookingHardware(hardware: Hardware, booking: Booking): BookingHardware {
+        return BookingHardware(
+            id = BookingHardwareKey(
+                bookingId = booking.id ?: UUID.randomUUID(),
+                hardwareId = hardware.id ?: UUID.randomUUID(),
+            ),
+            hardware = hardware,
+            booking = booking
         )
     }
 
