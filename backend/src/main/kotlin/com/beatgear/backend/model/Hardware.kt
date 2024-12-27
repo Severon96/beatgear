@@ -1,6 +1,7 @@
 package com.beatgear.backend.model
 
 import jakarta.persistence.*
+import org.hibernate.proxy.HibernateProxy
 import java.time.LocalDateTime
 import java.util.*
 
@@ -32,4 +33,20 @@ data class Hardware(
 
     @OneToMany(mappedBy = "hardware")
     val bookingHardware: Set<BookingHardware> = emptySet()
-)
+) {
+    final override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null) return false
+
+        other as Hardware
+        return id != null && id == other.id
+    }
+
+    final override fun hashCode(): Int =
+        if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass.hashCode() else javaClass.hashCode()
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(  id = $id   ,   name = $name   ,   serial = $serial   ,   image = $image   ,   category = $category   ,   ownerId = $ownerId   ,   pricePerDay = $pricePerDay   ,   createdAt = $createdAt   ,   updatedAt = $updatedAt )"
+    }
+}

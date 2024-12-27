@@ -21,9 +21,10 @@ interface BookingRepository : JpaRepository<Booking, UUID> {
 
     @Query(
         """
-    SELECT b, bh.pricePerDayOverride, bh.hardware 
-    FROM Booking b 
-    JOIN b.bookingHardware bh 
+    SELECT new com.beatgear.backend.repository.BookingWithHardwareDetails(b, bh.hardware, bh.pricePerDayOverride)
+    FROM Booking b
+    JOIN b.childBookings cb
+    JOIN cb.bookingHardware bh
     WHERE b.bookingEnd >= :now 
       AND b.customerId = :userId 
       AND b.parentBooking IS NULL

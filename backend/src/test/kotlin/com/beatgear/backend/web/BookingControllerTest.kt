@@ -32,6 +32,7 @@ class BookingControllerTest {
     @BeforeEach
     fun setUp() {
         accessToken = KeycloakUtil.getAccessToken(issuerUrl = issuerUrl)
+        println("Access token: $accessToken")
     }
 
     @Test
