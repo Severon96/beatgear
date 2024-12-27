@@ -34,6 +34,6 @@ data class Booking(
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     val updatedAt: LocalDateTime = LocalDateTime.now(),
 
-    @OneToMany(mappedBy = "booking")
-    val bookingHardware: Set<BookingHardware> = emptySet()
+    @OneToMany(mappedBy = "booking", targetEntity = BookingHardware::class, cascade = [CascadeType.ALL], orphanRemoval = true)
+    var bookingHardware: MutableList<BookingHardware> = mutableListOf()
 )

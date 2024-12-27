@@ -68,7 +68,7 @@ object BookingMapper {
         )
     }
 
-    private fun mapNestedHardware(entities: Set<BookingHardware>): List<HardwareBaseDto> {
+    private fun mapNestedHardware(entities: List<BookingHardware>): List<HardwareBaseDto> {
         return entities.map { HardwareMapper.mapToHardwareBaseDto(it.hardware) }
     }
 

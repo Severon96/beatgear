@@ -32,6 +32,16 @@ object ModelMock {
         if (hardware.isEmpty()) {
             val hardwareModel = createHardware()
             createBookingHardware(booking, hardwareModel)
+            booking.bookingHardware = mutableListOf(
+                BookingHardware(
+                    id = BookingHardwareKey(
+                        booking.id ?: UUID.randomUUID(),
+                        hardwareModel.id ?: UUID.randomUUID(),
+                    ),
+                    hardware = hardwareModel,
+                    booking = booking
+                )
+            )
         }
 
         return booking

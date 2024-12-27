@@ -3,7 +3,10 @@ package com.beatgear.backend.web
 import IntegrationTest
 import com.beatgear.backend.dto.BookingDto
 import com.beatgear.backend.mock.ModelMock
+import com.beatgear.backend.repository.BookingRepository
+import com.beatgear.backend.repository.BookingWithHardwareDetails
 import com.beatgear.backend.util.KeycloakUtil
+import io.mockk.every
 import io.restassured.RestAssured.given
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
@@ -12,9 +15,15 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import java.time.LocalDateTime
+import java.util.*
 
 @IntegrationTest
 class BookingControllerTest {
+
+    @MockitoBean
+    private lateinit var bookingRepository: BookingRepository
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     lateinit var issuerUrl: String
@@ -40,6 +49,12 @@ class BookingControllerTest {
     @Test
     fun shouldGetCurrentBookingsWithBookings() {
         val booking = ModelMock.createBooking()
+        val bookingWithHardwareDetails = BookingWithHardwareDetails(
+            booking,
+            booking.bookingHardware.first().hardware,
+            null
+        )
+        every { bookingRepository.findActiveBookingsWithHardware(any<LocalDateTime>(), any<UUID>()) } returns listOf(bookingWithHardwareDetails)
 
         val bookings = given()
             .contentType(ContentType.JSON)
