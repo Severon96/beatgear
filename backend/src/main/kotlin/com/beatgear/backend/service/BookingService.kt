@@ -7,7 +7,7 @@ import com.beatgear.backend.repository.BookingRepository
 import com.beatgear.backend.repository.BookingWithHardwareDetails
 import com.beatgear.backend.repository.HardwareRepository
 import jakarta.transaction.Transactional
-import org.springframework.http.HttpStatusCode
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
@@ -28,7 +28,7 @@ class BookingService(
     fun inquireBooking(inquiryDto: BookingInquiryDto): Booking {
         val dbHardware = hardwareRepository.findAllById(inquiryDto.hardwareIds)
 
-        require(dbHardware.size > 0) { throw ResponseStatusException(HttpStatusCode.valueOf(400), "No valid hardware IDs were provided.") }
+        require(dbHardware.size > 0) { throw ResponseStatusException(HttpStatus.BAD_REQUEST, "No valid hardware IDs were provided.") }
 
         val hardwareByOwnerId = dbHardware.groupBy { it.ownerId }
 
