@@ -36,6 +36,8 @@ class BookingControllerTest {
 
     @Test
     fun shouldGetCurrentBookingsWithNoBookings() {
+        every { bookingRepository.findActiveBookingsWithHardware(any<LocalDateTime>(), any<UUID>()) } returns emptyList()
+
         given()
             .contentType(ContentType.JSON)
             .header("Authorization", accessToken)
