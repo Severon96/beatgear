@@ -6,6 +6,7 @@ import com.beatgear.backend.mock.ModelMock
 import com.beatgear.backend.repository.BookingRepository
 import com.beatgear.backend.repository.BookingWithHardwareDetails
 import com.beatgear.backend.util.KeycloakUtil
+import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.restassured.RestAssured.given
 import io.restassured.common.mapper.TypeRef
@@ -15,14 +16,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 import java.time.LocalDateTime
 import java.util.*
 
 @IntegrationTest
 class BookingControllerTest {
 
-    @MockitoBean
+    @MockkBean
     private lateinit var bookingRepository: BookingRepository
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")

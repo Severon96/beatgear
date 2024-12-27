@@ -48,6 +48,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test:6.3.0")
     testImplementation("io.mockk:mockk:1.13.14")
     testImplementation("io.rest-assured:rest-assured")
+    testImplementation("com.ninja-squad:springmockk:4.0.2")
 }
 
 buildscript {
