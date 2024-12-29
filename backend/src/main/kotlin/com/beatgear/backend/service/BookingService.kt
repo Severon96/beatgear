@@ -25,22 +25,31 @@ class BookingService(
     }
 
     @Transactional
-    fun inquireBooking(inquiryDto: BookingInquiryDto): Booking {
+    fun inquireBooking(inquiryDto: BookingInquiryDto, userId: UUID): Booking {
+        val hardwareCount = hardwareRepository.count()
         val dbHardware = hardwareRepository.findAllById(inquiryDto.hardwareIds)
 
-        require(dbHardware.size > 0) { throw ResponseStatusException(HttpStatus.BAD_REQUEST, "No valid hardware IDs were provided.") }
+        require(hardwareCount == 0L || dbHardware.size > 0) {
+            throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "No valid hardware IDs were provided."
+            )
+        }
 
         val hardwareByOwnerId = dbHardware.groupBy { it.ownerId }
 
-        val mainBooking = BookingMapper.mapBookingInquiryToBooking(inquiryDto, id = inquiryDto.id)
+        val mainBooking = BookingMapper.mapBookingInquiryToBooking(inquiryDto)
 
-        val bookingsToSave = mutableListOf(mainBooking)
+        bookingRepository.save(mainBooking)
 
         hardwareByOwnerId.map { (_, hardware) ->
-            bookingsToSave.add(BookingMapper.mapBookingInquiryToBooking(inquiryDto, mainBooking, hardware))
-        }
+            if (hardware.any { it.ownerId == userId }) throw ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Not allowed to book own hardware."
+            )
 
-        bookingRepository.saveAll(bookingsToSave)
+            bookingRepository.save(BookingMapper.mapBookingInquiryToBooking(inquiryDto, mainBooking, hardware))
+        }
 
         return mainBooking
     }

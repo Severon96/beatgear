@@ -59,6 +59,6 @@ data class Booking(
 
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(  id = $id   ,   name = $name   ,   customerId = $customerId   ,   bookingStart = $bookingStart   ,   bookingEnd = $bookingEnd   ,   authorId = $authorId   ,   totalBookingDays = $totalBookingDays   ,   totalAmount = $totalAmount   ,   bookingConfirmed = $bookingConfirmed   ,   parentBooking = $parentBooking   ,   createdAt = $createdAt   ,   updatedAt = $updatedAt )"
+        return this::class.simpleName + "(  id = $id   ,   name = $name   ,   customerId = $customerId   ,   bookingStart = $bookingStart   ,   bookingEnd = $bookingEnd   ,   authorId = $authorId   ,   totalBookingDays = $totalBookingDays   ,   totalAmount = $totalAmount   ,   bookingConfirmed = $bookingConfirmed   ,    createdAt = $createdAt   ,   updatedAt = $updatedAt )"
     }
 }

@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 data class BookingDto(
-    val id: UUID,
+    val id: UUID?,
     val name: String?,
     val customerId: UUID?,
     val bookingStart: LocalDateTime?,

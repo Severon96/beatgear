@@ -9,40 +9,38 @@ CREATE TYPE hardwarecategory AS ENUM (
 
 CREATE TABLE bookings
 (
-    id                 UUID                                      NOT NULL,
-    name               VARCHAR(30),
-    customer_id        UUID                                      NOT NULL,
-    booking_start      TIMESTAMP WITHOUT TIME ZONE               NOT NULL,
-    booking_end        TIMESTAMP WITHOUT TIME ZONE               NOT NULL,
-    author_id          UUID                                      NOT NULL,
-    total_booking_days INTEGER                                   NOT NULL,
-    total_amount       DOUBLE PRECISION                          NOT NULL,
-    booking_confirmed  BOOLEAN                                   NOT NULL,
-    created_at         TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
-    updated_at         TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
+    id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name               VARCHAR(255),
+    customer_id        UUID                                       NOT NULL,
+    booking_start      TIMESTAMP                                  NOT NULL,
+    booking_end        TIMESTAMP                                  NOT NULL,
+    author_id          UUID                                       NOT NULL,
+    total_booking_days INT              DEFAULT 1                 NOT NULL,
+    total_amount       DOUBLE PRECISION DEFAULT 0.0               NOT NULL,
+    booking_confirmed  BOOLEAN          DEFAULT FALSE             NOT NULL,
     parent_booking_id  UUID,
-    CONSTRAINT bookings_pkey PRIMARY KEY (id)
+    created_at         TIMESTAMP        DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at         TIMESTAMP        DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 CREATE TABLE bookings_to_hardware
 (
-    booking_id              UUID,
-    hardware_id             UUID,
-    price_per_day_override  DOUBLE PRECISION
+    booking_id             UUID,
+    hardware_id            UUID,
+    price_per_day_override DOUBLE PRECISION
 );
 
 CREATE TABLE hardware
 (
-    id            UUID                                      NOT NULL,
-    name          VARCHAR(250)                              NOT NULL,
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name          VARCHAR(250)     NOT NULL,
     serial        VARCHAR(50),
     image         VARCHAR,
-    category      HARDWARECATEGORY                          NOT NULL,
-    owner_id      UUID                                      NOT NULL,
-    price_per_day DOUBLE PRECISION                          NOT NULL,
+    category      HARDWARECATEGORY NOT NULL,
+    owner_id      UUID             NOT NULL,
+    price_per_day DOUBLE PRECISION NOT NULL,
     created_at    TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
-    updated_at    TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
-    CONSTRAINT hardware_pkey PRIMARY KEY (id)
+    updated_at    TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL
 );
 
 ALTER TABLE bookings

@@ -72,9 +72,8 @@ object BookingMapper {
         )
     }
 
-    fun mapBookingInquiryToBooking(booking: BookingInquiryDto, parentBooking: Booking? = null, hardware: List<Hardware> = emptyList(), id: UUID = UUID.randomUUID()): Booking {
+    fun mapBookingInquiryToBooking(booking: BookingInquiryDto, parentBooking: Booking? = null, hardware: List<Hardware> = emptyList()): Booking {
         val dbBooking = Booking(
-            id = id,
             name = booking.name,
             customerId = booking.customerId ?: UUID.randomUUID(),
             bookingStart = booking.bookingStart ?: LocalDateTime.now(),

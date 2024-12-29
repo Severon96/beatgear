@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 data class HardwareDto(
-    val id: UUID,
+    val id: UUID?,
     val name: String?,
     val serial: String?,
     val image: String?,
