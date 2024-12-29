@@ -23,8 +23,9 @@ class BookingController(
     }
 
     @PostMapping("/inquire")
-    fun inquireBooking(@RequestBody request: BookingInquiryDto): BookingDto {
-        return BookingMapper.mapToBookingDto(bookingService.inquireBooking(request))
+    fun inquireBooking(@RequestBody request: BookingInquiryDto, jwt: Principal): BookingDto {
+        val userId = UUID.fromString(jwt.name)
+        return BookingMapper.mapToBookingDto(bookingService.inquireBooking(request, userId))
     }
 
     @GetMapping("/inquiries")
