@@ -29,10 +29,10 @@ class TestDbService {
 
         val booking = Booking(
             name = "Test Booking",
-            customerId = UUID.randomUUID(),
+            customerId = UUID.fromString("e544f8ed-df11-465f-ab70-23193e5553a5"),
             bookingStart = bookingStart,
             bookingEnd = bookingEnd,
-            authorId = UUID.randomUUID(),
+            authorId = UUID.fromString("e544f8ed-df11-465f-ab70-23193e5553a5"),
             totalBookingDays = 4,
             totalAmount = 50.0,
             bookingConfirmed = false,

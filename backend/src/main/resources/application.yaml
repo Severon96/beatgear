@@ -28,6 +28,7 @@ spring:
     url: "jdbc:postgresql://localhost:5432/beatgear"
     user: postgres
     password: ""
+    baseline-on-migrate: true
 
   sql:
     init:

@@ -36,7 +36,7 @@ CREATE TABLE hardware
     name          VARCHAR(250)     NOT NULL,
     serial        VARCHAR(50),
     image         VARCHAR,
-    category      HARDWARECATEGORY NOT NULL,
+    category      hardwarecategory NOT NULL,
     owner_id      UUID             NOT NULL,
     price_per_day DOUBLE PRECISION NOT NULL,
     created_at    TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,

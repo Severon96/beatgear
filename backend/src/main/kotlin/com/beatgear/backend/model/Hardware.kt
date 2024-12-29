@@ -1,6 +1,7 @@
 package com.beatgear.backend.model
 
 import jakarta.persistence.*
+import org.hibernate.annotations.ColumnTransformer
 import org.hibernate.proxy.HibernateProxy
 import java.time.LocalDateTime
 import java.util.*
@@ -18,6 +19,7 @@ data class Hardware(
     val image: String?,
 
     @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write="?::hardwarecategory")
     val category: HardwareCategory,
 
     val ownerId: UUID,
