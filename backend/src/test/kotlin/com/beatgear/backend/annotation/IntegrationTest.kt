@@ -4,11 +4,13 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.TestContext
 import org.springframework.test.context.TestExecutionListener
 import org.springframework.test.context.TestExecutionListeners
+import org.testcontainers.junit.jupiter.Testcontainers
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 @TestExecutionListeners(
     listeners = [IntegrationTest.ExecutionListener::class],
     mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS

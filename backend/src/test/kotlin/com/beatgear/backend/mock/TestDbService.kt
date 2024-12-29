@@ -2,10 +2,23 @@ package com.beatgear.backend.mock
 
 import com.beatgear.backend.dto.BookingInquiryDto
 import com.beatgear.backend.model.*
+import com.beatgear.backend.repository.BookingRepository
+import com.beatgear.backend.repository.HardwareRepository
+import jakarta.transaction.Transactional
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
-object ModelMock {
+@Service
+@Transactional
+class TestDbService {
+
+    @Autowired
+    private lateinit var bookingRepository: BookingRepository
+
+    @Autowired
+    private lateinit var hardwareRepository: HardwareRepository
 
     fun createBooking(
         hardware: List<Hardware> = emptyList(),
@@ -15,7 +28,6 @@ object ModelMock {
         val bookingEnd = LocalDateTime.now().plusDays(1)
 
         val booking = Booking(
-            id = UUID.randomUUID(),
             name = "Test Booking",
             customerId = UUID.randomUUID(),
             bookingStart = bookingStart,
@@ -39,6 +51,8 @@ object ModelMock {
                 createBookingHardware(booking, hardwareModel2),
             )
         }
+
+        bookingRepository.save(bookingRepository.save(booking))
 
         return booking
     }
@@ -64,7 +78,6 @@ object ModelMock {
 
     fun createHardware(intercept: (Hardware) -> Unit = {}): Hardware {
         val hardware = Hardware(
-            id = UUID.randomUUID(),
             name = "Test Hardware",
             serial = "HW162742",
             image = null,
@@ -77,12 +90,13 @@ object ModelMock {
 
         intercept(hardware)
 
+        hardwareRepository.save(hardware)
+
         return hardware
     }
 
     fun createBookingInquiryDtoFromBooking(booking: Booking): BookingInquiryDto {
         return BookingInquiryDto(
-            id = booking.id ?: UUID.randomUUID(),
             name = booking.name,
             customerId = booking.customerId,
             bookingStart = booking.bookingStart,
