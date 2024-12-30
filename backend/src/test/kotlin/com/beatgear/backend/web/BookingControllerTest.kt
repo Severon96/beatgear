@@ -9,17 +9,12 @@ import io.restassured.RestAssured.given
 import io.restassured.common.mapper.TypeRef
 import io.restassured.http.ContentType
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
-import org.testcontainers.containers.PostgreSQLContainer
 import java.util.*
 
 @IntegrationTest
@@ -32,39 +27,10 @@ class BookingControllerTest {
     lateinit var issuerUrl: String
     lateinit var accessToken: String
 
-    companion object {
-        var postgres: PostgreSQLContainer<*> = PostgreSQLContainer(
-            "postgres:16-alpine"
-        )
-
-        @BeforeAll
-        @JvmStatic
-        internal fun beforeAll() {
-            postgres.start()
-        }
-
-        @AfterAll
-        @JvmStatic
-        internal fun afterAll() {
-            postgres.stop()
-        }
-
-        @DynamicPropertySource
-        @JvmStatic
-        internal fun configureProperties(registry: DynamicPropertyRegistry) {
-            registry.add("spring.datasource.url") { postgres.jdbcUrl }
-            registry.add("spring.datasource.username") { postgres.username }
-            registry.add("spring.datasource.password") { postgres.password }
-            registry.add("spring.flyway.url") { postgres.jdbcUrl }
-            registry.add("spring.flyway.user") { postgres.username }
-            registry.add("spring.flyway.password") { postgres.password }
-        }
-    }
-
     @BeforeEach
     fun setUp() {
         accessToken = KeycloakUtil.getAccessToken(issuerUrl = issuerUrl)
-        println("Access token: $accessToken")
+        testDbService.clearDatabase()
     }
 
     @Test
@@ -81,7 +47,10 @@ class BookingControllerTest {
 
     @Test
     fun shouldGetCurrentBookingsWithBookings() {
-        val booking = testDbService.createBooking()
+        val booking = testDbService.createBooking { it.bookingHardware = mutableListOf() }
+        testDbService.createBooking {
+            it.parentBooking = booking
+        }
 
         val bookings = given()
             .contentType(ContentType.JSON)

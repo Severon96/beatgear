@@ -25,10 +25,10 @@ data class Booking(
     @Column(name = "booking_confirmed", columnDefinition = "boolean default false")
     val bookingConfirmed: Boolean = false,
 
-    @OneToMany(mappedBy = "parentBooking", cascade = [(CascadeType.ALL)])
+    @OneToMany(mappedBy = "parentBooking", cascade = [(CascadeType.MERGE)])
     var childBookings: MutableList<Booking> = mutableListOf(),
 
-    @ManyToOne(cascade = [(CascadeType.ALL)])
+    @ManyToOne(cascade = [(CascadeType.MERGE)])
     @JoinColumn(name = "parent_booking_id", referencedColumnName = "id")
     var parentBooking: Booking? = null,
 

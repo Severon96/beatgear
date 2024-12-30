@@ -40,8 +40,6 @@ class TestDbService {
             updatedAt = LocalDateTime.now(),
         )
 
-        intercept(booking)
-
         if (hardware.isEmpty()) {
             val hardwareModel1 = createHardware()
             val hardwareModel2 = createHardware()
@@ -52,7 +50,9 @@ class TestDbService {
             )
         }
 
-        bookingRepository.save(bookingRepository.save(booking))
+        intercept(booking)
+
+        bookingRepository.save(booking)
 
         return booking
     }
@@ -109,6 +109,11 @@ class TestDbService {
             createdAt = booking.createdAt,
             updatedAt = booking.updatedAt,
         )
+    }
+
+    fun clearDatabase() {
+        bookingRepository.deleteAll()
+        hardwareRepository.deleteAll()
     }
 
 }
