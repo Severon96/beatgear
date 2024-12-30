@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
+val TEST_USER_UUID: UUID = UUID.fromString("e544f8ed-df11-465f-ab70-23193e5553a5")
+
 @Service
 @Transactional
 class TestDbService {
@@ -29,10 +31,10 @@ class TestDbService {
 
         val booking = Booking(
             name = "Test Booking",
-            customerId = UUID.fromString("e544f8ed-df11-465f-ab70-23193e5553a5"),
+            customerId = TEST_USER_UUID,
             bookingStart = bookingStart,
             bookingEnd = bookingEnd,
-            authorId = UUID.fromString("e544f8ed-df11-465f-ab70-23193e5553a5"),
+            authorId = TEST_USER_UUID,
             totalBookingDays = 4,
             totalAmount = 50.0,
             bookingConfirmed = false,
@@ -52,9 +54,11 @@ class TestDbService {
 
         intercept(booking)
 
-        bookingRepository.save(booking)
-
         return booking
+    }
+
+    fun saveBooking(booking: Booking? = null): Booking {
+        return bookingRepository.save(booking ?: createBooking())
     }
 
     fun createBookingHardware(
@@ -90,9 +94,11 @@ class TestDbService {
 
         intercept(hardware)
 
-        hardwareRepository.save(hardware)
-
         return hardware
+    }
+
+    fun saveHardware(hardware: Hardware? = null): Hardware {
+        return hardwareRepository.save(hardware ?: createHardware())
     }
 
     fun createBookingInquiryDtoFromBooking(booking: Booking): BookingInquiryDto {

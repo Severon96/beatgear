@@ -2,6 +2,7 @@ package com.beatgear.backend.web
 
 import IntegrationTest
 import com.beatgear.backend.dto.BookingDto
+import com.beatgear.backend.mock.TEST_USER_UUID
 import com.beatgear.backend.mock.TestDbService
 import com.beatgear.backend.model.Booking
 import com.beatgear.backend.util.KeycloakUtil
@@ -48,9 +49,11 @@ class BookingControllerTest {
     @Test
     fun shouldGetCurrentBookingsWithBookings() {
         val booking = testDbService.createBooking { it.bookingHardware = mutableListOf() }
-        testDbService.createBooking {
+        testDbService.saveBooking(booking)
+        val childBooking = testDbService.createBooking {
             it.parentBooking = booking
         }
+        testDbService.saveBooking(childBooking)
 
         val bookings = given()
             .contentType(ContentType.JSON)
@@ -98,9 +101,52 @@ class BookingControllerTest {
     }
 
     @Test
-    fun shouldNotInquireBookingWithMissingHardware() {
+    fun shouldInquireBookingWithMissingHardwareWithoutHardwareAvailable() {
         val booking = testDbService.createBooking()
         booking.bookingHardware = mutableListOf()
+        val bookingInquiryDto = testDbService.createBookingInquiryDtoFromBooking(booking)
+
+        val bookingDto = given()
+            .contentType(ContentType.JSON)
+            .header("Authorization", accessToken)
+            .body(bookingInquiryDto)
+            .`when`()
+            .post("/bookings/inquire")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .`as`(BookingDto::class.java)
+
+        assertBookingEquals(booking, bookingDto)
+        assert(Objects.isNull(booking.parentBooking))
+        assert(bookingDto.hardware.isEmpty())
+    }
+
+    @Test
+    fun shouldNotInquireBookingWithMissingHardwarButHardwareAvailable() {
+        testDbService.saveHardware()
+        val booking = testDbService.createBooking()
+        booking.bookingHardware = mutableListOf()
+        val bookingInquiryDto = testDbService.createBookingInquiryDtoFromBooking(booking)
+
+        given()
+            .contentType(ContentType.JSON)
+            .header("Authorization", accessToken)
+            .body(bookingInquiryDto)
+            .`when`()
+            .post("/bookings/inquire")
+            .then()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .body("message", equalTo("No valid hardware IDs were provided."))
+    }
+
+    @Test
+    fun shouldNotInquireBookingWitOwnHardware() {
+        val hardware = testDbService.createHardware {
+            it.ownerId = TEST_USER_UUID
+        }
+        testDbService.saveHardware(hardware)
+        val booking = testDbService.createBooking(listOf(hardware))
         val bookingInquiryDto = testDbService.createBookingInquiryDtoFromBooking(booking)
 
         given()

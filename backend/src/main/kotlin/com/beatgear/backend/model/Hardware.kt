@@ -22,7 +22,7 @@ data class Hardware(
     @ColumnTransformer(write="?::hardwarecategory")
     val category: HardwareCategory,
 
-    val ownerId: UUID,
+    var ownerId: UUID,
 
     @Column(name = "price_per_day", columnDefinition = "float default 0")
     val pricePerDay: Double = 0.0,
