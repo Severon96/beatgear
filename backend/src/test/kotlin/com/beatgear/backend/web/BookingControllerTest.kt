@@ -82,6 +82,8 @@ class BookingControllerTest {
     @Test
     fun shouldInquireBooking() {
         val booking = testDbService.createBooking()
+        booking.bookingHardware.forEach { testDbService.saveHardware(it.hardware)
+        }
         val bookingInquiryDto = testDbService.createBookingInquiryDtoFromBooking(booking)
 
         val bookingDto = given()
@@ -123,7 +125,7 @@ class BookingControllerTest {
     }
 
     @Test
-    fun shouldNotInquireBookingWithMissingHardwarButHardwareAvailable() {
+    fun shouldNotInquireBookingWithMissingHardwareButHardwareAvailable() {
         testDbService.saveHardware()
         val booking = testDbService.createBooking()
         booking.bookingHardware = mutableListOf()
@@ -157,7 +159,7 @@ class BookingControllerTest {
             .post("/bookings/inquire")
             .then()
             .statusCode(HttpStatus.BAD_REQUEST.value())
-            .body("message", equalTo("No valid hardware IDs were provided."))
+            .body("message", equalTo("Not allowed to book own hardware."))
     }
 
     @Test

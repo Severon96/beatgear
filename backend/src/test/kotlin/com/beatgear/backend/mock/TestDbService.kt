@@ -50,6 +50,8 @@ class TestDbService {
                 createBookingHardware(booking, hardwareModel1),
                 createBookingHardware(booking, hardwareModel2),
             )
+        } else {
+            booking.bookingHardware = hardware.map { createBookingHardware(booking, it) }.toMutableList()
         }
 
         intercept(booking)
