@@ -29,7 +29,8 @@ class BookingController(
     }
 
     @GetMapping("/inquiries")
-    fun getUserInquiries(): List<BookingDto> {
-        return bookingService.getUserBookingInquiries().map { BookingMapper.mapToBookingDto(it) }
+    fun getUserInquiries(jwt: Principal): List<BookingDto> {
+        val userId = UUID.fromString(jwt.name)
+        return bookingService.getUserBookingInquiries(userId).map { BookingMapper.mapToBookingDto(it) }
     }
 }

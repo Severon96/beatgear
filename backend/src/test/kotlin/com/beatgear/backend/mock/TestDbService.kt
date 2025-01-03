@@ -63,6 +63,10 @@ class TestDbService {
         return bookingRepository.save(booking ?: createBooking())
     }
 
+    fun countBookings(): Long {
+        return bookingRepository.count()
+    }
+
     fun createBookingHardware(
         booking: Booking,
         hardware: Hardware,

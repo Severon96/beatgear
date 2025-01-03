@@ -35,4 +35,15 @@ interface BookingRepository : JpaRepository<Booking, UUID> {
         userId: UUID
     ): List<BookingWithHardwareDetails>
 
+    @Query(
+        """
+            SELECT b
+            FROM Booking b
+            JOIN b.bookingHardware bh
+            WHERE bh.hardware.ownerId = :userId
+            ORDER BY b.bookingEnd DESC
+        """
+    )
+    fun findUserInquiries(userId: UUID): List<Booking>
+
 }

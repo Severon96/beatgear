@@ -55,7 +55,7 @@ class BookingService(
     }
 
     @Transactional
-    fun getUserBookingInquiries(): List<Booking> {
-        return emptyList()
+    fun getUserBookingInquiries(userId: UUID): List<Booking> {
+        return bookingRepository.findUserInquiries(userId)
     }
 }
