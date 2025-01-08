@@ -6,6 +6,8 @@ import com.beatgear.backend.service.HardwareService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.security.Principal
+import java.util.*
 
 @RestController
 @RequestMapping("/hardware")
@@ -14,7 +16,8 @@ class HardwareController(
 ) {
 
     @GetMapping
-    fun getAvailableHardware(): List<HardwareBaseDto> {
-        return hardwareService.getAvailableHardware().map { HardwareMapper.mapToHardwareBaseDto(it) }
+    fun getAvailableHardware(principal: Principal): List<HardwareBaseDto> {
+        val userId = UUID.fromString(principal.name)
+        return hardwareService.getAvailableHardware(userId).map { HardwareMapper.mapToHardwareBaseDto(it) }
     }
 }
