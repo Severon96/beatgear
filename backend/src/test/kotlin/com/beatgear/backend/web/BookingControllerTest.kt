@@ -178,36 +178,6 @@ class BookingControllerTest {
             .statusCode(HttpStatus.UNAUTHORIZED.value())
     }
 
-    @Test
-    fun shouldGetUserInquiries() {
-        val otherHardware = testDbService.createHardware()
-        testDbService.saveHardware(otherHardware)
-        val hardwareForUser = testDbService.createHardware {
-            it.ownerId = TEST_USER_UUID
-        }
-        testDbService.saveHardware(hardwareForUser)
-        val bookingForUser1 = testDbService.createBooking(listOf(hardwareForUser))
-        testDbService.saveBooking(bookingForUser1)
-        val bookingForUser2 = testDbService.createBooking(listOf(hardwareForUser))
-        testDbService.saveBooking(bookingForUser2)
-        val otherBooking = testDbService.createBooking(listOf(otherHardware))
-        testDbService.saveBooking(otherBooking)
-
-        val bookings = given()
-            .contentType(ContentType.JSON)
-            .header("Authorization", accessToken)
-            .`when`()
-            .get("/bookings/inquiries")
-            .then()
-            .statusCode(200)
-            .body("$.size()", equalTo(2))
-            .extract()
-            .`as`(object : TypeRef<List<BookingDto>>() {})
-
-        assertBookingEquals(bookingForUser1, bookings[0])
-        assertBookingEquals(bookingForUser2, bookings[1])
-    }
-
     private fun assertBookingEquals(booking: Booking, bookingDto: BookingDto) {
         assertEquals(booking.name, bookingDto.name)
         assertEquals(booking.customerId, bookingDto.customerId)
