@@ -19,5 +19,5 @@ data class BookingHardware(
     val booking: Booking,
 
     @Column(name = "price_per_day_override", columnDefinition = "float default 0")
-    val pricePerDayOverride: Double = 0.0
+    val pricePerDayOverride: Double? = 0.0
 )

@@ -56,6 +56,14 @@ class BookingService(
 
     @Transactional
     fun getUserBookingInquiries(userId: UUID): List<Booking> {
-        return bookingRepository.findUserInquiries(userId)
+        val userBookings = bookingRepository.findUserInquiries(userId)
+
+        val inquiriesWithFilteredHardware = userBookings.map { booking ->
+            booking.copy(bookingHardware = booking.bookingHardware.filter {
+                it.hardware.ownerId == userId
+            }.toMutableList())
+        }
+
+        return inquiriesWithFilteredHardware
     }
 }
