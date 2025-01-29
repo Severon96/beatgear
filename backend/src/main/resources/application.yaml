@@ -1,0 +1,35 @@
+server:
+  port: 8000
+  servlet:
+    context-path: "/api"
+  error:
+    include-message: always
+spring:
+  profiles:
+    default: "dev"
+    active: "dev"
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:8080/realms/bg-test-realm"
+          jwk-set-uri: "http://localhost:8080/realms/bg-test-realm/protocol/openid-connect/certs"
+
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/beatgear"
+    username: "postgres"
+    password: ""
+
+
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+    url: "jdbc:postgresql://localhost:5432/beatgear"
+    user: postgres
+    password: ""
+    baseline-on-migrate: true
+
+  sql:
+    init:
+      mode: "always"
