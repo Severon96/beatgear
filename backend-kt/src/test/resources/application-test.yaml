@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:8080/realms/bg-test-realm"
+          jwk-set-uri: "http://localhost:8080/realms/bg-test-realm/protocol/openid-connect/certs"
+
+  flyway:
+    enabled: true
